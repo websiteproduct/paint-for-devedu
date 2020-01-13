@@ -34,5 +34,10 @@ namespace PaintTool
         {
             ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Hidden;
         }
+
+        private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            //SizeInput.Text = SizeSlider.Value.ToString();
+        }
     }
 }
