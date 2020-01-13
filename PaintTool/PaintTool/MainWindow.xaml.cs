@@ -24,5 +24,15 @@ namespace PaintTool
         {
             InitializeComponent();
         }
+
+        private void Brush_Btn_Click(object sender, RoutedEventArgs e)
+        {
+            ColorsGrid.Visibility = Visibility.Visible;
+        }
+
+        private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Hidden;
+        }
     }
 }
