@@ -27,6 +27,7 @@ namespace PaintTool
         public MainWindow()
         {
             InitializeComponent();
+            
         }
         private void WBExample_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -156,10 +157,14 @@ namespace PaintTool
         {
             colorData = new byte[] { red, green, blue, alpha };
         }
+        private byte[] GetColor()
+        {
+            return colorData;
+        }
 
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (comboBox2.SelectedItem)
+            switch (comboBox2.SelectedIndex)
             {
                 case 0:
                     SetColor(0, 0, 0);
@@ -226,7 +231,7 @@ namespace PaintTool
         }
 
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
-        {            
+        {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DrawPixel(e);
@@ -237,7 +242,7 @@ namespace PaintTool
             }
         }
         private void ErasePixel(MouseEventArgs e)
-        {            
+        {
             byte[] colorData = { 255, 255, 255, 255 }; // White color(default)!
 
             Int32Rect rect = new Int32Rect(
@@ -250,14 +255,14 @@ namespace PaintTool
         }
 
         private void DrawPixel(MouseEventArgs e)
-        {            
+        {
             Int32Rect rect = new Int32Rect(
                     (int)(e.GetPosition(PaintField).X),
                     (int)(e.GetPosition(PaintField).Y),
                     1,
                     1);
 
-            wb.WritePixels(rect, colorData, 4, 0);
+            wb.WritePixels(rect, GetColor(), 4, 0);
         }
     }
 }
