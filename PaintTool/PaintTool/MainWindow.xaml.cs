@@ -26,8 +26,7 @@ namespace PaintTool
 
         public MainWindow()
         {
-            InitializeComponent();
-            
+            InitializeComponent();            
         }
 
 
