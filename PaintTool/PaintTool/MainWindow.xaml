@@ -168,7 +168,7 @@
                     <RowDefinition Height="30"></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <Slider Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center"></Slider>
+                <Slider x:Name="sizeChanger" Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center"></Slider>
             </Grid>
             <Grid x:Name="ColorsGrid" Grid.Column="10" Visibility="Hidden">
                 <Grid.ColumnDefinitions>
