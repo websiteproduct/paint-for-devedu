@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,10 +95,10 @@ namespace PaintTool
             {
                 for (int x = 0; x < wb.PixelWidth; x++)
                 {
-
+                    // set white bg
                     int blue = 255;
-                    int green = 0;
-                    int red = 0;
+                    int green = 255;
+                    int red = 255;
                     int alpha = 255;
 
                     int pixelOffset = CalculatePixelOffset(x, y);
@@ -159,57 +160,67 @@ namespace PaintTool
 
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (comboBox2.SelectedItem)
-            {
-                case 0:
-                    SetColor(0, 0, 0);
-                    break;
-                case 1:
-                    SetColor(169, 169, 169);
-                    break;
-                case 2:
-                    SetColor(255, 0, 0);
-                    break;
-                case 3:
-                    SetColor(0, 0, 255);
-                    break;
-                case 4:
-                    SetColor(0, 128, 0);
-                    break;
-                case 5:
-                    SetColor(165, 42, 42);
-                    break;
-                case 6:
-                    SetColor(128, 0, 128);
-                    break;
-                case 7:
-                    SetColor(211, 211, 211);
-                    break;
-                case 8:
-                    SetColor(144, 238, 144);
-                    break;
-                case 9:
-                    SetColor(173, 216, 230);
-                    break;
-                case 10:
-                    SetColor(0, 255, 255);
-                    break;
-                case 11:
-                    SetColor(255, 165, 0);
-                    break;
-                case 12:
-                    SetColor(255, 255, 0);
-                    break;
-                case 13:
-                    SetColor(210, 180, 140);
-                    break;
-                case 14:
-                    SetColor(255, 192, 203);
-                    break;
-                case 15:
-                    SetColor(255, 255, 255);
-                    break;
-            }
+            ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem)ColorInput.SelectedItem;
+            Grid currentSelectedComboBoxItemGrid = (Grid)currentSelectedComboBoxItem.Content;
+            Rectangle colorRectangle = (Rectangle)currentSelectedComboBoxItemGrid.Children[0];
+
+            Color clr = new Color();
+            clr = (Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
+
+            SetColor(clr.R, clr.G, clr.B);
+
+            //Console.WriteLine(Color.SelectedIndex);
+            //switch (Color.SelectedItem)
+            //{
+            //    case 0:
+            //        SetColor(0, 0, 0);
+            //        break;
+            //    case 1:
+            //        SetColor(169, 169, 169);
+            //        break;
+            //    case 2:
+            //        SetColor(255, 0, 0);
+            //        break;
+            //    case 3:
+            //        SetColor(0, 0, 255);
+            //        break;
+            //    case 4:
+            //        SetColor(0, 128, 0);
+            //        break;
+            //    case 5:
+            //        SetColor(165, 42, 42);
+            //        break;
+            //    case 6:
+            //        SetColor(128, 0, 128);
+            //        break;
+            //    case 7:
+            //        SetColor(211, 211, 211);
+            //        break;
+            //    case 8:
+            //        SetColor(144, 238, 144);
+            //        break;
+            //    case 9:
+            //        SetColor(173, 216, 230);
+            //        break;
+            //    case 10:
+            //        SetColor(0, 255, 255);
+            //        break;
+            //    case 11:
+            //        SetColor(255, 165, 0);
+            //        break;
+            //    case 12:
+            //        SetColor(255, 255, 0);
+            //        break;
+            //    case 13:
+            //        SetColor(210, 180, 140);
+            //        break;
+            //    case 14:
+            //        SetColor(255, 192, 203);
+            //        break;
+            //    case 15:
+            //        SetColor(255, 255, 255);
+            //        break;
+            //}
 
         }
 
