@@ -56,8 +56,6 @@
                 <ColumnDefinition Width="1" />
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="30" />                
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -96,7 +94,6 @@
                     <ImageBrush ImageSource="images\eraser.png" Stretch="None"/>
                 </ToggleButton.Background>
             </ToggleButton>
-            <ComboBox Grid.Column="8" Name="ComboBox1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Margin="0,0,10,0">
                 <ComboBoxItem x:Name="test" Content="Shape"></ComboBoxItem>
                 <ComboBoxItem>
                     <Grid>
@@ -157,9 +154,7 @@
                         <Image Source="images\polygonal-chain.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
                         <TextBlock Text="Broken Line" Grid.Column="1"></TextBlock>
                     </Grid>
-                </ComboBoxItem>                
             </ComboBox>
-            <Grid Grid.Column="9">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -170,7 +165,6 @@
                 <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Slider x:Name="sizeChanger" Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center"></Slider>
             </Grid>
-            <Grid x:Name="ColorsGrid" Grid.Column="10" Visibility="Hidden">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
