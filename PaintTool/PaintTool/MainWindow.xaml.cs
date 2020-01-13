@@ -34,5 +34,8 @@ namespace PaintTool
         {
             ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Hidden;
         }
+
+
+        
     }
 }
