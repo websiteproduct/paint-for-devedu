@@ -192,8 +192,8 @@
                 </Grid.RowDefinitions>
                 <Rectangle Width="1"  Stroke="LightGray" Grid.ColumnSpan="2" Margin="0,0,50,0" />
                 <TextBlock Text="Colors: " VerticalAlignment="Center" Margin="10,0,125,0" Grid.ColumnSpan="2" />
-                <ComboBox Name="comboBox2" SelectedIndex="0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" Width="175">
-                    <ComboBoxItem>
+                <ComboBox Name="comboBox2" SelectedIndex="0" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" Margin="0,0,-145,0" SelectionChanged="comboBox2_SelectionChanged">
+                    <ComboBoxItem x:Name="blackColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -206,7 +206,7 @@
                             <TextBlock Text="Black" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="darkGrayColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -219,7 +219,7 @@
                             <TextBlock Text="Dark Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="redColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -232,7 +232,7 @@
                             <TextBlock Text="Red" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="blueColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -245,7 +245,7 @@
                             <TextBlock Text="Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="greenColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -258,7 +258,7 @@
                             <TextBlock Text="Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="brownColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -271,7 +271,7 @@
                             <TextBlock Text="Brown" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="purpleColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -284,7 +284,7 @@
                             <TextBlock Text="Purple" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="lightGrayColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -297,7 +297,7 @@
                             <TextBlock Text="Light Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="lightGreenColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -310,7 +310,7 @@
                             <TextBlock Text="Light Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="lightBlueColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -323,7 +323,7 @@
                             <TextBlock Text="Light Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="cyanColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -336,7 +336,7 @@
                             <TextBlock Text="Cyan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="orangeColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -349,7 +349,7 @@
                             <TextBlock Text="Orange" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="yellowColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -362,7 +362,7 @@
                             <TextBlock Text="Yellow" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="tanColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -375,7 +375,7 @@
                             <TextBlock Text="Tan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="pinkColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -388,7 +388,7 @@
                             <TextBlock Text="Pink" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem>
+                    <ComboBoxItem x:Name="whiteColor">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -405,7 +405,7 @@
             </Grid>
         </Grid>
         <Grid x:Name="PaintGrid" Margin="5,35,5,8" Background="White">
-            <Image Grid.Row="0" Grid.ColumnSpan="2" x:Name="PaintField"></Image>
+            <Image Grid.Row="0" Grid.ColumnSpan="2" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseRightButtonDown="PaintField_MouseRightButtonDown" MouseMove="PaintField_MouseMove"></Image>
         </Grid>
     </Grid>
 </Window>
