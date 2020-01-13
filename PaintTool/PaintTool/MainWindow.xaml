@@ -47,7 +47,7 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Grid Background="LightGray">
+        <Grid Background="LightGray" Margin="0, 5, 0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30" />
                 <ColumnDefinition Width="30" />
@@ -60,9 +60,8 @@
                 <ColumnDefinition Width="30" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" MinWidth="145"/>
-
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
@@ -104,9 +103,8 @@
                     <ImageBrush ImageSource="images\bucket.png" Stretch="None"/>
                 </ToggleButton.Background>
             </ToggleButton>
-            <ComboBox Grid.Column="9" Name="ComboBox1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Width="61">
-
-                <ComboBoxItem x:Name="test" Content="Shape"></ComboBoxItem>
+            <ComboBox x:Name="ShapeList" Grid.Column="9" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
+                <ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>
                 <ComboBoxItem>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -168,7 +166,7 @@
                     </Grid>
                 </ComboBoxItem>
             </ComboBox>
-            <Grid Grid.Column="10" Grid.ColumnSpan="3" Margin="10,0,0,0">
+            <Grid Grid.Column="10" Margin="10,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -178,21 +176,19 @@
                     <RowDefinition Height="30"></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-
                 <Slider x:Name="SizeSlider" Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SizeSlider_ValueChanged" Foreground="White"/>
-                <TextBox x:Name="SizeInput" Height="30" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="10,0,0,0" />
-
+                <TextBox x:Name="SizeInput" Height="20" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="5,0,0,0" Width="20" MaxLength="2" />
             </Grid>
-            <Grid x:Name="ColorsGrid" Grid.Column="11"  Grid.ColumnSpan="1">
+            <Grid x:Name="ColorsGrid" Grid.Column="11" Height="30" VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
-                <Rectangle Width="1"  Stroke="LightGray" Grid.ColumnSpan="2" Margin="0,0,50,0" />
-                <TextBlock Text="Colors: " VerticalAlignment="Center" Margin="10,0,125,0" Grid.ColumnSpan="2" />
-                <ComboBox Name="comboBox2" SelectedIndex="0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" Width="175">
+                <TextBlock Text="Colors: " VerticalAlignment="Center" Margin="0,0,0,0" Grid.Column="0" />
+                <ComboBox Name="comboBox2" Grid.Column="1" Margin="5,0,0,0" Height="30" SelectedIndex="0">
                     <ComboBoxItem>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -200,9 +196,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Black" HorizontalAlignment="Left" />
+                            <Rectangle Grid.Column="0" Width="20" Height="20" Fill="Black" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Black" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -213,9 +209,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="DarkGray" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="DarkGray" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Dark Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -226,9 +222,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Red" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Red" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Red" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -239,9 +235,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Blue" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Blue" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -252,9 +248,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Green" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -265,9 +261,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Brown" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Brown" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Brown" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -278,9 +274,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Purple" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Purple" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Purple" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -291,9 +287,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGray" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGray" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Light Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -304,9 +300,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGreen" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGreen" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Light Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -317,9 +313,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightBlue" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightBlue" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Light Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -330,9 +326,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Cyan" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Cyan" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Cyan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -343,9 +339,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Orange" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Orange" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Orange" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -356,9 +352,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Yellow" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Yellow" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Yellow" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -369,9 +365,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Tan" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Tan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -382,9 +378,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Pink" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Pink" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Pink" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -395,9 +391,9 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="25" />
                             </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="White" HorizontalAlignment="Left" />
+                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="White" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
@@ -405,6 +401,10 @@
             </Grid>
         </Grid>
         <Grid x:Name="PaintGrid" Margin="5,35,5,8" Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="287*"/>
+                <ColumnDefinition Width="108*"/>
+            </Grid.ColumnDefinitions>
             <Image Grid.Row="0" Grid.ColumnSpan="2" x:Name="PaintField"></Image>
         </Grid>
     </Grid>
