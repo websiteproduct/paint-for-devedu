@@ -54,7 +54,7 @@ namespace PaintTool
 
         private void TestPaintBlue(object sender, RoutedEventArgs e)
         {
-            Paint(255, 0, 0, 255);
+            Paint(250, 250, 250, 255);
         }
 
         private void CleaningField(object sender, RoutedEventArgs e)
