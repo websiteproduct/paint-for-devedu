@@ -57,6 +57,7 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="30" />
                 <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="30" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="200" />
                 <ColumnDefinition Width="Auto"/>
@@ -85,7 +86,7 @@
                     <ImageBrush ImageSource="images\redo.png" Stretch="None"/>
                 </Button.Background>
             </Button>
-            <Rectangle Width="1" Grid.Column="4" Stroke="LightGray" />
+            <Rectangle Width="1" Grid.Column="4" Stroke="Gray" />
             <TextBlock Text="Tools:" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
             <ToggleButton x:Name="BrushToggleBtn" Grid.Column="6" Click="BrushToggleBtn_Click">
                 <ToggleButton.Background>
@@ -97,7 +98,12 @@
                     <ImageBrush ImageSource="images\eraser.png" Stretch="None"/>
                 </ToggleButton.Background>
             </ToggleButton>
-            <ComboBox Grid.Column="8" Name="ComboBox1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
+            <ToggleButton Grid.Column="8">
+                <ToggleButton.Background>
+                    <ImageBrush ImageSource="images\bucket.png" Stretch="None"/>
+                </ToggleButton.Background>
+            </ToggleButton>
+            <ComboBox Grid.Column="9" Name="ComboBox1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
                 
                 <ComboBoxItem x:Name="test" Content="Shape"></ComboBoxItem>
                 <ComboBoxItem>
@@ -161,7 +167,7 @@
                     </Grid>
                 </ComboBoxItem>
             </ComboBox>
-            <Grid Grid.Column="9" Grid.ColumnSpan="3" Margin="10,0,0,0">
+            <Grid Grid.Column="10" Grid.ColumnSpan="3" Margin="10,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -176,7 +182,7 @@
                 <TextBox x:Name="SizeInput" Height="30" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="10,0,0,0" />
 
             </Grid>
-            <Grid x:Name="ColorsGrid" Grid.Column="10" Visibility="Hidden" Grid.ColumnSpan="2">
+            <Grid x:Name="ColorsGrid" Grid.Column="11" Visibility="Hidden" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>

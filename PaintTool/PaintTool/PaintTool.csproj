@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="images\brush.png" />
+    <None Remove="images\bucket.png" />
     <None Remove="images\ellipse.png" />
     <None Remove="images\eraser.png" />
     <None Remove="images\line.png" />
@@ -27,6 +28,9 @@
 
   <ItemGroup>
     <Resource Include="images\brush.png" />
+    <Resource Include="images\bucket.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\ellipse.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -56,6 +60,10 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\undo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
