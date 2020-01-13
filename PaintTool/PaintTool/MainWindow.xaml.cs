@@ -18,14 +18,16 @@ namespace PaintTool
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
- 
+
     public partial class MainWindow : Window
     {
+        WriteableBitmap wb { get; set; }
+        byte[] colorData = { 0, 0, 0, 255 };
+
         public MainWindow()
         {
             InitializeComponent();
         }
-
         private void WBExample_MouseDown(object sender, MouseButtonEventArgs e)
         {
             WriteableBitmap wb = new WriteableBitmap((int)PaintGrid.ActualWidth, (int)PaintGrid.ActualHeight, 96, 96, PixelFormats.Bgra32, null);
@@ -48,7 +50,7 @@ namespace PaintTool
 
             PaintField.Source = wb;
         }
-        WriteableBitmap wb { get; set; }
+
 
 
         private int CalculatePixelOffset(int x, int y)
@@ -147,6 +149,115 @@ namespace PaintTool
             wb.WritePixels(rect, pixels, stride, 0);
 
             PaintField.Source = wb;
+
+        }
+
+        private void SetColor(byte red, byte green, byte blue, byte alpha = 255)
+        {
+            colorData = new byte[] { red, green, blue, alpha };
+        }
+
+        private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (comboBox2.SelectedItem)
+            {
+                case 0:
+                    SetColor(0, 0, 0);
+                    break;
+                case 1:
+                    SetColor(169, 169, 169);
+                    break;
+                case 2:
+                    SetColor(255, 0, 0);
+                    break;
+                case 3:
+                    SetColor(0, 0, 255);
+                    break;
+                case 4:
+                    SetColor(0, 128, 0);
+                    break;
+                case 5:
+                    SetColor(165, 42, 42);
+                    break;
+                case 6:
+                    SetColor(128, 0, 128);
+                    break;
+                case 7:
+                    SetColor(211, 211, 211);
+                    break;
+                case 8:
+                    SetColor(144, 238, 144);
+                    break;
+                case 9:
+                    SetColor(173, 216, 230);
+                    break;
+                case 10:
+                    SetColor(0, 255, 255);
+                    break;
+                case 11:
+                    SetColor(255, 165, 0);
+                    break;
+                case 12:
+                    SetColor(255, 255, 0);
+                    break;
+                case 13:
+                    SetColor(210, 180, 140);
+                    break;
+                case 14:
+                    SetColor(255, 192, 203);
+                    break;
+                case 15:
+                    SetColor(255, 255, 255);
+                    break;
+            }
+
+        }
+
+        private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+            DrawPixel(e);
+        }
+
+        private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+            ErasePixel(e);
+        }
+
+        private void PaintField_MouseMove(object sender, MouseEventArgs e)
+        {            
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DrawPixel(e);
+            }
+            else if (e.RightButton == MouseButtonState.Pressed)
+            {
+                ErasePixel(e);
+            }
+        }
+        private void ErasePixel(MouseEventArgs e)
+        {            
+            byte[] colorData = { 255, 255, 255, 255 }; // White color(default)!
+
+            Int32Rect rect = new Int32Rect(
+                    (int)(e.GetPosition(PaintField).X),
+                    (int)(e.GetPosition(PaintField).Y),
+                    1,
+                    1);
+
+            wb.WritePixels(rect, colorData, 4, 0);
+        }
+
+        private void DrawPixel(MouseEventArgs e)
+        {            
+            Int32Rect rect = new Int32Rect(
+                    (int)(e.GetPosition(PaintField).X),
+                    (int)(e.GetPosition(PaintField).Y),
+                    1,
+                    1);
+
+            wb.WritePixels(rect, colorData, 4, 0);
         }
     }
 }
