@@ -47,7 +47,7 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Grid>
+        <Grid Background="LightGray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30" />
                 <ColumnDefinition Width="30" />
@@ -56,8 +56,11 @@
                 <ColumnDefinition Width="1" />
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="30" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="Auto"/>
+                
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
@@ -94,6 +97,8 @@
                     <ImageBrush ImageSource="images\eraser.png" Stretch="None"/>
                 </ToggleButton.Background>
             </ToggleButton>
+            <ComboBox Grid.Column="8" Name="ComboBox1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
+                
                 <ComboBoxItem x:Name="test" Content="Shape"></ComboBoxItem>
                 <ComboBoxItem>
                     <Grid>
@@ -154,17 +159,24 @@
                         <Image Source="images\polygonal-chain.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
                         <TextBlock Text="Broken Line" Grid.Column="1"></TextBlock>
                     </Grid>
+                </ComboBoxItem>
             </ComboBox>
+            <Grid Grid.Column="9" Grid.ColumnSpan="3" Margin="10,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="30"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <Slider x:Name="sizeChanger" Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center"></Slider>
+                <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center"/>                
+
+                <Slider x:Name="SizeSlider" Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SizeSlider_ValueChanged" Foreground="White"/>
+                <TextBox x:Name="SizeInput" Height="30" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="10,0,0,0" />
+
             </Grid>
+            <Grid x:Name="ColorsGrid" Grid.Column="10" Visibility="Hidden" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -385,5 +397,8 @@
                 </ComboBox>
             </Grid>
         </Grid>
-    </Grid>
+        <Grid x:Name="PaintGrid" Margin="5,35,5,8" Background="White">
+            
+        </Grid>
+    </Grid>    
 </Window>
