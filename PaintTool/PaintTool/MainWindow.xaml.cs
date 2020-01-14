@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -22,12 +22,15 @@ namespace PaintTool
 
     public partial class MainWindow : Window
     {
+        // Инициализируем WriteableBitmap
         WriteableBitmap wb;
-        byte[] colorData = { 0, 0, 0, 255 };
+        // Инициализируем переменнух для хранения цвета в формате Bgra32
+        byte[] colorData = { 0, 0, 0, 255 }; 
 
         public MainWindow()
         {
-            InitializeComponent();
+            // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
+            InitializeComponent(); 
         }
 
         private int CalculatePixelOffset(int x, int y)
@@ -35,37 +38,50 @@ namespace PaintTool
             return ((x + (wb.PixelWidth * y)) * (wb.Format.BitsPerPixel / 8));
         }
 
+
+        // Делает видимым панель с выбором цвета, как понял это прошлый метод
+        // Ниже новая версия, эту позже удалим
         private void Brush_Btn_Click(object sender, RoutedEventArgs e)
         {
-            ColorsGrid.Visibility = Visibility.Visible;            
+            ColorsGrid.Visibility = Visibility.Visible;
         }
 
+        // При нажатии на кнопку BrushToggleBtn появление/скритие панели с выбором цвета
         private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
         {
             ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Hidden;
         }
 
+
+        // Появление значения позиции слайдера в окошке справа от него 
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SizeInput.Text = SizeSlider.Value.ToString();
         }
 
+        // Очистка поля, точнее все заливается белым цветом
         private void CleaningField(object sender, RoutedEventArgs e)
         {
             Paint(255, 255, 255, 255);
         }
 
+        // Функция, которая принимает на вход значение цвета в формате Bgra32
+        // и заливает поле данным цветом
         public void Paint(int blue, int green, int red, int alpha)
         {
+            // Создаем WriteableBitmap поле
             wb = new WriteableBitmap(
            (int)PaintField.Width, (int)PaintField.Height, 96, 96, PixelFormats.Bgra32, null);
 
+
+            // Описание координат закрашиваемого прямоугольника
             Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
 
-            //Width * height *  bytes per pixel aka(32/8)
+            //Создаем массив пикселей, используемый для обновления изображения
             byte[] pixels =
             new byte[(int)PaintField.Width * (int)PaintField.Height * (wb.Format.BitsPerPixel / 8)];
 
+            // Закрашиваем наш прямоугольник нужным цветом
             for (int y = 0; y < wb.PixelHeight; y++)
             {
                 for (int x = 0; x < wb.PixelWidth; x++)
