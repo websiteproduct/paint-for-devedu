@@ -106,63 +106,6 @@ namespace PaintTool
             clr = (Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
 
             SetColor(clr.B, clr.G, clr.R);
-<<<<<<< HEAD
-
-            //Console.WriteLine(Color.SelectedIndex);
-            //switch (Color.SelectedItem)
-            //{
-            //    case 0:
-            //        SetColor(0, 0, 0);
-            //        break;
-            //    case 1:
-            //        SetColor(169, 169, 169);
-            //        break;
-            //    case 2:
-            //        SetColor(255, 0, 0);
-            //        break;
-            //    case 3:
-            //        SetColor(0, 0, 255);
-            //        break;
-            //    case 4:
-            //        SetColor(0, 128, 0);
-            //        break;
-            //    case 5:
-            //        SetColor(165, 42, 42);
-            //        break;
-            //    case 6:
-            //        SetColor(128, 0, 128);
-            //        break;
-            //    case 7:
-            //        SetColor(211, 211, 211);
-            //        break;
-            //    case 8:
-            //        SetColor(144, 238, 144);
-            //        break;
-            //    case 9:
-            //        SetColor(173, 216, 230);
-            //        break;
-            //    case 10:
-            //        SetColor(0, 255, 255);
-            //        break;
-            //    case 11:
-            //        SetColor(255, 165, 0);
-            //        break;
-            //    case 12:
-            //        SetColor(255, 255, 0);
-            //        break;
-            //    case 13:
-            //        SetColor(210, 180, 140);
-            //        break;
-            //    case 14:
-            //        SetColor(255, 192, 203);
-            //        break;
-            //    case 15:
-            //        SetColor(255, 255, 255);
-            //        break;
-            //}
-
-=======
->>>>>>> 7d415f15e1f28bfe54a3d776c616d520edd1fda7
         }
 
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -218,10 +161,6 @@ namespace PaintTool
             else wb.WritePixels(rect, GetColor(), 4, 0);
         }
 
-<<<<<<< HEAD
-            wb.WritePixels(rect, GetColor(), 4, 0);
-            
-=======
         private void NewFile(object sender, RoutedEventArgs e)
         {
             Window dialog = new NewImageFileWindow();
