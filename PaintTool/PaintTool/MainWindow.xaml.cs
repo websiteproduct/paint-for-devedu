@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -95,23 +95,35 @@ namespace PaintTool
                 }
             }
 
+            // Шаг области обновления пикселей
             int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+
+            // Обновляет пиксели растрового изображения
+            // Принимает на вход координаты, массив пикселей, шаг и смещение входного буфера 
             wb.WritePixels(rect, pixels, stride, 0);
 
+            // Отрисовываем созданный WriteableBitmap в поле PaintField
             PaintField.Source = wb;
 
         }
 
+        // Метод для выбора цвета в Bgra32
         private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
         {
             colorData = new byte[] { blue, green, red, alpha };
         }
+
+        // Метод для возвращения значения цвета в Bgra32
         private byte[] GetColor()
         {
             //return new byte[] { colorData[3], colorData[0], colorData[1], colorData[2] };
             return colorData;
         }
 
+
+        // Метод для выбора цвета кисти в комбобоксе
+        // Смотрим текстовое значение цвета в поле Fill у выбранного цвета в комбобоксе 
+        // и переделываем его в RGB, а затем передаем в метод SetColor для изменения цвета
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem) ColorInput.SelectedItem;
@@ -124,18 +136,19 @@ namespace PaintTool
             SetColor(clr.B, clr.G, clr.R);
         }
 
+        // При нажатии на левую кнопку мышки - рисуем пиксели
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
             DrawPixel(e);
         }
-
+        //При нажатии на правую кнопку мышки - стираем пиксели
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-
             ErasePixel(e);
         }
 
+
+        // Метод для рисования пикселей
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -147,9 +160,11 @@ namespace PaintTool
                 ErasePixel(e);
             }
         }
-        private void ErasePixel(MouseEventArgs e)
+
+        // Удаление пикселей (закрашивание в белый цвет)
+        private void ErasePixel(MouseEventArgs e) 
         {
-            byte[] colorData = { 255, 255, 255, 255 }; // White color(default)!
+            byte[] colorData = { 255, 255, 255, 255 }; 
 
             Int32Rect rect = new Int32Rect(
                     (int)(e.GetPosition(PaintGrid).X),
@@ -161,6 +176,8 @@ namespace PaintTool
             
         }
 
+
+        // Рисование пикселей с выбранным цветом
         private void DrawPixel(MouseEventArgs e)
         {
             //Trace.WriteLine(e.GetPosition(PaintField));
@@ -177,6 +194,8 @@ namespace PaintTool
             else wb.WritePixels(rect, GetColor(), 4, 0);
         }
 
+
+        // Создание файла 
         private void NewFile(object sender, RoutedEventArgs e)
         {
             Window dialog = new NewImageFileWindow();
