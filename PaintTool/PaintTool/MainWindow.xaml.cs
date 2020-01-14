@@ -94,12 +94,13 @@ namespace PaintTool
 
         }
 
-        private void SetColor(byte red, byte green, byte blue, byte alpha = 255)
+        private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
         {
-            colorData = new byte[] { red, green, blue, alpha };
+            colorData = new byte[] { blue, green, red, alpha };
         }
         private byte[] GetColor()
         {
+            //return new byte[] { colorData[3], colorData[0], colorData[1], colorData[2] };
             return colorData;
         }
 
@@ -112,7 +113,9 @@ namespace PaintTool
             Color clr = new Color();
             clr = (Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
 
-            SetColor(clr.R, clr.G, clr.B);
+            SetColor(clr.B, clr.G, clr.R);
+
+            //Trace.WriteLine(clr.R + clr.G + clr.B);
 
             //Console.WriteLine(Color.SelectedIndex);
             //switch (Color.SelectedItem)

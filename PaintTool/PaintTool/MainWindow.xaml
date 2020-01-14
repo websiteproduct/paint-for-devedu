@@ -196,7 +196,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Grid.Column="0" Width="20" Height="20" Fill="Black" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Black" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -209,7 +209,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="DarkGray" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Dark Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -222,7 +222,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Red" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Red" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -235,7 +235,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Blue" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -248,7 +248,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -261,7 +261,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Brown" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Brown" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -274,7 +274,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Purple" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Purple" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -287,7 +287,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGray" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Light Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -300,7 +300,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGreen" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Light Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -313,7 +313,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightBlue" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Light Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -326,7 +326,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Cyan" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Cyan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -339,7 +339,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Orange" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Orange" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -352,7 +352,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Yellow" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Yellow" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -365,7 +365,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Tan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -378,7 +378,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Pink" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="Pink" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
@@ -391,7 +391,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
                             <Rectangle Width="20" Grid.Column="0" Height="20" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
                             <TextBlock Text="White" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
