@@ -175,9 +175,10 @@ namespace PaintTool
             PaintGrid.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         }
 
-        private void Filling_Checked(object sender, RoutedEventArgs e)
+        private void BrushToggleBtn_Checked(object sender, RoutedEventArgs e)
         {
-            Paint(255, 255, 255, 255);
+            BrushToggleBtn.BorderBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            BrushToggleBtn.BorderThickness = new Thickness(1, 1, 1, 1);
         }
     }
 }

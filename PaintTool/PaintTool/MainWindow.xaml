@@ -38,7 +38,8 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Cursor" Value="Hand" />
-                                <Setter Property="BorderBrush" Value="Aqua" />
+                                <Setter Property="BorderThickness" Value="1,1,1,1" />
+                                <Setter Property="BorderBrush" Value="Black" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -46,362 +47,364 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid>
-        <Grid Background="LightGray" Margin="0, 5, 0, 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="1" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" MinWidth="145"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
-            </Grid.RowDefinitions>
-            <Button x:Name="NewFileBtn" Grid.Column="0" BorderThickness="0,0,0,0" Click="NewFile">
-                <Button.Background>
-                    <ImageBrush ImageSource="images\new.png" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button Grid.Column="1" BorderThickness="0,0,0,0">
-                <Button.Background>
-                    <ImageBrush ImageSource="images\save.png" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="Undo" Grid.Column="2" BorderThickness="0,0,0,0">
-                <Button.Background>
-                    <ImageBrush ImageSource="images\undo.png" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0">
-                <Button.Background>
-                    <ImageBrush ImageSource="images\redo.png" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Rectangle Grid.Column="4" Stroke="Gray" />
-            <TextBlock Text="Tools:" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" Height="16" Width="30"></TextBlock>
-            <ToggleButton x:Name="BrushToggleBtn" Grid.Column="6" Click="BrushToggleBtn_Click">
-                <ToggleButton.Background>
-                    <ImageBrush ImageSource="images\brush.png" Stretch="None"/>
-                </ToggleButton.Background>
-            </ToggleButton>
-            <ToggleButton x:Name ="Ereser" Grid.Column="7" PreviewMouseDoubleClick ="CleaningField">
-                <ToggleButton.Background>
-                    <ImageBrush ImageSource="images\eraser.png" Stretch="None"/>
-                </ToggleButton.Background>
-            </ToggleButton>
-            <ToggleButton x:Name ="Filling" Grid.Column="8" Checked="Filling_Checked">
-                <ToggleButton.Background>
-                    <ImageBrush ImageSource="images\bucket.png" Stretch="None"/>
-                </ToggleButton.Background>
-            </ToggleButton>
-            <ComboBox x:Name="ShapeList" Grid.Column="9" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
-                <ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>
-                <ComboBoxItem>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="images\line.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
-                        <TextBlock Text="Line" Grid.Column="1"></TextBlock>
-                    </Grid>
-                </ComboBoxItem>
-                <ComboBoxItem>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="images\rectangle.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
-                        <TextBlock Text="Rectangle" Grid.Column="1"></TextBlock>
-                    </Grid>
-                </ComboBoxItem>
-                <ComboBoxItem>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="images\ellipse.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
-                        <TextBlock Text="Ellipse" Grid.Column="1"></TextBlock>
-                    </Grid>
-                </ComboBoxItem>
-                <ComboBoxItem>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="images\triangle.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
-                        <TextBlock Text="Triangle" Grid.Column="1"></TextBlock>
-                    </Grid>
-                </ComboBoxItem>
-                <ComboBoxItem>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="images\polygon.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
-                        <TextBlock Text="Polygonal Tool" Grid.Column="1"></TextBlock>
-                    </Grid>
-                </ComboBoxItem>
-                <ComboBoxItem>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="images\polygonal-chain.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
-                        <TextBlock Text="Broken Line" Grid.Column="1"></TextBlock>
-                    </Grid>
-                </ComboBoxItem>
-            </ComboBox>
-            <Grid Grid.Column="10" Margin="10,0,0,0">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid Background="LightGray" Margin="0, 5, 0, 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="30"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"></RowDefinition>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <Slider x:Name="SizeSlider" Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SizeSlider_ValueChanged" Foreground="White"/>
-                <TextBox x:Name="SizeInput" Height="20" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="5,0,0,0" Width="20" MaxLength="2" />
-            </Grid>
-            <Grid x:Name="ColorsGrid" Grid.Column="11" Height="30" VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="1" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="30" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" MinWidth="145"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
-                <TextBlock Text="Colors: " VerticalAlignment="Center" Margin="0,0,0,0" Grid.Column="0" />
-                <ComboBox x:Name="ColorInput" Grid.Column="1" Margin="5,0,0,0" Height="30" SelectedIndex="0" SelectionChanged="comboBox2_SelectionChanged">
+                <Button x:Name="NewFileBtn" Grid.Column="0" BorderThickness="0,0,0,0" Click="NewFile">
+                    <Button.Background>
+                        <ImageBrush ImageSource="images\new.png" Stretch="None"/>
+                    </Button.Background>
+                </Button>
+                <Button Grid.Column="1" BorderThickness="0,0,0,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="images\save.png" Stretch="None"/>
+                    </Button.Background>
+                </Button>
+                <Button x:Name="Undo" Grid.Column="2" BorderThickness="0,0,0,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="images\undo.png" Stretch="None"/>
+                    </Button.Background>
+                </Button>
+                <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="images\redo.png" Stretch="None"/>
+                    </Button.Background>
+                </Button>
+                <Rectangle Grid.Column="4" Stroke="Gray" />
+                <TextBlock Text="Tools:" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" Height="16" Width="30"></TextBlock>
+                <ToggleButton x:Name="BrushToggleBtn" Grid.Column="6" Click="BrushToggleBtn_Click" Checked="BrushToggleBtn_Checked" BorderBrush="Transparent">
+                    <ToggleButton.Background>
+                        <ImageBrush ImageSource="images\brush.png" Stretch="None"/>
+                    </ToggleButton.Background>
+                </ToggleButton>
+                <ToggleButton x:Name ="Ereser" Grid.Column="7" PreviewMouseDoubleClick ="CleaningField">
+                    <ToggleButton.Background>
+                        <ImageBrush ImageSource="images\eraser.png" Stretch="None"/>
+                    </ToggleButton.Background>
+                </ToggleButton>
+                <ToggleButton x:Name ="Filling" Grid.Column="8">
+                    <ToggleButton.Background>
+                        <ImageBrush ImageSource="images\bucket.png" Stretch="None"/>
+                    </ToggleButton.Background>
+                </ToggleButton>
+                <ComboBox x:Name="ShapeList" Grid.Column="9" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
+                    <ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>
                     <ComboBoxItem>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Grid.Column="0" Width="20" Height="20" Fill="Black" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Black" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            <Image Source="images\line.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
+                            <TextBlock Text="Line" Grid.Column="1"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem x:Name="darkGrayColor">
+                    <ComboBoxItem>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="DarkGray" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Dark Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            <Image Source="images\rectangle.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
+                            <TextBlock Text="Rectangle" Grid.Column="1"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem x:Name="redColor">
+                    <ComboBoxItem>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Red" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Red" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            <Image Source="images\ellipse.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
+                            <TextBlock Text="Ellipse" Grid.Column="1"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem x:Name="blueColor">
+                    <ComboBoxItem>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Blue" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            <Image Source="images\triangle.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
+                            <TextBlock Text="Triangle" Grid.Column="1"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem x:Name="greenColor">
+                    <ComboBoxItem>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            <Image Source="images\polygon.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
+                            <TextBlock Text="Polygonal Tool" Grid.Column="1"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
-                    <ComboBoxItem x:Name="brownColor">
+                    <ComboBoxItem>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Brown" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Brown" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="purpleColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Purple" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Purple" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="lightGrayColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGray" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Light Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="lightGreenColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGreen" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Light Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="lightBlueColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightBlue" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Light Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="cyanColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Cyan" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Cyan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="orangeColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Orange" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Orange" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="yellowColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Yellow" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Yellow" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="tanColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Tan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="pinkColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Pink" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="Pink" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                        </Grid>
-                    </ComboBoxItem>
-                    <ComboBoxItem x:Name="whiteColor">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Width="20" Grid.Column="0" Height="20" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="White" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            <Image Source="images\polygonal-chain.png" Grid.Column="0" HorizontalAlignment="Left" Height="16"></Image>
+                            <TextBlock Text="Broken Line" Grid.Column="1"></TextBlock>
                         </Grid>
                     </ComboBoxItem>
                 </ComboBox>
+                <Grid Grid.Column="10" Margin="10,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <Slider x:Name="SizeSlider" Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SizeSlider_ValueChanged" Foreground="White"/>
+                    <TextBox x:Name="SizeInput" Height="20" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="5,0,0,0" Width="20" MaxLength="2" />
+                </Grid>
+                <Grid x:Name="ColorsGrid" Grid.Column="11" Height="30" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Colors: " VerticalAlignment="Center" Margin="0,0,0,0" Grid.Column="0" />
+                    <ComboBox x:Name="ColorInput" Grid.Column="1" Margin="5,0,0,0" Height="30" SelectedIndex="0" SelectionChanged="comboBox2_SelectionChanged">
+                        <ComboBoxItem>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Grid.Column="0" Width="20" Height="20" Fill="Black" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Black" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="darkGrayColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="DarkGray" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Dark Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="redColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Red" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Red" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="blueColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Blue" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="greenColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="brownColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Brown" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Brown" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="purpleColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Purple" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Purple" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="lightGrayColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGray" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Light Gray" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="lightGreenColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightGreen" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Light Green" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="lightBlueColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="LightBlue" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Light Blue" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="cyanColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Cyan" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Cyan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="orangeColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Orange" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Orange" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="yellowColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Yellow" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Yellow" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="tanColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Tan" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="pinkColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="Pink" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Pink" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                        <ComboBoxItem x:Name="whiteColor">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Width="20" Grid.Column="0" Height="20" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="White" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
+                        </ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </Grid>
+            <Grid x:Name="PaintGrid" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Height="480" Margin="5,35,5,5">
+                <Image Grid.Row="0" Grid.Column="0" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseRightButtonDown="PaintField_MouseRightButtonDown" MouseMove="PaintField_MouseMove"></Image>
             </Grid>
         </Grid>
-        <Grid x:Name="PaintGrid" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Height="480" Margin="5,35,5,5">
-            <Image Grid.Row="0" Grid.Column="0" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseRightButtonDown="PaintField_MouseRightButtonDown" MouseMove="PaintField_MouseMove"></Image>
-        </Grid>
-    </Grid>
+    </ScrollViewer>
 </Window>
