@@ -63,7 +63,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="200" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" MinWidth="145"/>
+                    <ColumnDefinition Width="30" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
@@ -83,7 +83,7 @@
                         <ImageBrush ImageSource="images\undo.png" Stretch="None"/>
                     </Button.Background>
                 </Button>
-                <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0">
+                <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0" Click="Redo_Click">
                     <Button.Background>
                         <ImageBrush ImageSource="images\redo.png" Stretch="None"/>
                     </Button.Background>
@@ -400,10 +400,16 @@
                             </Grid>
                         </ComboBoxItem>
                     </ComboBox>
+                    
                 </Grid>
+                <Button x:Name="ClearImageBtn" Grid.Column="12" BorderThickness="0,0,0,0" Margin="5,0,0,0" Click="ClearImageBtn_Click">
+                    <Button.Background>
+                        <ImageBrush ImageSource="images\close.png" Stretch="None" />
+                    </Button.Background>
+                </Button>
             </Grid>
             <Grid x:Name="PaintGrid" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Height="480" Margin="5,35,5,5">
-                <Image Grid.Row="0" Grid.Column="0" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseRightButtonDown="PaintField_MouseRightButtonDown" MouseMove="PaintField_MouseMove"></Image>
+                <Image Grid.Row="0" Grid.Column="0" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseLeftButtonUp="Test" MouseRightButtonDown="PaintField_MouseRightButtonDown" MouseMove="PaintField_MouseMove"></Image>
             </Grid>
         </Grid>
     </ScrollViewer>
