@@ -38,7 +38,7 @@ namespace PaintTool
 
         private void Brush_Btn_Click(object sender, RoutedEventArgs e)
         {
-            ColorsGrid.Visibility = Visibility.Visible;
+            ColorsGrid.Visibility = Visibility.Visible;            
         }
 
         private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
@@ -93,9 +93,9 @@ namespace PaintTool
 
         }
 
-        private void SetColor(byte red, byte green, byte blue, byte alpha = 255)
+        private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
         {
-            colorData = new byte[] { red, green, blue, alpha };
+            colorData = new byte[] { blue, green, red, alpha };
         }
         private byte[] GetColor()
         {
@@ -104,14 +104,14 @@ namespace PaintTool
 
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem)ColorInput.SelectedItem;
+            ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem) ColorInput.SelectedItem;
             Grid currentSelectedComboBoxItemGrid = (Grid)currentSelectedComboBoxItem.Content;
             Rectangle colorRectangle = (Rectangle)currentSelectedComboBoxItemGrid.Children[0];
 
             Color clr = new Color();
             clr = (Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
 
-            SetColor(clr.R, clr.G, clr.B);
+            SetColor(clr.B, clr.G, clr.R);
 
             //Console.WriteLine(Color.SelectedIndex);
             //switch (Color.SelectedItem)
@@ -202,6 +202,7 @@ namespace PaintTool
                     1);
 
             wb.WritePixels(rect, colorData, 4, 0);
+            
         }
 
         private void DrawPixel(MouseEventArgs e)
@@ -213,6 +214,7 @@ namespace PaintTool
                     1);
 
             wb.WritePixels(rect, GetColor(), 4, 0);
+            
         }
     }
 }
