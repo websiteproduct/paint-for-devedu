@@ -66,7 +66,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            <Button Grid.Column="0" BorderThickness="0,0,0,0">
+            <Button x:Name="NewFileBtn" Grid.Column="0" BorderThickness="0,0,0,0" Click="NewFile">
                 <Button.Background>
                     <ImageBrush ImageSource="images\new.png" Stretch="None"/>
                 </Button.Background>
@@ -98,7 +98,7 @@
                     <ImageBrush ImageSource="images\eraser.png" Stretch="None"/>
                 </ToggleButton.Background>
             </ToggleButton>
-            <ToggleButton x:Name ="Filling" Grid.Column="8" Checked="TestPaintBlue">
+            <ToggleButton x:Name ="Filling" Grid.Column="8" Checked="Filling_Checked">
                 <ToggleButton.Background>
                     <ImageBrush ImageSource="images\bucket.png" Stretch="None"/>
                 </ToggleButton.Background>
@@ -400,8 +400,13 @@
                 </ComboBox>
             </Grid>
         </Grid>
+<<<<<<< HEAD
         <Grid x:Name="PaintGrid" Margin="5,35,5,8" Background="White">
             <Image Stretch="None" Grid.Row="0" Grid.ColumnSpan="2" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseRightButtonDown="PaintField_MouseRightButtonDown" MouseMove="PaintField_MouseMove"></Image>
+=======
+        <Grid x:Name="PaintGrid" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Height="480" Margin="5,35,5,5">
+            <Image Grid.Row="0" Grid.Column="0" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseRightButtonDown="PaintField_MouseRightButtonDown" MouseMove="PaintField_MouseMove"></Image>
+>>>>>>> 7d415f15e1f28bfe54a3d776c616d520edd1fda7
         </Grid>
     </Grid>
 </Window>

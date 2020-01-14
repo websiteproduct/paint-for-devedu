@@ -22,17 +22,16 @@ namespace PaintTool
 
     public partial class MainWindow : Window
     {
-        WriteableBitmap wb { get; set; }
+        WriteableBitmap wb;
         byte[] colorData = { 0, 0, 0, 255 };
 
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
 
-
         private int CalculatePixelOffset(int x, int y)
-        { 
+        {
             return ((x + (wb.PixelWidth * y)) * (wb.Format.BitsPerPixel / 8));
         }
 
@@ -51,27 +50,21 @@ namespace PaintTool
             SizeInput.Text = SizeSlider.Value.ToString();
         }
 
-        private void TestPaintBlue(object sender, RoutedEventArgs e)
-        {
-            Paint(250, 250, 250, 255);
-        }
-
         private void CleaningField(object sender, RoutedEventArgs e)
         {
             Paint(255, 255, 255, 255);
         }
 
-        private void Paint(int blue, int green, int red, int alpha)
+        public void Paint(int blue, int green, int red, int alpha)
         {
             wb = new WriteableBitmap(
-           (int)PaintGrid.ActualWidth, (int)PaintGrid.ActualHeight, 96, 96, PixelFormats.Bgra32, null);
+           (int)PaintField.Width, (int)PaintField.Height, 96, 96, PixelFormats.Bgra32, null);
 
-
-            Int32Rect rect = new Int32Rect(0, 0, (int)PaintGrid.ActualWidth, (int)PaintGrid.ActualHeight);
+            Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
 
             //Width * height *  bytes per pixel aka(32/8)
             byte[] pixels =
-            new byte[(int)PaintGrid.ActualWidth * (int)PaintGrid.ActualHeight * (wb.Format.BitsPerPixel / 8)];
+            new byte[(int)PaintField.Width * (int)PaintField.Height * (wb.Format.BitsPerPixel / 8)];
 
             for (int y = 0; y < wb.PixelHeight; y++)
             {
@@ -99,6 +92,7 @@ namespace PaintTool
         }
         private byte[] GetColor()
         {
+            //return new byte[] { colorData[3], colorData[0], colorData[1], colorData[2] };
             return colorData;
         }
 
@@ -112,6 +106,7 @@ namespace PaintTool
             clr = (Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
 
             SetColor(clr.B, clr.G, clr.R);
+<<<<<<< HEAD
 
             //Console.WriteLine(Color.SelectedIndex);
             //switch (Color.SelectedItem)
@@ -166,6 +161,8 @@ namespace PaintTool
             //        break;
             //}
 
+=======
+>>>>>>> 7d415f15e1f28bfe54a3d776c616d520edd1fda7
         }
 
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -196,8 +193,8 @@ namespace PaintTool
             byte[] colorData = { 255, 255, 255, 255 }; // White color(default)!
 
             Int32Rect rect = new Int32Rect(
-                    (int)(e.GetPosition(PaintField).X),
-                    (int)(e.GetPosition(PaintField).Y),
+                    (int)(e.GetPosition(PaintGrid).X),
+                    (int)(e.GetPosition(PaintGrid).Y),
                     1,
                     1);
 
@@ -207,14 +204,43 @@ namespace PaintTool
 
         private void DrawPixel(MouseEventArgs e)
         {
+            //Trace.WriteLine(e.GetPosition(PaintField));
             Int32Rect rect = new Int32Rect(
-                    (int)(e.GetPosition(PaintField).X),
-                    (int)(e.GetPosition(PaintField).Y),
+                    (int)(e.GetPosition(PaintGrid).X),
+                    (int)(e.GetPosition(PaintGrid).Y),
                     1,
                     1);
+            //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+            if (e.GetPosition(PaintField).X >= Convert.ToInt32(PaintField.Width) && e.GetPosition(PaintField).Y >= Convert.ToInt32(PaintField.Height))
+            {
+                return;
+            }
+            else wb.WritePixels(rect, GetColor(), 4, 0);
+        }
 
+<<<<<<< HEAD
             wb.WritePixels(rect, GetColor(), 4, 0);
             
+=======
+        private void NewFile(object sender, RoutedEventArgs e)
+        {
+            Window dialog = new NewImageFileWindow();
+            dialog.ShowDialog();
+        }
+
+        public void SetGridSize(int width, int height)
+        {
+            PaintGrid.Width = width;
+            PaintGrid.Height = height;
+            PaintField.Width = width;
+            PaintField.Height = height;
+            PaintGrid.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+        }
+
+        private void Filling_Checked(object sender, RoutedEventArgs e)
+        {
+            Paint(255, 255, 255, 255);
+>>>>>>> 7d415f15e1f28bfe54a3d776c616d520edd1fda7
         }
     }
 }
