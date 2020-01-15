@@ -85,7 +85,7 @@ namespace PaintTool
             byte[] pixels = new byte[stride * (int)PaintField.Height];
 
             // Закрашиваем наш прямоугольник нужным цветом
-            for (int y = 0; y < wb.PixelHeight; y++)
+            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
             {
                 pixels[pixel] = (byte)blue;        // blue (depends normally on BitmapPalette)
                 pixels[pixel + 1] = (byte)green;  // green (depends normally on BitmapPalette)
@@ -99,21 +99,21 @@ namespace PaintTool
             // Отрисовываем созданный WriteableBitmap в поле PaintField
             PaintField.Source = wb;
         }
-        private void DrawLine()
-        {
-            int[] p1 = new int[] { 10, 10 };
-            int[] p2 = new int[] { 110, 10 };
+        //private void DrawLine()
+        //{
+        //    int[] p1 = new int[] { 10, 10 };
+        //    int[] p2 = new int[] { 110, 10 };
 
-            // y = kx + b
+        //    // y = kx + b
 
-            //int k = (p2[1]- p1[1]) / (p2[0] - p1[0]);
-            //int b = p1[1] - (k * p1[0]);
+        //    //int k = (p2[1]- p1[1]) / (p2[0] - p1[0]);
+        //    //int b = p1[1] - (k * p1[0]);
 
-            for (int i = p1[0]; i < p2[0]; i++)
-            {
-                DrawPixelTest(i);
-            }
-        }
+        //    for (int i = p1[0]; i < p2[0]; i++)
+        //    {
+        //        DrawPixelTest(i);
+        //    }
+        //}
 
         // Метод для выбора цвета в Bgra32
         private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
@@ -146,8 +146,8 @@ namespace PaintTool
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DrawPixel(e);
-            previousPoint = new int[] { (int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y };
-            Trace.WriteLine(previousPoint[0] + ", " + previousPoint[1]);
+            //previousPoint = new int[] { (int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y };
+            //Trace.WriteLine(previousPoint[0] + ", " + previousPoint[1]);
         }
         //При нажатии на правую кнопку мышки - стираем пиксели
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -218,7 +218,7 @@ namespace PaintTool
                 return;
             }
             else wb.WritePixels(rect, GetColor(), 4, 0);
-            previousPoint = new int[] { (int)e.GetPosition(PaintGrid).X, (int)e.GetPosition(PaintGrid).Y };
+            //previousPoint = new int[] { (int)e.GetPosition(PaintGrid).X, (int)e.GetPosition(PaintGrid).Y };
             //Trace.WriteLine(previousPoint[0] + ", " + previousPoint[1]);
             //byte[] b = File.ReadAllBytes(PaintField.Source.ToString());
         }
@@ -251,9 +251,9 @@ namespace PaintTool
             if (wb != null) Paint(255, 255, 255, 255);
         }
 
-        private void Redo_Click(object sender, RoutedEventArgs e)
-        {
-            DrawLine();
-        }
+        //private void Redo_Click(object sender, RoutedEventArgs e)
+        //{
+        //    DrawLine();
+        //}
     }
 }
