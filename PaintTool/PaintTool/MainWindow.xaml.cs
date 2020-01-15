@@ -23,15 +23,15 @@ namespace PaintTool
 
     public partial class MainWindow : Window
     {
-        WriteableBitmap wb;
-        int[] previousPoint = new int[2];
-        int[] currentPoint = new int[2];
-
-        byte[] colorData = { 0, 0, 0, 255 };
+        // Инициализируем WriteableBitmap
+        WriteableBitmap wb;
+        // Инициализируем переменнух для хранения цвета в формате Bgra32
+        byte[] colorData = { 0, 0, 0, 255 }; 
 
         public MainWindow()
         {
-            InitializeComponent();
+            // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
+            InitializeComponent(); 
         }
 
         private int CalculatePixelOffset(int x, int y)
@@ -39,30 +39,43 @@ namespace PaintTool
             return ((x + (wb.PixelWidth * y)) * (wb.Format.BitsPerPixel / 8));
         }
 
+
+        // Делает видимым панель с выбором цвета, как понял это прошлый метод
+        // Ниже новая версия, эту позже удалим
         private void Brush_Btn_Click(object sender, RoutedEventArgs e)
         {
-            ColorsGrid.Visibility = Visibility.Visible;
+            ColorsGrid.Visibility = Visibility.Visible;
         }
 
+        // При нажатии на кнопку BrushToggleBtn появление/скритие панели с выбором цвета
         private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
         {
             ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Hidden;
         }
 
+
+        // Появление значения позиции слайдера в окошке справа от него 
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SizeInput.Text = SizeSlider.Value.ToString();
         }
 
+        // Очистка поля, точнее все заливается белым цветом
         private void CleaningField(object sender, RoutedEventArgs e)
         {
             Paint(255, 255, 255, 255);
         }
 
+        // Функция, которая принимает на вход значение цвета в формате Bgra32
+        // и заливает поле данным цветом
         public void Paint(int blue, int green, int red, int alpha)
         {
-            wb = new WriteableBitmap((int)PaintField.Width, (int)PaintField.Height, 96, 96, PixelFormats.Bgra32, null);
+            // Создаем WriteableBitmap поле
+            wb = new WriteableBitmap(
+           (int)PaintField.Width, (int)PaintField.Height, 96, 96, PixelFormats.Bgra32, null);
 
+
+            // Описание координат закрашиваемого прямоугольника
             Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
 
             int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
@@ -71,19 +84,8 @@ namespace PaintTool
             //Width * height *  bytes per pixel aka(32/8)
             byte[] pixels = new byte[stride * (int)PaintField.Height];
 
-            //for (int y = 0; y < wb.PixelHeight; y++)
-            //{
-            //    for (int x = 0; x < wb.PixelWidth; x++)
-            //    {
-            //        int pixelOffset = CalculatePixelOffset(x, y);
-            //        pixels[pixelOffset] = (byte)blue;
-            //        pixels[pixelOffset + 1] = (byte)green;
-            //        pixels[pixelOffset + 2] = (byte)red;
-            //        pixels[pixelOffset + 3] = (byte)alpha;
-            //    }
-            //}
-
-            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
+            // Закрашиваем наш прямоугольник нужным цветом
+            for (int y = 0; y < wb.PixelHeight; y++)
             {
                 pixels[pixel] = (byte)blue;        // blue (depends normally on BitmapPalette)
                 pixels[pixel + 1] = (byte)green;  // green (depends normally on BitmapPalette)
@@ -94,6 +96,7 @@ namespace PaintTool
             //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
             wb.WritePixels(rect, pixels, stride, 0);
 
+            // Отрисовываем созданный WriteableBitmap в поле PaintField
             PaintField.Source = wb;
         }
         private void DrawLine()
@@ -112,34 +115,22 @@ namespace PaintTool
             }
         }
 
-        private void DrawPixelTest(int point)
-        {
-            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
-            int stride = bytesPerPixel * 50;
-
-            byte[] pixels = new byte[stride * 10];
-
-            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
-            {
-                pixels[pixel] = 0;        // blue (depends normally on BitmapPalette)
-                pixels[pixel + 1] = 0;  // green (depends normally on BitmapPalette)
-                pixels[pixel + 2] = 255;    // red (depends normally on BitmapPalette)
-                pixels[pixel + 3] = 255;   // alpha (depends normally on BitmapPalette)
-            }
-
-            Int32Rect rect = new Int32Rect(point, 10, 1, 10);
-            wb.WritePixels(rect, pixels, stride, 0);
-        }
-
+        // Метод для выбора цвета в Bgra32
         private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
         {
             colorData = new byte[] { blue, green, red, alpha };
         }
+
+        // Метод для возвращения значения цвета в Bgra32
         private byte[] GetColor()
         {
             return colorData;
         }
 
+
+        // Метод для выбора цвета кисти в комбобоксе
+        // Смотрим текстовое значение цвета в поле Fill у выбранного цвета в комбобоксе 
+        // и переделываем его в RGB, а затем передаем в метод SetColor для изменения цвета
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem)ColorInput.SelectedItem;
@@ -151,17 +142,21 @@ namespace PaintTool
             SetColor(clr.B, clr.G, clr.R);
         }
 
+        // При нажатии на левую кнопку мышки - рисуем пиксели
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DrawPixel(e);
             previousPoint = new int[] { (int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y };
             Trace.WriteLine(previousPoint[0] + ", " + previousPoint[1]);
         }
-
+        //При нажатии на правую кнопку мышки - стираем пиксели
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             ErasePixel(e);
         }
+
+
+        // Метод для рисования пикселей
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
             bool isMouseButtonPressed = false;
@@ -176,7 +171,9 @@ namespace PaintTool
                 ErasePixel(e);
             }
         }
-        private void ErasePixel(MouseEventArgs e)
+
+        // Удаление пикселей (закрашивание в белый цвет)
+        private void ErasePixel(MouseEventArgs e) 
         {
             int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8;
             int stride = bytesPerPixel;
@@ -205,6 +202,8 @@ namespace PaintTool
             //Trace.WriteLine(stride);
         }
 
+
+        // Рисование пикселей с выбранным цветом
         private void DrawPixel(MouseEventArgs e)
         {
             //Trace.WriteLine(e.GetPosition(PaintField));
@@ -224,12 +223,8 @@ namespace PaintTool
             //byte[] b = File.ReadAllBytes(PaintField.Source.ToString());
         }
 
-        private void Test(object sender, MouseEventArgs e)
-        {
-            currentPoint = new int[] { (int)e.GetPosition(PaintGrid).X, (int)e.GetPosition(PaintGrid).Y };
-            Trace.WriteLine(currentPoint[0] + ", " + currentPoint[1]);
-        }
 
+        // Создание файла 
         private void NewFile(object sender, RoutedEventArgs e)
         {
             Window dialog = new NewImageFileWindow();
