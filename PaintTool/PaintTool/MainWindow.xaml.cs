@@ -251,9 +251,9 @@ namespace PaintTool
             if (wb != null) Paint(255, 255, 255, 255);
         }
 
-        //private void Redo_Click(object sender, RoutedEventArgs e)
-        //{
-        //    DrawLine();
-        //}
+        private void Redo_Click(object sender, RoutedEventArgs e)
+        {
+            //DrawLine();
+        }
     }
 }
