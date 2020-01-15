@@ -9,6 +9,8 @@
   <ItemGroup>
     <None Remove="images\brush.png" />
     <None Remove="images\bucket.png" />
+    <None Remove="images\close.png" />
+    <None Remove="images\cross.png" />
     <None Remove="images\ellipse.png" />
     <None Remove="images\eraser.png" />
     <None Remove="images\line.png" />
@@ -29,6 +31,12 @@
   <ItemGroup>
     <Resource Include="images\brush.png" />
     <Resource Include="images\bucket.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\close.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\cross.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\ellipse.png">
