@@ -26,7 +26,7 @@ namespace PaintTool
         WriteableBitmap wb;
         int[] previousPoint = new int[2];
         int[] currentPoint = new int[2];
-        
+
         byte[] colorData = { 0, 0, 0, 255 };
 
         public MainWindow()
@@ -41,7 +41,7 @@ namespace PaintTool
 
         private void Brush_Btn_Click(object sender, RoutedEventArgs e)
         {
-            ColorsGrid.Visibility = Visibility.Visible;            
+            ColorsGrid.Visibility = Visibility.Visible;
         }
 
         private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
@@ -65,25 +65,70 @@ namespace PaintTool
 
             Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
 
-            //Width * height *  bytes per pixel aka(32/8)
-            byte[] pixels = new byte[(int)PaintField.Width * (int)PaintField.Height * (wb.Format.BitsPerPixel / 8)];
+            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
+            int stride = bytesPerPixel * (int)PaintField.Width; // general formula valid for all PixelFormats
 
-            for (int y = 0; y < wb.PixelHeight; y++)
+            //Width * height *  bytes per pixel aka(32/8)
+            byte[] pixels = new byte[stride * (int)PaintField.Height];
+
+            //for (int y = 0; y < wb.PixelHeight; y++)
+            //{
+            //    for (int x = 0; x < wb.PixelWidth; x++)
+            //    {
+            //        int pixelOffset = CalculatePixelOffset(x, y);
+            //        pixels[pixelOffset] = (byte)blue;
+            //        pixels[pixelOffset + 1] = (byte)green;
+            //        pixels[pixelOffset + 2] = (byte)red;
+            //        pixels[pixelOffset + 3] = (byte)alpha;
+            //    }
+            //}
+
+            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
             {
-                for (int x = 0; x < wb.PixelWidth; x++)
-                {
-                    int pixelOffset = CalculatePixelOffset(x, y);
-                    pixels[pixelOffset] = (byte)blue;
-                    pixels[pixelOffset + 1] = (byte)green;
-                    pixels[pixelOffset + 2] = (byte)red;
-                    pixels[pixelOffset + 3] = (byte)alpha;
-                }
+                pixels[pixel] = (byte)blue;        // blue (depends normally on BitmapPalette)
+                pixels[pixel + 1] = (byte)green;  // green (depends normally on BitmapPalette)
+                pixels[pixel + 2] = (byte)red;    // red (depends normally on BitmapPalette)
+                pixels[pixel + 3] = (byte)alpha;   // alpha (depends normally on BitmapPalette)
             }
 
-            int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+            //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
             wb.WritePixels(rect, pixels, stride, 0);
 
             PaintField.Source = wb;
+        }
+        private void DrawLine()
+        {
+            int[] p1 = new int[] { 10, 10 };
+            int[] p2 = new int[] { 110, 10 };
+
+            // y = kx + b
+
+            //int k = (p2[1]- p1[1]) / (p2[0] - p1[0]);
+            //int b = p1[1] - (k * p1[0]);
+
+            for (int i = p1[0]; i < p2[0]; i++)
+            {
+                DrawPixelTest(i);
+            }
+        }
+
+        private void DrawPixelTest(int point)
+        {
+            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
+            int stride = bytesPerPixel * 50;
+
+            byte[] pixels = new byte[stride * 10];
+
+            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
+            {
+                pixels[pixel] = 0;        // blue (depends normally on BitmapPalette)
+                pixels[pixel + 1] = 0;  // green (depends normally on BitmapPalette)
+                pixels[pixel + 2] = 255;    // red (depends normally on BitmapPalette)
+                pixels[pixel + 3] = 255;   // alpha (depends normally on BitmapPalette)
+            }
+
+            Int32Rect rect = new Int32Rect(point, 10, 1, 10);
+            wb.WritePixels(rect, pixels, stride, 0);
         }
 
         private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
@@ -97,12 +142,11 @@ namespace PaintTool
 
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem) ColorInput.SelectedItem;
+            ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem)ColorInput.SelectedItem;
             Grid currentSelectedComboBoxItemGrid = (Grid)currentSelectedComboBoxItem.Content;
             Rectangle colorRectangle = (Rectangle)currentSelectedComboBoxItemGrid.Children[0];
 
-            Color clr = new Color();
-            clr = (Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
+            Color clr = (Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
 
             SetColor(clr.B, clr.G, clr.R);
         }
@@ -118,31 +162,6 @@ namespace PaintTool
         {
             ErasePixel(e);
         }
-
-        //private void DefineQuarter(int[] startPoint, int[] endPoint)
-        //{
-        //    if (endPoint[0] - startPoint[0] > endPoint[1] - startPoint[1])
-        //    {
-
-        //    }
-        //}
-
-            private void DrawLine()
-        {
-            int[] p1 = new int[] { 10, 10 };
-            int[] p2 = new int[] { 50, 10 };
-
-            // y = kx + b
-
-            //int k = (p2[1]- p1[1]) / (p2[0] - p1[0]);
-            //int b = p1[1] - (k * p1[0]);
-
-            for (int i = p1[0]; i < p2[0]; i++)
-            {
-                DrawPixelTest(i);
-            }
-        }
-
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
             bool isMouseButtonPressed = false;
@@ -159,7 +178,22 @@ namespace PaintTool
         }
         private void ErasePixel(MouseEventArgs e)
         {
-            byte[] colorData = { 255, 255, 255, 255 }; // White color(default)!
+            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8;
+            int stride = bytesPerPixel;
+            // умножаем на ширину пикселей
+            //int stride = bytesPerPixel * 5;
+
+            byte[] pixels = new byte[stride];
+            // количество пикселей, которые будем добавлять: умножаем на высота добавляемого участка
+            //byte[] pixels = new byte[stride * 5];
+
+            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
+            {
+                pixels[pixel] = 255;        // blue (depends normally on BitmapPalette)
+                pixels[pixel + 1] = 255;  // green (depends normally on BitmapPalette)
+                pixels[pixel + 2] = 255;    // red (depends normally on BitmapPalette)
+                pixels[pixel + 3] = 255;   // alpha (depends normally on BitmapPalette)
+            }
 
             Int32Rect rect = new Int32Rect(
                     (int)(e.GetPosition(PaintGrid).X),
@@ -167,15 +201,8 @@ namespace PaintTool
                     1,
                     1);
 
-            wb.WritePixels(rect, colorData, 4, 0);
-        }
-
-        private void DrawPixelTest(int point)
-        {
-            Int32Rect rect = new Int32Rect(point, 10, 1, 1);
-            int stride = 50 * (wb.Format.BitsPerPixel + 7 / 8);
-            int bufferSize = 1 * stride;
-            wb.WritePixels(rect, new byte[] { 0, 0, 0 }, bufferSize, 0);
+            wb.WritePixels(rect, pixels, stride, 0);
+            //Trace.WriteLine(stride);
         }
 
         private void DrawPixel(MouseEventArgs e)
