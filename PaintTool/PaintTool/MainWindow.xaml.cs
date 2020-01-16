@@ -26,12 +26,12 @@ namespace PaintTool
         // Инициализируем WriteableBitmap
         WriteableBitmap wb;
         // Инициализируем переменнух для хранения цвета в формате Bgra32
-        byte[] colorData = { 0, 0, 0, 255 }; 
+        byte[] colorData = { 0, 0, 0, 255 };
 
         public MainWindow()
         {
             // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
-            InitializeComponent(); 
+            InitializeComponent();
         }
 
         private int CalculatePixelOffset(int x, int y)
@@ -172,8 +172,89 @@ namespace PaintTool
             }
         }
 
+        int[] p1 = new int[2], p2 = new int[2];
+
+        private void Down(object sender, MouseEventArgs e)
+        {
+            p1[0] = (int)e.GetPosition(PaintField).X;
+            p1[1] = (int)e.GetPosition(PaintField).Y;
+        }
+
+        private void Up(object sender, MouseEventArgs e)
+        {
+            p2[0] = (int)e.GetPosition(PaintField).X;
+            p2[1] = (int)e.GetPosition(PaintField).Y;
+            Trace.WriteLine(p1[0] + "," + p1[1]);
+            Trace.WriteLine(p2[0] + "," + p2[1]);
+            Dr(p1, p2);
+        }
+
+        private double GetC(int[] p1, int[] p2, int w, int h)
+        {
+            double realK = (double)w / (double)h;
+
+            if (p1[0] < p2[0] && p1[1] < p2[1])
+            {
+                return realK;
+            }
+            else if (p1[0] < p2[0] && p1[1] > p2[1])
+            {
+                return realK * -1;
+            }
+            else if (p1[0] > p2[0] && p1[1] > p2[1])
+            {
+                return (double)h / (double)w;
+            }
+            else if (p1[0] > p2[0] && p1[1] < p2[1])
+            {
+                return realK * -1;
+            }
+            else return 1;
+        }
+
+        private void Dr(int[] p1, int[] p2)
+        {
+            double k = 0;
+
+            if (Math.Abs(p2[0] - p1[0]) > Math.Abs(p2[1] - p1[1]))
+            {
+                int h = Math.Abs(p2[0] - p1[0]) + 1;
+                int w = Math.Abs(p2[1] - p1[1]) + 1;
+
+                k = GetC(p1, p2, w, h);
+
+                //k = (double)w / (double)h;
+
+                for (int i = p1[0]; i < p2[0]; i++)
+                {
+                    int y = (int)(k * i + p1[1]);
+                    TestPixel(i, y);
+                }
+            }
+            else
+            {
+                int w = Math.Abs(p2[0] - p1[0]) + 1;
+                int h = Math.Abs(p2[1] - p1[1]) + 1;
+
+                k = (double)w / (double)h;
+
+                for (int i = p1[1]; i < p2[1]; i++)
+                {
+                    int x = (int)(k * i + p1[0]);
+                    TestPixel(x, i);
+                }
+            }
+        }
+
+        private void TestPixel(int x, int y)
+        {
+            Int32Rect rect = new Int32Rect(x, y, 1, 1);
+
+            wb.WritePixels(rect, GetColor(), 4, 0);
+        }
+
         // Удаление пикселей (закрашивание в белый цвет)
-        private void ErasePixel(MouseEventArgs e) 
+        private void ErasePixel(MouseEventArgs e)
         {
             int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8;
             int stride = bytesPerPixel;
