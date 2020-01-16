@@ -24,12 +24,14 @@ namespace PaintTool
     public partial class MainWindow : Window
     {
         // Инициализируем WriteableBitmap
-        WriteableBitmap wb;
-        // Инициализируем переменную для хранения цвета в формате Bgra32        byte[] colorData = { 0, 0, 0, 255 };
+        WriteableBitmap wb;
+
+        // Инициализируем переменную для хранения цвета в формате Bgra32
+        byte[] colorData = { 0, 0, 0, 255 };
 
         //две структуры для хранения кооординат
         Point prev; Point position;
-        
+
         public MainWindow()
         {
             // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
@@ -223,10 +225,17 @@ namespace PaintTool
 
             prev.X = (int)(e.GetPosition(PaintField).X);
             prev.Y = (int)(e.GetPosition(PaintField).Y);
+            position.X = prev.X;
+            position.Y = prev.Y;
+            Trace.WriteLine(prev.X);
+            Trace.WriteLine(prev.Y);
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //запоминаем координаты в момент отпускания ЛКМ
+
+            prev.X = 0;
+            prev.Y = 0;
 
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
@@ -235,23 +244,21 @@ namespace PaintTool
             {
                 //здесь нужно написать код для того, чтоб во время рисования кистью не начинать с конца предыдущей линии
             }
+            else
+            {
 
-
+            }
         }
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
             // Метод для рисования КИСТЬЮ при нажатой ЛКМ
 
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if ((bool)BrushToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
             {
-                if ((bool)BrushToggleBtn.IsChecked)
-                {
-                    
-                    DrawLine(prev, position);
-                    prev = position;
-                    position.X = (int)(e.GetPosition(PaintField).X);
-                    position.Y = (int)(e.GetPosition(PaintField).Y);
-                }
+                DrawLine(prev, position);
+                prev = position;
+                position.X = (int)(e.GetPosition(PaintField).X);
+                position.Y = (int)(e.GetPosition(PaintField).Y);
             }
         }
 
@@ -308,24 +315,22 @@ namespace PaintTool
             //При нажатии на правую кнопку мышки - стираем пиксели
             ErasePixel(e);
         }
-        private void ErasePixel(MouseEventArgs e) 
-
 
         // Метод для рисования пикселей
-        private void PaintField_MouseMove(object sender, MouseEventArgs e)
-        {
-            bool isMouseButtonPressed = false;
-            isMouseButtonPressed = Convert.ToBoolean(MouseButtonState.Pressed) ? true : false;
+        //private void PaintField_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //    bool isMouseButtonPressed = false;
+        //    isMouseButtonPressed = Convert.ToBoolean(MouseButtonState.Pressed) ? true : false;
 
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DrawPixel(e);
-            }
-            else if (e.RightButton == MouseButtonState.Pressed)
-            {
-                ErasePixel(e);
-            }
-        }
+        //    if (e.LeftButton == MouseButtonState.Pressed)
+        //    {
+        //        DrawPixel(e);
+        //    }
+        //    else if (e.RightButton == MouseButtonState.Pressed)
+        //    {
+        //        ErasePixel(e);
+        //    }
+        //}
 
         int[] p1 = new int[2], p2 = new int[2];
 
@@ -444,9 +449,6 @@ namespace PaintTool
         }
         #endregion
 
-
-
-
         #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
         public void Paint(int blue, int green, int red, int alpha)
         {
@@ -483,11 +485,8 @@ namespace PaintTool
         }
         private void Redo_Click(object sender, RoutedEventArgs e)
         {
-           
+
         }
-
-
-
         #endregion
     }
 }
