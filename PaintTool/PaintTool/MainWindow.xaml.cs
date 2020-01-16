@@ -260,6 +260,17 @@ namespace PaintTool
                 position.X = (int)(e.GetPosition(PaintField).X);
                 position.Y = (int)(e.GetPosition(PaintField).Y);
             }
+
+            if ((bool)Ereser.IsChecked && e.LeftButton == MouseButtonState.Pressed)
+            {
+                DrawLine(prev, new Point(position.X, prev.Y));
+                DrawLine(new Point(position.X, prev.Y), position);
+                DrawLine(position, new Point(prev.X, position.Y));
+                DrawLine(new Point(prev.X, position.Y), prev);
+
+                position.X = (int)(e.GetPosition(PaintField).X);
+                position.Y = (int)(e.GetPosition(PaintField).Y);
+            }
         }
 
         private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
