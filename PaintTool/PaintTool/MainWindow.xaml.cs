@@ -25,114 +25,259 @@ namespace PaintTool
     {
         // Инициализируем WriteableBitmap
         WriteableBitmap wb;
-        // Инициализируем переменнух для хранения цвета в формате Bgra32
-        byte[] colorData = { 0, 0, 0, 255 };
+        // Инициализируем переменную для хранения цвета в формате Bgra32        byte[] colorData = { 0, 0, 0, 255 };
 
+        //две структуры для хранения кооординат
+        Point prev; Point position;
+        
         public MainWindow()
         {
             // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
             InitializeComponent();
         }
 
-        private int CalculatePixelOffset(int x, int y)
+        #region СОЗДАНИЕ НОВОГО ФАЙЛА
+        private void NewFile(object sender, RoutedEventArgs e)
         {
-            return ((x + (wb.PixelWidth * y)) * (wb.Format.BitsPerPixel / 8));
+            // Создание файла 
+            Window dialog = new NewImageFileWindow();
+            dialog.ShowDialog();
         }
-
-
-        // Делает видимым панель с выбором цвета, как понял это прошлый метод
-        // Ниже новая версия, эту позже удалим
-        private void Brush_Btn_Click(object sender, RoutedEventArgs e)
+        public void SetGridSize(int width, int height)
         {
-            ColorsGrid.Visibility = Visibility.Visible;
+            PaintGrid.Width = width;
+            PaintGrid.Height = height;
+            PaintField.Width = width;
+            PaintField.Height = height;
+            PaintGrid.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         }
+        #endregion
 
-        // При нажатии на кнопку BrushToggleBtn появление/скритие панели с выбором цвета
-        private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
+        #region РАБОЧАЯ СВЯЗКА МЕТОДОВ ДЛЯ РИСОВАНИЯ ПРЯМОЙ
+        private void DrawLine(Point prev, Point position)
         {
-            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Hidden;
-        }
 
+            int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
+            int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
+            int x0 = Convert.ToInt32(prev.X);
+            int y0 = Convert.ToInt32(prev.Y);
+            int x;
+            int y;
+            int[] xArr;
+            int[] yArr;
+            double k;
+            int quarter = FindQuarter(prev, position);
 
-        // Появление значения позиции слайдера в окошке справа от него 
-        private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SizeInput.Text = SizeSlider.Value.ToString();
-        }
-
-        // Очистка поля, точнее все заливается белым цветом
-        private void CleaningField(object sender, RoutedEventArgs e)
-        {
-            Paint(255, 255, 255, 255);
-        }
-
-        // Функция, которая принимает на вход значение цвета в формате Bgra32
-        // и заливает поле данным цветом
-        public void Paint(int blue, int green, int red, int alpha)
-        {
-            // Создаем WriteableBitmap поле
-            wb = new WriteableBitmap(
-           (int)PaintField.Width, (int)PaintField.Height, 96, 96, PixelFormats.Bgra32, null);
-
-
-            // Описание координат закрашиваемого прямоугольника
-            Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
-
-            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
-            int stride = bytesPerPixel * (int)PaintField.Width; // general formula valid for all PixelFormats
-
-            //Width * height *  bytes per pixel aka(32/8)
-            byte[] pixels = new byte[stride * (int)PaintField.Height];
-
-            // Закрашиваем наш прямоугольник нужным цветом
-            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
+            if (hght >= wth)
             {
-                pixels[pixel] = (byte)blue;        // blue (depends normally on BitmapPalette)
-                pixels[pixel + 1] = (byte)green;  // green (depends normally on BitmapPalette)
-                pixels[pixel + 2] = (byte)red;    // red (depends normally on BitmapPalette)
-                pixels[pixel + 3] = (byte)alpha;   // alpha (depends normally on BitmapPalette)
+                xArr = new int[hght];
+                yArr = new int[hght];
+                k = wth * 1.0 / hght;
+
+                if (quarter == 4)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = Convert.ToInt32(k * i + x0);
+                        xArr[i] = x;
+                        yArr[i] = y0 + i;
+                    }
+                }
+                if (quarter == 3)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = Convert.ToInt32(k * i - x0);
+                        xArr[i] = -x >= 0 ? -x : 0;
+                        yArr[i] = y0 + i;
+                    }
+                }
+
+                if (quarter == 1)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = Convert.ToInt32(k * i + x0);
+                        xArr[i] = x;
+                        yArr[i] = y0 - i;
+                    }
+                }
+
+                if (quarter == 2)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = Convert.ToInt32(k * i - x0);
+                        xArr[i] = -x;
+                        yArr[i] = y0 - i;
+                    }
+                }
+
+                for (int i = 0; i < hght; i++)
+                {
+                    prev.Y = yArr[i];
+                    prev.X = xArr[i];
+                    SetPixel(prev);
+                }
+            }
+            else if (hght < wth)
+            {
+                xArr = new int[wth];
+                yArr = new int[wth];
+                k = hght * 1.0 / wth;
+
+                if (quarter == 1)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = Convert.ToInt32(k * i - y0);
+                        yArr[i] = -y;
+                        xArr[i] = x0 + i;
+                    }
+                }
+
+                if (quarter == 2)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = Convert.ToInt32(k * i - y0);
+                        yArr[i] = -y;
+                        xArr[i] = x0 - i;
+                    }
+                }
+
+                if (quarter == 4)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = Convert.ToInt32(k * i + y0);
+                        yArr[i] = y;
+                        xArr[i] = x0 + i;
+                    }
+                }
+
+                if (quarter == 3)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = Convert.ToInt32(k * i + y0);
+                        yArr[i] = y;
+                        xArr[i] = x0 - i;
+                    }
+                }
+
+                for (int i = 0; i < wth; i++)
+                {
+                    prev.Y = yArr[i];
+                    prev.X = xArr[i];
+                    SetPixel(prev);
+                }
             }
 
-            //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-            wb.WritePixels(rect, pixels, stride, 0);
-
-            // Отрисовываем созданный WriteableBitmap в поле PaintField
-            PaintField.Source = wb;
         }
-        //private void DrawLine()
-        //{
-        //    int[] p1 = new int[] { 10, 10 };
-        //    int[] p2 = new int[] { 110, 10 };
 
-        //    // y = kx + b
-
-        //    //int k = (p2[1]- p1[1]) / (p2[0] - p1[0]);
-        //    //int b = p1[1] - (k * p1[0]);
-
-        //    for (int i = p1[0]; i < p2[0]; i++)
-        //    {
-        //        DrawPixelTest(i);
-        //    }
-        //}
-
-        // Метод для выбора цвета в Bgra32
-        private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
+        public int FindQuarter(Point prev, Point position)
         {
-            colorData = new byte[] { blue, green, red, alpha };
+            int quarter = 0;
+            if (position.X >= prev.X && position.Y >= prev.Y)
+            {
+                quarter = 4;
+            }
+            if (position.X <= prev.X && position.Y <= prev.Y)
+            {
+                quarter = 2;
+            }
+            if (position.X >= prev.X && position.Y <= prev.Y)
+            {
+                quarter = 1;
+            }
+            if (position.X <= prev.X && position.Y >= prev.Y)
+            {
+                quarter = 3;
+            }
+            return quarter;
         }
 
-        // Метод для возвращения значения цвета в Bgra32
-        private byte[] GetColor()
+        public void SetPixel(Point pxl)
         {
-            return colorData;
+
+            if (pxl.X <= PaintField.Width && pxl.Y <= PaintField.Height)
+            {
+                Int32Rect rect = new Int32Rect(
+                        Convert.ToInt32(pxl.X),
+                        Convert.ToInt32(pxl.Y),
+                        1,
+                        1);
+
+                int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+
+                wb.WritePixels(rect, GetColor(), stride, 0);
+            }
+        }
+        #endregion
+
+        #region КНОПКИ
+        private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //запоминаем координаты в момент нажатия ЛКМ
+
+            prev.X = (int)(e.GetPosition(PaintField).X);
+            prev.Y = (int)(e.GetPosition(PaintField).Y);
+        }
+        private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            //запоминаем координаты в момент отпускания ЛКМ
+
+            position.X = (int)(e.GetPosition(PaintField).X);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                //здесь нужно написать код для того, чтоб во время рисования кистью не начинать с конца предыдущей линии
+            }
+
+
+        }
+        private void PaintField_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Метод для рисования КИСТЬЮ при нажатой ЛКМ
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if ((bool)BrushToggleBtn.IsChecked)
+                {
+                    
+                    DrawLine(prev, position);
+                    prev = position;
+                    position.X = (int)(e.GetPosition(PaintField).X);
+                    position.Y = (int)(e.GetPosition(PaintField).Y);
+                }
+            }
         }
 
+        private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
+            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Hidden;
+        }
+        private void BrushToggleBtn_Checked(object sender, RoutedEventArgs e)
+        {
+            BrushToggleBtn.BorderBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            BrushToggleBtn.BorderThickness = new Thickness(1, 1, 1, 1);
+        }
+        private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            // Появление значения позиции слайдера в окошке справа от него 
+            SizeInput.Text = SizeSlider.Value.ToString();
+        }
+        #endregion
 
-        // Метод для выбора цвета кисти в комбобоксе
-        // Смотрим текстовое значение цвета в поле Fill у выбранного цвета в комбобоксе 
-        // и переделываем его в RGB, а затем передаем в метод SetColor для изменения цвета
+        #region ЦВЕТА
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Метод для выбора цвета кисти в комбобоксе
+            // Смотрим текстовое значение цвета в поле Fill у выбранного цвета в комбобоксе 
+            // и переделываем его в RGB, а затем передаем в метод SetColor для изменения цвета
             ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem)ColorInput.SelectedItem;
             Grid currentSelectedComboBoxItemGrid = (Grid)currentSelectedComboBoxItem.Content;
             Rectangle colorRectangle = (Rectangle)currentSelectedComboBoxItemGrid.Children[0];
@@ -141,19 +286,29 @@ namespace PaintTool
 
             SetColor(clr.B, clr.G, clr.R);
         }
-
-        // При нажатии на левую кнопку мышки - рисуем пиксели
-        private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
         {
-            DrawPixel(e);
-            //previousPoint = new int[] { (int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y };
-            //Trace.WriteLine(previousPoint[0] + ", " + previousPoint[1]);
+            colorData = new byte[] { blue, green, red, alpha };
         }
-        //При нажатии на правую кнопку мышки - стираем пиксели
+        private byte[] GetColor()
+        {
+            // Метод для возвращения значения цвета в Bgra32
+            return colorData;
+        }
+        #endregion
+
+        #region СТИРАНИЕ ПИКСЕЛЕЙ
+        private void CleaningField(object sender, RoutedEventArgs e)
+        {
+            // Очистка поля, точнее все заливается белым цветом
+            Paint(255, 255, 255, 255);
+        }
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            //При нажатии на правую кнопку мышки - стираем пиксели
             ErasePixel(e);
         }
+        private void ErasePixel(MouseEventArgs e) 
 
 
         // Метод для рисования пикселей
@@ -256,6 +411,7 @@ namespace PaintTool
         // Удаление пикселей (закрашивание в белый цвет)
         private void ErasePixel(MouseEventArgs e)
         {
+            // Удаление пикселей (закрашивание в белый цвет)
             int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8;
             int stride = bytesPerPixel;
             // умножаем на ширину пикселей
@@ -282,59 +438,56 @@ namespace PaintTool
             wb.WritePixels(rect, pixels, stride, 0);
             //Trace.WriteLine(stride);
         }
-
-
-        // Рисование пикселей с выбранным цветом
-        private void DrawPixel(MouseEventArgs e)
-        {
-            //Trace.WriteLine(e.GetPosition(PaintField));
-            Int32Rect rect = new Int32Rect(
-                    (int)(e.GetPosition(PaintGrid).X),
-                    (int)(e.GetPosition(PaintGrid).Y),
-                    1,
-                    1);
-            //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-            if (e.GetPosition(PaintField).X >= Convert.ToInt32(PaintField.Width) && e.GetPosition(PaintField).Y >= Convert.ToInt32(PaintField.Height))
-            {
-                return;
-            }
-            else wb.WritePixels(rect, GetColor(), 4, 0);
-            //previousPoint = new int[] { (int)e.GetPosition(PaintGrid).X, (int)e.GetPosition(PaintGrid).Y };
-            //Trace.WriteLine(previousPoint[0] + ", " + previousPoint[1]);
-            //byte[] b = File.ReadAllBytes(PaintField.Source.ToString());
-        }
-
-
-        // Создание файла 
-        private void NewFile(object sender, RoutedEventArgs e)
-        {
-            Window dialog = new NewImageFileWindow();
-            dialog.ShowDialog();
-        }
-
-        public void SetGridSize(int width, int height)
-        {
-            PaintGrid.Width = width;
-            PaintGrid.Height = height;
-            PaintField.Width = width;
-            PaintField.Height = height;
-            PaintGrid.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-        }
-
-        private void BrushToggleBtn_Checked(object sender, RoutedEventArgs e)
-        {
-            BrushToggleBtn.BorderBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            BrushToggleBtn.BorderThickness = new Thickness(1, 1, 1, 1);
-        }
-
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
         {
             if (wb != null) Paint(255, 255, 255, 255);
         }
+        #endregion
 
+
+
+
+        #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
+        public void Paint(int blue, int green, int red, int alpha)
+        {
+            // Функция, которая принимает на вход значение цвета в формате Bgra32
+            // и заливает поле данным цветом
+
+            // Создаем WriteableBitmap поле
+            wb = new WriteableBitmap((int)PaintField.Width, (int)PaintField.Height, 96, 96, PixelFormats.Bgra32, null);
+
+
+            // Описание координат закрашиваемого прямоугольника
+            Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
+
+            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
+            int stride = bytesPerPixel * (int)PaintField.Width; // general formula valid for all PixelFormats
+
+            //Width * height *  bytes per pixel aka(32/8)
+            byte[] pixels = new byte[stride * (int)PaintField.Height];
+
+            // Закрашиваем наш прямоугольник нужным цветом
+            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
+            {
+                pixels[pixel] = (byte)blue;        // blue (depends normally on BitmapPalette)
+                pixels[pixel + 1] = (byte)green;  // green (depends normally on BitmapPalette)
+                pixels[pixel + 2] = (byte)red;    // red (depends normally on BitmapPalette)
+                pixels[pixel + 3] = (byte)alpha;   // alpha (depends normally on BitmapPalette)
+            }
+
+            //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+            wb.WritePixels(rect, pixels, stride, 0);
+
+            // Отрисовываем созданный WriteableBitmap в поле PaintField
+            PaintField.Source = wb;
+        }
         private void Redo_Click(object sender, RoutedEventArgs e)
         {
-            //DrawLine();
+           
         }
+
+
+
+        #endregion
     }
 }
