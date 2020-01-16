@@ -25,12 +25,11 @@ namespace PaintTool
     {
         // Инициализируем WriteableBitmap
         WriteableBitmap wb;
-        // Инициализируем переменнух для хранения цвета в формате Bgra32        byte[] colorData = { 0, 0, 0, 255 };
+        // Инициализируем переменную для хранения цвета в формате Bgra32        byte[] colorData = { 0, 0, 0, 255 };
 
-        //два интовых поля для хранения координат
-        int xTemp1, yTemp1;
-        int xTemp2, yTemp2;
-
+        //две структуры для хранения кооординат
+        Point prev; Point position;
+        
         public MainWindow()
         {
             // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
@@ -54,18 +53,159 @@ namespace PaintTool
         }
         #endregion
 
-        #region РИСОВАНИЕ ПИКСЕЛЕЙ
-        private void DrawPixel(MouseEventArgs e)
+        #region РАБОЧАЯ СВЯЗКА МЕТОДОВ ДЛЯ РИСОВАНИЯ ПРЯМОЙ
+        private void DrawLine(Point prev, Point position)
         {
-            // Рисование пикселя с выбранным цветом
-            int currentX = (int)(e.GetPosition(PaintField).X);
-            int currentY = (int)(e.GetPosition(PaintField).Y);
 
-            if (currentX <= Convert.ToInt32(PaintField.Width) && currentY <= Convert.ToInt32(PaintField.Height))
+            int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
+            int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
+            int x0 = Convert.ToInt32(prev.X);
+            int y0 = Convert.ToInt32(prev.Y);
+            int x;
+            int y;
+            int[] xArr;
+            int[] yArr;
+            double k;
+            int quarter = FindQuarter(prev, position);
+
+            if (hght >= wth)
+            {
+                xArr = new int[hght];
+                yArr = new int[hght];
+                k = wth * 1.0 / hght;
+
+                if (quarter == 4)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = Convert.ToInt32(k * i + x0);
+                        xArr[i] = x;
+                        yArr[i] = y0 + i;
+                    }
+                }
+                if (quarter == 3)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = Convert.ToInt32(k * i - x0);
+                        xArr[i] = -x >= 0 ? -x : 0;
+                        yArr[i] = y0 + i;
+                    }
+                }
+
+                if (quarter == 1)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = Convert.ToInt32(k * i + x0);
+                        xArr[i] = x;
+                        yArr[i] = y0 - i;
+                    }
+                }
+
+                if (quarter == 2)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = Convert.ToInt32(k * i - x0);
+                        xArr[i] = -x;
+                        yArr[i] = y0 - i;
+                    }
+                }
+
+                for (int i = 0; i < hght; i++)
+                {
+                    prev.Y = yArr[i];
+                    prev.X = xArr[i];
+                    SetPixel(prev);
+                }
+            }
+            else if (hght < wth)
+            {
+                xArr = new int[wth];
+                yArr = new int[wth];
+                k = hght * 1.0 / wth;
+
+                if (quarter == 1)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = Convert.ToInt32(k * i - y0);
+                        yArr[i] = -y;
+                        xArr[i] = x0 + i;
+                    }
+                }
+
+                if (quarter == 2)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = Convert.ToInt32(k * i - y0);
+                        yArr[i] = -y;
+                        xArr[i] = x0 - i;
+                    }
+                }
+
+                if (quarter == 4)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = Convert.ToInt32(k * i + y0);
+                        yArr[i] = y;
+                        xArr[i] = x0 + i;
+                    }
+                }
+
+                if (quarter == 3)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = Convert.ToInt32(k * i + y0);
+                        yArr[i] = y;
+                        xArr[i] = x0 - i;
+                    }
+                }
+
+                for (int i = 0; i < wth; i++)
+                {
+                    prev.Y = yArr[i];
+                    prev.X = xArr[i];
+                    SetPixel(prev);
+                }
+            }
+
+        }
+
+        public int FindQuarter(Point prev, Point position)
+        {
+            int quarter = 0;
+            if (position.X >= prev.X && position.Y >= prev.Y)
+            {
+                quarter = 4;
+            }
+            if (position.X <= prev.X && position.Y <= prev.Y)
+            {
+                quarter = 2;
+            }
+            if (position.X >= prev.X && position.Y <= prev.Y)
+            {
+                quarter = 1;
+            }
+            if (position.X <= prev.X && position.Y >= prev.Y)
+            {
+                quarter = 3;
+            }
+            return quarter;
+        }
+
+        public void SetPixel(Point pxl)
+        {
+
+            if (pxl.X <= PaintField.Width && pxl.Y <= PaintField.Height)
             {
                 Int32Rect rect = new Int32Rect(
-                        currentX,
-                        currentY,
+                        Convert.ToInt32(pxl.X),
+                        Convert.ToInt32(pxl.Y),
                         1,
                         1);
 
@@ -74,105 +214,47 @@ namespace PaintTool
                 wb.WritePixels(rect, GetColor(), stride, 0);
             }
         }
-        private void DrawPixel(int currentX, int currentY)
-        {
-            // Перегрузка метода для координат
-
-            if (currentX <= Convert.ToInt32(PaintField.Width) && currentY <= Convert.ToInt32(PaintField.Height))
-            {
-                Int32Rect rect = new Int32Rect(
-                        currentX,
-                        currentY,
-                        1,
-                        1);
-
-                int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-
-                wb.WritePixels(rect, GetColor(), stride, 0);
-            }
-        }
-
-        private void DrawLine(int x1, int y1, int x2, int y2)
-        {
-
-            double k; //коэффициент, который выражает отношение абсциссы к ординате -- или наоборот -- в зависимости от того, чья дельта больше
-
-            if(Math.Abs(x2-x1)> Math.Abs(y2 - y1))
-            {
-                
-                int h = Math.Abs(x2 - x1) + 1;
-                int w = Math.Abs(y2 - y1) + 1;
-
-                k = (double)w / (double)h;
-
-                for (int i = x1; i < x2; i++)//здесь i это ордината каждой точки нашей линии
-                {
-                    int y = (int)(k * i + y1); //так мы высчитываем абсциссу
-                    DrawPixel(i, y); //здесь должен быть метод, который проглатывает координаты(i,y) и рисует пиксель
-                }
-            }
-            else
-            {
-                int w = Math.Abs(x2 - x1) + 1;
-                int h = Math.Abs(y2 - y1) + 1;
-
-                k = (double)w / (double)h;
-
-                for (int i = y1; i < y2; i++)// в этом случае i это абсцисса
-                {
-                    int x = (int)(k * i + x1); //так считаем ординату
-                    DrawPixel(x, i); //здесь координаты(x,i)
-                }
-            }
-        }
-        private int GetCoefficient(int x1, int x2, int y1, int y2, int h, int w)
-        {
-            if (x1 < x2 && y1 < y2)
-            {
-                return w / h;
-            }
-            else if (x1 < x2 && y1 > y2)
-            {
-                return w / h * -1;
-            }
-            else if (x1 > x2 && y1 > y2)
-            {
-                return h / w;
-            }
-            else if (x1 > x2 && y1 < y2)
-            {
-                return w / h * -1;
-            }
-            else return 1;
-        }
-        private void PaintField_MouseMove(object sender, MouseEventArgs e)
-        {
-            // Метод для рисования пикселей
-            bool isMouseButtonPressed = false;
-            isMouseButtonPressed = Convert.ToBoolean(MouseButtonState.Pressed) ? true : false;
-
-            if ((bool)BrushToggleBtn.IsChecked)
-            {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    DrawPixel(e);
-                    //DrawLine(xTemp1, yTemp1, xTemp2, yTemp2);
-                }
-                else if (e.RightButton == MouseButtonState.Pressed)
-                {
-                    ErasePixel(e);
-                }                                            
-              // xTemp1 = xTemp2;                             //
-              // yTemp1 = yTemp2;                             // это должно работать, если пофиксить DrawLine
-              // xTemp2 = (int)(e.GetPosition(PaintField).X); // 
-              // yTemp2 = (int)(e.GetPosition(PaintField).Y); //
-            }
-        }
-        
-
         #endregion
 
         #region КНОПКИ
+        private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //запоминаем координаты в момент нажатия ЛКМ
+
+            prev.X = (int)(e.GetPosition(PaintField).X);
+            prev.Y = (int)(e.GetPosition(PaintField).Y);
+        }
+        private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            //запоминаем координаты в момент отпускания ЛКМ
+
+            position.X = (int)(e.GetPosition(PaintField).X);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                //здесь нужно написать код для того, чтоб во время рисования кистью не начинать с конца предыдущей линии
+            }
+
+
+        }
+        private void PaintField_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Метод для рисования КИСТЬЮ при нажатой ЛКМ
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if ((bool)BrushToggleBtn.IsChecked)
+                {
+                    
+                    DrawLine(prev, position);
+                    prev = position;
+                    position.X = (int)(e.GetPosition(PaintField).X);
+                    position.Y = (int)(e.GetPosition(PaintField).Y);
+                }
+            }
+        }
+
         private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
         {
             // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
@@ -187,23 +269,6 @@ namespace PaintTool
         {
             // Появление значения позиции слайдера в окошке справа от него 
             SizeInput.Text = SizeSlider.Value.ToString();
-        }
-        private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            // При нажатии на левую кнопку мышки - рисуем пиксель и запоминаем координаты
-            if((bool)BrushToggleBtn.IsChecked) DrawPixel(e);
-
-            xTemp1 = (int)(e.GetPosition(PaintField).X);
-            yTemp1 = (int)(e.GetPosition(PaintField).Y);
-        }
-        private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            //запоминаем координаты
-            xTemp2 = (int)(e.GetPosition(PaintField).X);
-            yTemp2 = (int)(e.GetPosition(PaintField).Y);
-
-            
-            DrawLine(xTemp1, yTemp1, xTemp2, yTemp2);
         }
         #endregion
 
@@ -232,7 +297,7 @@ namespace PaintTool
         }
         #endregion
 
-        #region СТИРАНИЕ ПИКСЛЕЙЙ
+        #region СТИРАНИЕ ПИКСЕЛЕЙ
         private void CleaningField(object sender, RoutedEventArgs e)
         {
             // Очистка поля, точнее все заливается белым цветом
@@ -281,7 +346,6 @@ namespace PaintTool
 
 
 
-
         #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
         public void Paint(int blue, int green, int red, int alpha)
         {
@@ -320,6 +384,9 @@ namespace PaintTool
         {
            
         }
+
+
+
         #endregion
     }
 }
