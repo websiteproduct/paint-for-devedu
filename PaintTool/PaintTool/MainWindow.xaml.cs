@@ -617,7 +617,7 @@ namespace PaintTool
 
         private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Line) Trace.WriteLine("zhopa");
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape) Trace.WriteLine("zhopa");
         }
 
 
