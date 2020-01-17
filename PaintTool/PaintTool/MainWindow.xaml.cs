@@ -321,6 +321,13 @@ namespace PaintTool
                 DrawLineOnField(sender, e);
             }
 
+            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Ellipse)
+            {
+                
+            }
+
+
+
         }
 
         private void AdditionalPanelToggler()

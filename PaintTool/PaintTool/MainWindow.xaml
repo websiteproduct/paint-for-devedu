@@ -135,7 +135,7 @@
                                 <TextBlock Text="Rectangle" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem>
+                        <ComboBoxItem x:Name="Ellipse">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -145,7 +145,7 @@
                                 <TextBlock Text="Ellipse" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem>
+                        <ComboBoxItem x:Name="Triangle">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -155,7 +155,7 @@
                                 <TextBlock Text="Triangle" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem>
+                        <ComboBoxItem x:Name="Polygonal">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -165,7 +165,7 @@
                                 <TextBlock Text="Polygonal Tool" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem>
+                        <ComboBoxItem x:Name="BrokenLine">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
