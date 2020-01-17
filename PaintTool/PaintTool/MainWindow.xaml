@@ -98,10 +98,6 @@
                     </Button>
                     <Rectangle Grid.Column="4" Stroke="Gray" />
                     <TextBlock Text="Tools:" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" Height="16" Width="30"></TextBlock>
-                    <!--<ToggleButton x:Name="BrushToggleBtn" Grid.Column="6" Background="Transparent" Click="BrushToggleBtn_Click" Checked="BrushBtn_IsCheckedChanged"
-    Unchecked="BrushBtn_IsCheckedChanged">
-                        <ContentControl Content="{StaticResource MyImage}" Cursor="Hand"/>
-                    </ToggleButton>-->
                     <RadioButton Grid.Column="6" x:Name="BrushToggleBtn" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged"
     Unchecked="CurrentToggleBtn_IsCheckedChanged">
                         <ContentControl Content="{StaticResource BrushImg}"/>

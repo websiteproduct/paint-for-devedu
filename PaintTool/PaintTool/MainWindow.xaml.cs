@@ -262,7 +262,7 @@ namespace PaintTool
                 position.Y = (int)(e.GetPosition(PaintField).Y);
             }
 
-            if ((bool)Ereser.IsChecked && e.LeftButton == MouseButtonState.Pressed)
+            if ((bool)EraserToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
             {
                 DrawLine(prev, new Point(position.X, prev.Y));
                 DrawLine(new Point(position.X, prev.Y), position);
