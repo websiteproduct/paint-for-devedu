@@ -291,6 +291,7 @@ namespace PaintTool
             }
             else ShapeList.Visibility = Visibility.Collapsed;
             AdditionalPanelToggler();
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Line) Trace.WriteLine("zhopa");
         }
 
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -503,6 +504,11 @@ namespace PaintTool
 
             // Отрисовываем созданный WriteableBitmap в поле PaintField
             PaintField.Source = wb;
+        }
+
+        private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Line) Trace.WriteLine("zhopa");
         }
 
         private void Redo_Click(object sender, RoutedEventArgs e)

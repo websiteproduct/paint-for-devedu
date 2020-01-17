@@ -113,9 +113,9 @@
                     <RadioButton Grid.Column="9" x:Name="Shapes" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged">
                         <ContentControl Content="{StaticResource ShapeImg}"/>
                     </RadioButton>
-                    <ComboBox x:Name="ShapeList" Grid.Column="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Visibility="Collapsed">
+                    <ComboBox x:Name="ShapeList" Grid.Column="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Visibility="Collapsed" SelectionChanged="ShapeList_SelectionChanged">
                         <!--<ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>-->
-                        <ComboBoxItem>
+                        <ComboBoxItem x:Name="Line">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
