@@ -20,6 +20,7 @@
     <None Remove="images\rectangle.png" />
     <None Remove="images\redo.png" />
     <None Remove="images\save.png" />
+    <None Remove="images\shape.png" />
     <None Remove="images\triangle.png" />
     <None Remove="images\undo.png" />
     <None Remove="new.png" />
@@ -62,6 +63,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\shape.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\triangle.png">

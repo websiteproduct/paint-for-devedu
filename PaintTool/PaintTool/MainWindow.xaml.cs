@@ -285,6 +285,11 @@ namespace PaintTool
         {
             ToggleButton currentToggleBtn = (ToggleButton)sender;
             currentToggleBtn.Background = (bool)currentToggleBtn.IsChecked ? Brushes.LightGray : Brushes.Transparent;
+            if ((bool)Shapes.IsChecked)
+            {
+                ShapeList.Visibility = Visibility.Visible;
+            }
+            else ShapeList.Visibility = Visibility.Collapsed;
             AdditionalPanelToggler();
         }
 

@@ -10,6 +10,7 @@
         <Image x:Key="BrushImg" Source="images\brush.png" Width="16" Height="16"/>
         <Image x:Key="EraserImg" Source="images\eraser.png" Width="16" Height="16"/>
         <Image x:Key="BucketImg" Source="images\bucket.png" Width="16" Height="16"/>
+        <Image x:Key="ShapeImg" Source="images\shape.png" Width="16" Height="16"/>
         <Style TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -68,6 +69,7 @@
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -108,8 +110,11 @@
                     <RadioButton Grid.Column="8" x:Name="Filling" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged">
                         <ContentControl Content="{StaticResource BucketImg}"/>
                     </RadioButton>
-                    <ComboBox x:Name="ShapeList" Grid.Column="9" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
-                        <ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>
+                    <RadioButton Grid.Column="9" x:Name="Shapes" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged">
+                        <ContentControl Content="{StaticResource ShapeImg}"/>
+                    </RadioButton>
+                    <ComboBox x:Name="ShapeList" Grid.Column="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Visibility="Collapsed">
+                        <!--<ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>-->
                         <ComboBoxItem>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -171,7 +176,7 @@
                             </Grid>
                         </ComboBoxItem>
                     </ComboBox>
-                    <Grid x:Name="SizePanel" Grid.Column="10" Margin="10,0,0,0" Visibility="Collapsed">
+                    <Grid x:Name="SizePanel" Grid.Column="11" Margin="10,0,0,0" Visibility="Collapsed">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="30"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -184,7 +189,7 @@
                         <Slider x:Name="SizeSlider" Grid.Column ="1" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SizeSlider_ValueChanged" Foreground="White"/>
                         <TextBox x:Name="SizeInput" Height="20" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="5,0,0,0" Width="20" MaxLength="2" />
                     </Grid>
-                    <Grid x:Name="ColorsGrid" Grid.Column="11" Height="30" VerticalAlignment="Center" Visibility="Collapsed">
+                    <Grid x:Name="ColorsGrid" Grid.Column="12" Height="30" VerticalAlignment="Center" Visibility="Collapsed">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -405,7 +410,7 @@
                         </ComboBox>
 
                     </Grid>
-                    <Button x:Name="ClearImageBtn" Grid.Column="12" BorderThickness="0,0,0,0" Margin="5,0,0,0" Click="ClearImageBtn_Click">
+                    <Button x:Name="ClearImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Margin="5,0,0,0" Click="ClearImageBtn_Click">
                         <Button.Background>
                             <ImageBrush ImageSource="images\close.png" Stretch="None" />
                         </Button.Background>
