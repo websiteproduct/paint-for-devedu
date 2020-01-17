@@ -229,7 +229,7 @@ namespace PaintTool
         #endregion
 
         #region Методы Рисования Фигур
-        public void DrawRectangle(object sender, MouseEventArgs e)
+        public void DrawingRectangle(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -246,7 +246,7 @@ namespace PaintTool
             }       
         }
 
-        public void DrawLineOnField(object sender, MouseEventArgs e)
+        public void DrawingLineOnField(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -260,7 +260,7 @@ namespace PaintTool
             }
         }
 
-        public void BrushPaint(object sender, MouseEventArgs e)
+        public void DrawingBrush(object sender, MouseEventArgs e)
         {
             DrawLine(prev, position);
             prev = position;
@@ -268,6 +268,50 @@ namespace PaintTool
             position.Y = (int)(e.GetPosition(PaintField).Y);
             PutInUndoStack();
         }
+
+        public void DrawingTriangle(object sender, MouseEventArgs e)
+        {
+            
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                position.X = (int)(e.GetPosition(PaintField).X);
+                position.Y = (int)(e.GetPosition(PaintField).Y);
+            }
+
+            if (e.LeftButton == MouseButtonState.Released)
+            {
+                DrawLine(prev, position);
+                DrawLine(position, new Point(2 * position.X - prev.X, prev.Y));
+                DrawLine(new Point(2 * position.X - prev.X, prev.Y), prev);
+            }
+        }
+
+        //public void DrawingBrokenLine(object sender, MouseEventArgs e)
+        //{
+        //    Point start = prev;
+        //    bool drawing = true;
+
+        //    while (drawing == true)
+        //    {
+        //        if (e.LeftButton == MouseButtonState.Pressed)
+        //        {
+        //            position.X = (int)(e.GetPosition(PaintField).X);
+        //            position.Y = (int)(e.GetPosition(PaintField).Y);
+        //        }
+
+        //        if (e.LeftButton == MouseButtonState.Released)
+        //        {
+        //            DrawLine(prev, position);
+        //        }
+        //        prev = position;
+        //        if (e.LeftButton == this.MouseDoubleClick)
+        //        {
+
+        //        }
+        //    }
+            
+        //}
+
 
         #endregion
 
@@ -308,22 +352,32 @@ namespace PaintTool
 
             if ((bool)BrushToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
             {
-                BrushPaint(sender, e);
+                DrawingBrush(sender, e);
             }
 
-            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Rectangle)
+            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == RectangleShape)
             {
-                DrawRectangle(sender, e);
+                DrawingRectangle(sender, e);
             }
 
-            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Line)
+            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
             {
-                DrawLineOnField(sender, e);
+                DrawingLineOnField(sender, e);
             }
 
-            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Ellipse)
+            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
             {
-                
+                // Код для элипса
+            }
+
+            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
+            {
+                DrawingTriangle(sender, e);
+            }
+
+            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+                //DrawingBrokenLine(sender, e);
             }
 
 

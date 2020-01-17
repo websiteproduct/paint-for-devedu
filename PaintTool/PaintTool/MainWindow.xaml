@@ -115,7 +115,7 @@
                     </RadioButton>
                     <ComboBox x:Name="ShapeList" Grid.Column="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Visibility="Collapsed" SelectionChanged="ShapeList_SelectionChanged">
                         <!--<ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>-->
-                        <ComboBoxItem x:Name="Line">
+                        <ComboBoxItem x:Name="LineShape">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -125,7 +125,7 @@
                                 <TextBlock Text="Line" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="Rectangle">
+                        <ComboBoxItem x:Name="RectangleShape">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -135,7 +135,7 @@
                                 <TextBlock Text="Rectangle" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="Ellipse">
+                        <ComboBoxItem x:Name="EllipseShape">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -145,7 +145,7 @@
                                 <TextBlock Text="Ellipse" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="Triangle">
+                        <ComboBoxItem x:Name="TriangleShape">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -155,7 +155,7 @@
                                 <TextBlock Text="Triangle" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="Polygonal">
+                        <ComboBoxItem x:Name="PolygonalShape">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -165,7 +165,7 @@
                                 <TextBlock Text="Polygonal Tool" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="BrokenLine">
+                        <ComboBoxItem x:Name="BrokenLineShape">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
