@@ -225,6 +225,50 @@ namespace PaintTool
                 wb.WritePixels(rect, GetColor(), stride, 0);
             }
         }
+
+        #endregion
+
+        #region Методы Рисования Фигур
+        public void DrawRectangle(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                position.X = (int)(e.GetPosition(PaintField).X);
+                position.Y = (int)(e.GetPosition(PaintField).Y);
+            }
+
+            if (e.LeftButton == MouseButtonState.Released)
+            {
+                DrawLine(prev, new Point(position.X, prev.Y));
+                DrawLine(new Point(position.X, prev.Y), position);
+                DrawLine(position, new Point(prev.X, position.Y));
+                DrawLine(new Point(prev.X, position.Y), prev);
+            }       
+        }
+
+        public void DrawLineOnField(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                position.X = (int)(e.GetPosition(PaintField).X);
+                position.Y = (int)(e.GetPosition(PaintField).Y);
+            }
+
+            if (e.LeftButton == MouseButtonState.Released)
+            {
+                DrawLine(prev, position);
+            }
+        }
+
+        public void BrushPaint(object sender, MouseEventArgs e)
+        {
+            DrawLine(prev, position);
+            prev = position;
+            position.X = (int)(e.GetPosition(PaintField).X);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
+            PutInUndoStack();
+        }
+
         #endregion
 
         #region КНОПКИ
@@ -264,23 +308,19 @@ namespace PaintTool
 
             if ((bool)BrushToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
             {
-                DrawLine(prev, position);
-                prev = position;
-                position.X = (int)(e.GetPosition(PaintField).X);
-                position.Y = (int)(e.GetPosition(PaintField).Y);
-                PutInUndoStack();
+                BrushPaint(sender, e);
             }
 
-            if ((bool)EraserToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
+            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Rectangle)
             {
-                DrawLine(prev, new Point(position.X, prev.Y));
-                DrawLine(new Point(position.X, prev.Y), position);
-                DrawLine(position, new Point(prev.X, position.Y));
-                DrawLine(new Point(prev.X, position.Y), prev);
-
-                position.X = (int)(e.GetPosition(PaintField).X);
-                position.Y = (int)(e.GetPosition(PaintField).Y);
+                DrawRectangle(sender, e);
             }
+
+            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Line)
+            {
+                DrawLineOnField(sender, e);
+            }
+
         }
 
         private void AdditionalPanelToggler()
@@ -300,7 +340,6 @@ namespace PaintTool
             }
             else ShapeList.Visibility = Visibility.Collapsed;
             AdditionalPanelToggler();
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Line) Trace.WriteLine("zhopa");
         }
 
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

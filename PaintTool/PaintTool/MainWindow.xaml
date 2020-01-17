@@ -125,7 +125,7 @@
                                 <TextBlock Text="Line" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem>
+                        <ComboBoxItem x:Name="Rectangle">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
