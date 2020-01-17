@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PaintTool"
         mc:Ignorable="d"
-        Title="New File" Height="200" Width="440" ScrollViewer.VerticalScrollBarVisibility="Hidden" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
+        Title="New File" Height="200" Width="440" ScrollViewer.VerticalScrollBarVisibility="Hidden" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="Manual">
     <Grid Margin="10,10,10,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />

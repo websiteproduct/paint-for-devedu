@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -262,16 +263,20 @@ namespace PaintTool
             }
         }
 
-        private void BrushToggleBtn_Click(object sender, RoutedEventArgs e)
+        private void AdditionalPanelToggler()
         {
             // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
-            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Hidden;
+            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+            SizePanel.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Collapsed;
         }
-        private void BrushToggleBtn_Checked(object sender, RoutedEventArgs e)
+
+        private void CurrentToggleBtn_IsCheckedChanged(object sender, RoutedEventArgs e)
         {
-            BrushToggleBtn.BorderBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            BrushToggleBtn.BorderThickness = new Thickness(1, 1, 1, 1);
+            ToggleButton currentToggleBtn = (ToggleButton)sender;
+            currentToggleBtn.Background = (bool)currentToggleBtn.IsChecked ? Brushes.LightGray : Brushes.Transparent;
+            AdditionalPanelToggler();
         }
+
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             // Появление значения позиции слайдера в окошке справа от него 
@@ -483,6 +488,7 @@ namespace PaintTool
             // Отрисовываем созданный WriteableBitmap в поле PaintField
             PaintField.Source = wb;
         }
+
         private void Redo_Click(object sender, RoutedEventArgs e)
         {
 
