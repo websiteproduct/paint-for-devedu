@@ -32,6 +32,14 @@ namespace PaintTool
 
         //две структуры для хранения кооординат
         Point prev; Point position;
+        
+        // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
+        // хранит состояние битмапа после отмены(redoStack)
+        Stack<WriteableBitmap> undoStack = new Stack<WriteableBitmap>();
+        Stack<WriteableBitmap> redoStack = new Stack<WriteableBitmap>();
+        // Переменные, которые являются промежуточными. В них записывается клон битмапа, а потом они записываются в свои стеки.
+        WriteableBitmap copyUndo;
+        WriteableBitmap copyRedo;
 
         public MainWindow()
         {
@@ -240,7 +248,7 @@ namespace PaintTool
 
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
-
+            
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 //здесь нужно написать код для того, чтоб во время рисования кистью не начинать с конца предыдущей линии
@@ -260,6 +268,7 @@ namespace PaintTool
                 prev = position;
                 position.X = (int)(e.GetPosition(PaintField).X);
                 position.Y = (int)(e.GetPosition(PaintField).Y);
+                PutInUndoStack();
             }
 
             if ((bool)EraserToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
@@ -501,7 +510,7 @@ namespace PaintTool
 
             //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
             wb.WritePixels(rect, pixels, stride, 0);
-
+            PutInUndoStack();
             // Отрисовываем созданный WriteableBitmap в поле PaintField
             PaintField.Source = wb;
         }
@@ -511,10 +520,55 @@ namespace PaintTool
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == Line) Trace.WriteLine("zhopa");
         }
 
-        private void Redo_Click(object sender, RoutedEventArgs e)
-        {
 
+        #endregion
+
+        #region Методы для Undo, Redo
+
+        private void Undomethod()    
+        {
+            if (undoStack.Count > 0)
+            {
+                PutInRedoStack();
+                wb = undoStack.Pop();
+                PaintField.Source = wb;
+            }
+            else if (undoStack.Count == 0)
+            {
+                return;
+            }
         }
+        private void PutInUndoStack()
+        {
+            copyUndo = wb.Clone();
+            undoStack.Push(copyUndo);
+        }
+        private void PutInRedoStack()
+        {
+            copyRedo = wb.Clone();
+            redoStack.Push(copyRedo);
+        }
+        private void RedoButton_Click(object sender, RoutedEventArgs e)
+        {
+            Redomethod();
+        }
+        private void UndoButton_Click(object sender, RoutedEventArgs e)
+        {
+            Undomethod();
+        }
+        private void Redomethod()
+        {
+            if (redoStack.Count > 0)
+            {
+                wb = redoStack.Pop();
+                PaintField.Source = wb;
+            }
+            else if (undoStack.Count == 0)
+            {
+                return;
+            }
+        }
+
         #endregion
     }
 }

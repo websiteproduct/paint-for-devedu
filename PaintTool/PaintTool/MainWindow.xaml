@@ -88,12 +88,12 @@
                             <ImageBrush ImageSource="images\save.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="Undo" Grid.Column="2" BorderThickness="0,0,0,0">
+                    <Button x:Name="Undo" Grid.Column="2" BorderThickness="0,0,0,0" Click="UndoButton_Click">
                         <Button.Background>
                             <ImageBrush ImageSource="images\undo.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0" Click="Redo_Click">
+                    <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0" Click="RedoButton_Click">
                         <Button.Background>
                             <ImageBrush ImageSource="images\redo.png" Stretch="None"/>
                         </Button.Background>
