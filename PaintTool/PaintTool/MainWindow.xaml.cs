@@ -225,6 +225,22 @@ namespace PaintTool
                 wb.WritePixels(rect, GetColor(), stride, 0);
             }
         }
+        public void SetPixel(int x, int y)
+        {
+
+            if (x <= PaintField.Width && y <= PaintField.Height)
+            {
+                Int32Rect rect = new Int32Rect(
+                        Convert.ToInt32(x),
+                        Convert.ToInt32(y),
+                        1,
+                        1);
+
+                int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+
+                wb.WritePixels(rect, GetColor(), stride, 0);
+            }
+        }
 
         #endregion
 
@@ -285,6 +301,129 @@ namespace PaintTool
                 DrawLine(new Point(2 * position.X - prev.X, prev.Y), prev);
             }
         }
+        public void DrawingCircle(object sender, MouseEventArgs e)
+        {
+            int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
+            int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
+            int x0 = Convert.ToInt32(prev.X);
+            int y0 = Convert.ToInt32(prev.Y);
+            int x;
+            int y;
+            int[] xArr;
+            int[] yArr;
+            int quarter = FindQuarter(prev, position);
+
+            Point center;
+            center.X = (int)((Math.Abs(position.X - prev.X )+ 1) / 2);
+            center.Y = (int)((Math.Abs(position.Y - prev.Y) + 1) / 2);
+            double r = Math.Sqrt(wth * wth + hght * hght);
+
+            if (hght >= wth)
+            {
+                xArr = new int[hght];
+                yArr = new int[hght];
+               
+
+                if (quarter == 4)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = (int)Math.Sqrt(r*r - i*i) - 1;
+                        xArr[i] =(int)center.X + x;
+                        yArr[i] = (int)center.Y + i;
+                    }
+                }
+                if (quarter == 3)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = (int)Math.Sqrt(r * r - i * i) - 1;
+                        xArr[i] = (int)center.X - x >= 0 ? -x : 0;
+                        yArr[i] = (int)center.Y + i;
+                    }
+                }
+
+                if (quarter == 1)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = (int)Math.Sqrt(r * r - i * i) - 1;
+                        xArr[i] = (int)center.X + x;
+                        yArr[i] = (int)center.Y - i;
+                    }
+                }
+
+                if (quarter == 2)
+                {
+                    for (int i = 0; i < hght; i++)
+                    {
+                        x = (int)Math.Sqrt(r * r - i * i) - 1;
+                        xArr[i] = (int)center.X - x;
+                        yArr[i] = (int)center.Y - i;
+                    }
+                }
+
+                for (int i = 0; i < hght; i++)
+                {
+                    prev.Y = yArr[i];
+                    prev.X = xArr[i];
+                    SetPixel(prev);
+                }
+            }
+            else if (hght < wth)
+            {
+                xArr = new int[wth];
+                yArr = new int[wth];
+             
+
+                if (quarter == 1)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = (int)Math.Sqrt(r * r - i * i) - 1;
+                        yArr[i] = (int)center.Y - y;
+                        xArr[i] = (int)center.X + i;
+                    }
+                }
+
+                if (quarter == 2)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = (int)Math.Sqrt(r * r - i * i) - 1;
+                        yArr[i] = (int)center.Y - y;
+                        xArr[i] = (int)center.X - i;
+                    }
+                }
+
+                if (quarter == 4)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = (int)Math.Sqrt(r * r - i * i) - 1;
+                        yArr[i] = (int)center.Y + y;
+                        xArr[i] = (int)center.X + i;
+                    }
+                }
+
+                if (quarter == 3)
+                {
+                    for (int i = 0; i < wth; i++)
+                    {
+                        y = (int)Math.Sqrt(r * r - i * i) - 1;
+                        yArr[i] = (int)center.Y + y;
+                        xArr[i] = (int)center.X - i;
+                    }
+                }
+
+                for (int i = 0; i < wth; i++)
+                {
+                    prev.Y = yArr[i];
+                    prev.X = xArr[i];
+                    SetPixel(prev);
+                }
+            }
+        }
 
         //public void DrawingBrokenLine(object sender, MouseEventArgs e)
         //{
@@ -309,7 +448,7 @@ namespace PaintTool
 
         //        }
         //    }
-            
+
         //}
 
 
@@ -367,7 +506,7 @@ namespace PaintTool
 
             else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
             {
-                // Код для элипса
+                DrawingCircle(sender, e);
             }
 
             else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
