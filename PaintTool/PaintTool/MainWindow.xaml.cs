@@ -39,7 +39,9 @@ namespace PaintTool
             InitializeComponent();
             SetGridSize(640, 480);
             Paint(255, 255, 255, 255);
-            BrushToggleBtn.IsChecked = true;
+            //BrushToggleBtn.IsChecked = true;
+            Shapes.IsChecked = true;
+            ShapeList.SelectedItem = RectangleShape;
         }
 
         #region СОЗДАНИЕ НОВОГО ФАЙЛА
@@ -262,10 +264,24 @@ namespace PaintTool
 
             //if (e.LeftButton == MouseButtonState.Released)
             //{
-            DrawLine(prev, new Point(position.X, prev.Y), true);
-            DrawLine(new Point(position.X, prev.Y), position, true);
-            DrawLine(position, new Point(prev.X, position.Y), true);
-            DrawLine(new Point(prev.X, position.Y), prev, true);
+            if (isShiftPressed)
+            {
+                //DrawLine(prev, new Point(position.X, prev.Y), true);
+                //Trace.WriteLine($"First point: {prev.X},{prev.Y}. Second Point: {position.X},{position.Y}");
+                //DrawLine(prev, new Point(prev.X, position.X), true);
+                Point diag; diag.X = position.X; diag.Y = position.X;
+                DrawLine(prev, new Point(position.X, prev.Y), true);
+                DrawLine(new Point(position.X, prev.Y), position, true);
+                DrawLine(diag, new Point(prev.X, position.Y), true);
+                DrawLine(new Point(prev.X, position.Y), prev, true);
+            }
+            else
+            {
+                DrawLine(prev, new Point(position.X, prev.Y), true);
+                DrawLine(new Point(position.X, prev.Y), position, true);
+                DrawLine(position, new Point(prev.X, position.Y), true);
+                DrawLine(new Point(prev.X, position.Y), prev, true);
+            }
             //}
         }
 
@@ -459,8 +475,8 @@ namespace PaintTool
 
             prev.X = (int)(e.GetPosition(PaintField).X);
             prev.Y = (int)(e.GetPosition(PaintField).Y);
-            position.X = prev.X;
-            position.Y = prev.Y;
+            //position.X = prev.X;
+            //position.Y = prev.Y;
             if (ShapeList.SelectedItem == Filling)
             {
                 PixelFill(e);
@@ -581,10 +597,6 @@ namespace PaintTool
             //}
             //else Trace.WriteLine("poshel nah");
         }
-
-
-
-
 
         //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
         //{
