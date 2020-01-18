@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace PaintTool
@@ -32,19 +25,21 @@ namespace PaintTool
 
         //две структуры для хранения кооординат
         Point prev; Point position;
-        
+
         // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
         // хранит состояние битмапа после отмены(redoStack)
         Stack<WriteableBitmap> undoStack = new Stack<WriteableBitmap>();
         Stack<WriteableBitmap> redoStack = new Stack<WriteableBitmap>();
         // Переменные, которые являются промежуточными. В них записывается клон битмапа, а потом они записываются в свои стеки.
-        WriteableBitmap copyUndo;
-        WriteableBitmap copyRedo;
+        WriteableBitmap copyUndo, copyRedo, wbCopy;
 
         public MainWindow()
         {
             // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
             InitializeComponent();
+            SetGridSize(640, 480);
+            Paint(255, 255, 255, 255);
+            BrushToggleBtn.IsChecked = true;
         }
 
         #region СОЗДАНИЕ НОВОГО ФАЙЛА
@@ -65,11 +60,15 @@ namespace PaintTool
         #endregion
 
         #region РАБОЧАЯ СВЯЗКА МЕТОДОВ ДЛЯ РИСОВАНИЯ ПРЯМОЙ
-        private void DrawLine(Point prev, Point position)
+        private void DrawLine(Point prev, Point position, bool altBitmap = false)
         {
-
             int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
             int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
+            if (ShapeList.SelectedItem == RectangleShape || ShapeList.SelectedItem == TriangleShape)
+            {
+                wth--;
+                hght--;
+            }
             int x0 = Convert.ToInt32(prev.X);
             int y0 = Convert.ToInt32(prev.Y);
             int x;
@@ -128,7 +127,7 @@ namespace PaintTool
                 {
                     prev.Y = yArr[i];
                     prev.X = xArr[i];
-                    SetPixel(prev);
+                    SetPixel(prev, altBitmap);
                 }
             }
             else if (hght < wth)
@@ -181,7 +180,7 @@ namespace PaintTool
                 {
                     prev.Y = yArr[i];
                     prev.X = xArr[i];
-                    SetPixel(prev);
+                    SetPixel(prev, altBitmap);
                 }
             }
 
@@ -209,10 +208,10 @@ namespace PaintTool
             return quarter;
         }
 
-        public void SetPixel(Point pxl)
+        public void SetPixel(Point pxl, bool altBitmap)
         {
 
-            if (pxl.X <= PaintField.Width && pxl.Y <= PaintField.Height)
+            if ((pxl.X < PaintField.Width && pxl.X > 0) && (pxl.Y < PaintField.Height && pxl.Y > 0))
             {
                 Int32Rect rect = new Int32Rect(
                         Convert.ToInt32(pxl.X),
@@ -220,12 +219,18 @@ namespace PaintTool
                         1,
                         1);
 
-                int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-
-                wb.WritePixels(rect, GetColor(), stride, 0);
+                //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+                //if ((pxl.X < 1 || pxl.X > PaintField.Width) || (pxl.Y < 1 || pxl.Y > PaintField.Height))
+                //{
+                //    return;
+                //} else 
+                if (altBitmap)
+                    wbCopy.WritePixels(rect, GetColor(), 4, 0);
+                else
+                    wb.WritePixels(rect, GetColor(), 4, 0);
             }
         }
-        public void SetPixel(int x, int y)
+        public void SetPixel(int x, int y, bool altBitmap)
         {
 
             if (x <= PaintField.Width && y <= PaintField.Height)
@@ -236,9 +241,11 @@ namespace PaintTool
                         1,
                         1);
 
-                int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-
-                wb.WritePixels(rect, GetColor(), stride, 0);
+                //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+                if (altBitmap)
+                    wbCopy.WritePixels(rect, GetColor(), 4, 0);
+                else
+                    wb.WritePixels(rect, GetColor(), 4, 0);
             }
         }
 
@@ -247,19 +254,19 @@ namespace PaintTool
         #region Методы Рисования Фигур
         public void DrawingRectangle(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                position.X = (int)(e.GetPosition(PaintField).X);
-                position.Y = (int)(e.GetPosition(PaintField).Y);
-            }
+            //if (e.LeftButton == MouseButtonState.Pressed)
+            //{
+            position.X = (int)(e.GetPosition(PaintField).X);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
+            //}
 
-            if (e.LeftButton == MouseButtonState.Released)
-            {
-                DrawLine(prev, new Point(position.X, prev.Y));
-                DrawLine(new Point(position.X, prev.Y), position);
-                DrawLine(position, new Point(prev.X, position.Y));
-                DrawLine(new Point(prev.X, position.Y), prev);
-            }       
+            //if (e.LeftButton == MouseButtonState.Released)
+            //{
+            DrawLine(prev, new Point(position.X, prev.Y), true);
+            DrawLine(new Point(position.X, prev.Y), position, true);
+            DrawLine(position, new Point(prev.X, position.Y), true);
+            DrawLine(new Point(prev.X, position.Y), prev, true);
+            //}
         }
 
         public void DrawingLineOnField(object sender, MouseEventArgs e)
@@ -282,24 +289,16 @@ namespace PaintTool
             prev = position;
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
-            PutInUndoStack();
         }
 
         public void DrawingTriangle(object sender, MouseEventArgs e)
         {
-            
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                position.X = (int)(e.GetPosition(PaintField).X);
-                position.Y = (int)(e.GetPosition(PaintField).Y);
-            }
+            position.X = (int)(e.GetPosition(PaintField).X);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
 
-            if (e.LeftButton == MouseButtonState.Released)
-            {
-                DrawLine(prev, position);
-                DrawLine(position, new Point(2 * position.X - prev.X, prev.Y));
-                DrawLine(new Point(2 * position.X - prev.X, prev.Y), prev);
-            }
+            DrawLine(prev, position, true);
+            DrawLine(position, new Point(2 * position.X - prev.X, prev.Y), true);
+            DrawLine(new Point(2 * position.X - prev.X, prev.Y), prev, true);
         }
         public void DrawingCircle(object sender, MouseEventArgs e)
         {
@@ -314,7 +313,7 @@ namespace PaintTool
             int quarter = FindQuarter(prev, position);
 
             Point center;
-            center.X = (int)((Math.Abs(position.X - prev.X )+ 1) / 2);
+            center.X = (int)((Math.Abs(position.X - prev.X) + 1) / 2);
             center.Y = (int)((Math.Abs(position.Y - prev.Y) + 1) / 2);
             double r = Math.Sqrt(wth * wth + hght * hght);
 
@@ -322,14 +321,13 @@ namespace PaintTool
             {
                 xArr = new int[hght];
                 yArr = new int[hght];
-               
 
                 if (quarter == 4)
                 {
                     for (int i = 0; i < hght; i++)
                     {
-                        x = (int)Math.Sqrt(r*r - i*i) - 1;
-                        xArr[i] =(int)center.X + x;
+                        x = (int)Math.Sqrt(r * r - i * i) - 1;
+                        xArr[i] = (int)center.X + x;
                         yArr[i] = (int)center.Y + i;
                     }
                 }
@@ -367,14 +365,14 @@ namespace PaintTool
                 {
                     prev.Y = yArr[i];
                     prev.X = xArr[i];
-                    SetPixel(prev);
+                    //SetPixel(prev);
                 }
             }
             else if (hght < wth)
             {
                 xArr = new int[wth];
                 yArr = new int[wth];
-             
+
 
                 if (quarter == 1)
                 {
@@ -420,7 +418,8 @@ namespace PaintTool
                 {
                     prev.Y = yArr[i];
                     prev.X = xArr[i];
-                    SetPixel(prev);
+                    //SetPixel(prev);
+                    Trace.WriteLine(prev);
                 }
             }
         }
@@ -451,7 +450,6 @@ namespace PaintTool
 
         //}
 
-
         #endregion
 
         #region КНОПКИ
@@ -463,30 +461,80 @@ namespace PaintTool
             prev.Y = (int)(e.GetPosition(PaintField).Y);
             position.X = prev.X;
             position.Y = prev.Y;
-            Trace.WriteLine(prev.X);
-            Trace.WriteLine(prev.Y);
+            if (ShapeList.SelectedItem == Filling)
+            {
+                PixelFill(e);
+            }
+            if ((bool)Shapes.IsChecked)
+            {
+                wbCopy = wb;
+            }
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //запоминаем координаты в момент отпускания ЛКМ
 
-            prev.X = 0;
-            prev.Y = 0;
+            //prev.X = 0;
+            //prev.Y = 0;
 
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
-            
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                //здесь нужно написать код для того, чтоб во время рисования кистью не начинать с конца предыдущей линии
-            }
-            else
-            {
 
+            //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
+            //{
+            //    if (Convert.ToInt32(SizeInput.Text) == 2)
+            //    {
+            //        Point test1 = new Point(prev.X + 1, prev.Y + 1);
+            //        Point test2 = new Point(position.X + 1, position.Y + 1);
+            //        DrawLine(test1, test2);
+            //        test1 = new Point(prev.X - 1, prev.Y - 1);
+            //        test2 = new Point(position.X - 1, position.Y - 1);
+            //        DrawLine(test1, test2);
+            //    }
+            //    else DrawLine(prev, position);
+            //}
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == RectangleShape)
+            {
+                PaintField.Source = wbCopy;
+                wb = wbCopy;
+            }
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
+            {
+                PaintField.Source = wbCopy;
+                wb = wbCopy;
+            }
+
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
+            {
+                PaintField.Source = wbCopy;
+                wb = wbCopy;
+            }
+
+            if ((bool)BrushToggleBtn.IsChecked) PutInUndoStack();
+        }
+
+        bool isShiftPressed = false;
+
+        private void KeyDown_Event(object sender, KeyEventArgs e)
+        {
+            isShiftPressed = e.Key == Key.LeftShift ? true : false;
+            //if (e.Key == Key.LeftShift)
+            //{
+            //    isShiftPressed = true;
+            //} else 
+        }
+        private void KeyUp_Event(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftShift)
+            {
+                isShiftPressed = false;
             }
         }
+
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
+            position.X = e.GetPosition(PaintField).X;
+            position.Y = e.GetPosition(PaintField).Y;
             // Метод для рисования КИСТЬЮ при нажатой ЛКМ
 
             if ((bool)BrushToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
@@ -494,40 +542,76 @@ namespace PaintTool
                 DrawingBrush(sender, e);
             }
 
-            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == RectangleShape)
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == RectangleShape)
             {
-                DrawingRectangle(sender, e);
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    wbCopy = new WriteableBitmap(wb);
+                    PaintField.Source = wb;
+                    DrawingRectangle(sender, e);
+                    PaintField.Source = wbCopy;
+                }
             }
 
-            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
             {
-                DrawingLineOnField(sender, e);
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    wbCopy = new WriteableBitmap(wb);
+                    PaintField.Source = wb;
+                    DrawingTriangle(sender, e);
+                    PaintField.Source = wbCopy;
+                }
             }
 
-            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
             {
-                DrawingCircle(sender, e);
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    wbCopy = new WriteableBitmap(wb);
+                    PaintField.Source = wb;
+                    DrawLine(prev, position, true);
+                    PaintField.Source = wbCopy;
+                }
             }
 
-            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
-            {
-                DrawingTriangle(sender, e);
-            }
-
-            else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
-            {
-                //DrawingBrokenLine(sender, e);
-            }
-
-
-
+            //if (isShiftPressed)
+            //{
+            //    Trace.WriteLine("shift is activated");
+            //}
+            //else Trace.WriteLine("poshel nah");
         }
+
+
+
+
+
+        //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
+        //{
+        //    DrawingLineOnField(sender, e);
+        //}
+
+        //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
+        //{
+        //    DrawingCircle(sender, e);
+        //}
+
+        //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
+        //{
+        //    DrawingTriangle(sender, e);
+        //}
+
+        //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+        //{
+
+        //    //DrawingBrokenLine(sender, e);
+        //}
 
         private void AdditionalPanelToggler()
         {
             // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
-            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Collapsed;
-            SizePanel.Visibility = (bool)BrushToggleBtn.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+            SizePanel.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void CurrentToggleBtn_IsCheckedChanged(object sender, RoutedEventArgs e)
@@ -604,7 +688,7 @@ namespace PaintTool
 
         int[] p1 = new int[2], p2 = new int[2];
 
-        private void Down(object sender, MouseEventArgs e)
+        private void DownDown(object sender, MouseEventArgs e)
         {
             p1[0] = (int)e.GetPosition(PaintField).X;
             p1[1] = (int)e.GetPosition(PaintField).Y;
@@ -683,6 +767,34 @@ namespace PaintTool
             wb.WritePixels(rect, GetColor(), 4, 0);
         }
 
+        // закрашиваем пиксели
+
+        private void PixelFill(MouseEventArgs e)
+        {
+            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
+            int stride = bytesPerPixel * (int)PaintField.Width; // general formula valid for all PixelFormats
+
+            //Width * height *  bytes per pixel aka(32/8)
+            byte[] pixels = new byte[stride * (int)PaintField.Height];
+
+            // Закрашиваем наш прямоугольник нужным цветом
+            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
+            {
+                //if (pixels[pixel] == (byte)255 && pixels[pixel + 1] == (byte)255 && pixels[pixel + 2] == (byte)255 && pixels[pixel + 3] == (byte)255)
+                //{
+                pixels[pixel] = 0;        // blue (depends normally on BitmapPalette)
+                pixels[pixel + 1] = 0;  // green (depends normally on BitmapPalette)
+                pixels[pixel + 2] = 255;    // red (depends normally on BitmapPalette)
+                pixels[pixel + 3] = 255;   // alpha (depends normally on BitmapPalette)
+                                           //}
+            }
+
+            Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
+
+            //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+            wb.WritePixels(rect, pixels, stride, 0);
+        }
+
         // Удаление пикселей (закрашивание в белый цвет)
         private void ErasePixel(MouseEventArgs e)
         {
@@ -728,7 +840,6 @@ namespace PaintTool
             // Создаем WriteableBitmap поле
             wb = new WriteableBitmap((int)PaintField.Width, (int)PaintField.Height, 96, 96, PixelFormats.Bgra32, null);
 
-
             // Описание координат закрашиваемого прямоугольника
             Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
 
@@ -749,7 +860,7 @@ namespace PaintTool
 
             //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
             wb.WritePixels(rect, pixels, stride, 0);
-            PutInUndoStack();
+            //PutInUndoStack();
             // Отрисовываем созданный WriteableBitmap в поле PaintField
             PaintField.Source = wb;
         }
@@ -764,7 +875,7 @@ namespace PaintTool
 
         #region Методы для Undo, Redo
 
-        private void Undomethod()    
+        private void Undomethod()
         {
             if (undoStack.Count > 0)
             {
@@ -787,6 +898,7 @@ namespace PaintTool
             copyRedo = wb.Clone();
             redoStack.Push(copyRedo);
         }
+
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
             Redomethod();
