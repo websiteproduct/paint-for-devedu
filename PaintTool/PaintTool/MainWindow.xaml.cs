@@ -23,8 +23,10 @@ namespace PaintTool
         // Инициализируем переменную для хранения цвета в формате Bgra32
         byte[] colorData = { 0, 0, 0, 255 };
 
-        //две структуры для хранения кооординат
-        Point prev; Point position;
+        bool drawingBrokenLine = false;
+
+        //Структуры для хранения кооординат
+        Point prev, position, tempBrokenLine, startBrokenLine;
 
         // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
         // хранит состояние битмапа после отмены(redoStack)
@@ -256,21 +258,12 @@ namespace PaintTool
         #region Методы Рисования Фигур
         public void DrawingRectangle(object sender, MouseEventArgs e)
         {
-            //if (e.LeftButton == MouseButtonState.Pressed)
-            //{
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
-            //}
 
-            //if (e.LeftButton == MouseButtonState.Released)
-            //{
             if (isShiftPressed)
             {
-                //DrawLine(prev, new Point(position.X, prev.Y), true);
-                //Trace.WriteLine($"First point: {prev.X},{prev.Y}. Second Point: {position.X},{position.Y}");
-                //DrawLine(prev, new Point(prev.X, position.X), true);
 
-                Point diag; diag.X = position.X; diag.Y = position.X;
                 double length = position.X - prev.X;
                 if (position.X > prev.X)
                 {
@@ -282,7 +275,7 @@ namespace PaintTool
                     if (position.Y > prev.Y) DrawingSquare(length, -length);
                     else DrawingSquare(length, length);
                 }
-                
+
             }
             else
             {
@@ -291,7 +284,6 @@ namespace PaintTool
                 DrawLine(position, new Point(prev.X, position.Y), true);
                 DrawLine(new Point(prev.X, position.Y), prev, true);
             }
-            //}
         }
 
         private void DrawingSquare(double lengthX, double lengthY)
@@ -303,16 +295,10 @@ namespace PaintTool
         }
         public void DrawingLineOnField(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
                 position.X = (int)(e.GetPosition(PaintField).X);
                 position.Y = (int)(e.GetPosition(PaintField).Y);
-            }
 
-            if (e.LeftButton == MouseButtonState.Released)
-            {
                 DrawLine(prev, position);
-            }
         }
 
         public void DrawingBrush(object sender, MouseEventArgs e)
@@ -329,8 +315,8 @@ namespace PaintTool
             position.Y = (int)(e.GetPosition(PaintField).Y);
 
             DrawLine(prev, position, true);
-            DrawLine(position, new Point(2 * position.X - prev.X, prev.Y), true);
-            DrawLine(new Point(2 * position.X - prev.X, prev.Y), prev, true);
+            DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
+            DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
         }
         public void DrawingCircle(object sender, MouseEventArgs e)
         {
@@ -456,31 +442,18 @@ namespace PaintTool
             }
         }
 
-        //public void DrawingBrokenLine(object sender, MouseEventArgs e)
-        //{
-        //    Point start = prev;
-        //    bool drawing = true;
+        public void DrawingBrokenLine(object sender, MouseEventArgs e)
+        {
+            position.X = e.GetPosition(PaintField).X;
+            position.Y = e.GetPosition(PaintField).Y;
+            DrawLine(tempBrokenLine, position, true);
+        }
 
-        //    while (drawing == true)
-        //    {
-        //        if (e.LeftButton == MouseButtonState.Pressed)
-        //        {
-        //            position.X = (int)(e.GetPosition(PaintField).X);
-        //            position.Y = (int)(e.GetPosition(PaintField).Y);
-        //        }
-
-        //        if (e.LeftButton == MouseButtonState.Released)
-        //        {
-        //            DrawLine(prev, position);
-        //        }
-        //        prev = position;
-        //        if (e.LeftButton == this.MouseDoubleClick)
-        //        {
-
-        //        }
-        //    }
-
-        //}
+        private void EndOfBrokenLine(object sender, MouseButtonEventArgs e)
+        {
+            drawingBrokenLine = false;
+            DrawLine(tempBrokenLine, startBrokenLine);
+        }
 
         #endregion
 
@@ -491,8 +464,7 @@ namespace PaintTool
 
             prev.X = (int)(e.GetPosition(PaintField).X);
             prev.Y = (int)(e.GetPosition(PaintField).Y);
-            //position.X = prev.X;
-            //position.Y = prev.Y;
+
             if (ShapeList.SelectedItem == Filling)
             {
                 PixelFill(e);
@@ -501,42 +473,27 @@ namespace PaintTool
             {
                 wbCopy = wb;
             }
+
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+                if (drawingBrokenLine)
+                {
+                    wbCopy = new WriteableBitmap(wb);
+                    PaintField.Source = wb;
+                    DrawingBrokenLine(sender, e);
+                    PaintField.Source = wbCopy;
+                }
+            }
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //запоминаем координаты в момент отпускания ЛКМ
 
-            //prev.X = 0;
-            //prev.Y = 0;
-
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
+            tempBrokenLine = position;
 
-            //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
-            //{
-            //    if (Convert.ToInt32(SizeInput.Text) == 2)
-            //    {
-            //        Point test1 = new Point(prev.X + 1, prev.Y + 1);
-            //        Point test2 = new Point(position.X + 1, position.Y + 1);
-            //        DrawLine(test1, test2);
-            //        test1 = new Point(prev.X - 1, prev.Y - 1);
-            //        test2 = new Point(position.X - 1, position.Y - 1);
-            //        DrawLine(test1, test2);
-            //    }
-            //    else DrawLine(prev, position);
-            //}
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == RectangleShape)
-            {
-                PaintField.Source = wbCopy;
-                wb = wbCopy;
-            }
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
-            {
-                PaintField.Source = wbCopy;
-                wb = wbCopy;
-            }
-
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
+            if ((bool)Shapes.IsChecked)
             {
                 PaintField.Source = wbCopy;
                 wb = wbCopy;
@@ -550,10 +507,6 @@ namespace PaintTool
         private void KeyDown_Event(object sender, KeyEventArgs e)
         {
             isShiftPressed = e.Key == Key.LeftShift ? true : false;
-            //if (e.Key == Key.LeftShift)
-            //{
-            //    isShiftPressed = true;
-            //} else 
         }
         private void KeyUp_Event(object sender, KeyEventArgs e)
         {
@@ -607,11 +560,21 @@ namespace PaintTool
                 }
             }
 
-            //if (isShiftPressed)
-            //{
-            //    Trace.WriteLine("shift is activated");
-            //}
-            //else Trace.WriteLine("poshel nah");
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+               if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    if (drawingBrokenLine == false)
+                    {
+                        startBrokenLine = tempBrokenLine = prev;
+                    }
+                    drawingBrokenLine = true;
+                    wbCopy = new WriteableBitmap(wb);
+                    PaintField.Source = wb;
+                    DrawingBrokenLine(sender, e);
+                    PaintField.Source = wbCopy;
+                }
+            }
         }
 
         //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
