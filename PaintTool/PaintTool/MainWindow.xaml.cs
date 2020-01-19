@@ -269,11 +269,20 @@ namespace PaintTool
                 //DrawLine(prev, new Point(position.X, prev.Y), true);
                 //Trace.WriteLine($"First point: {prev.X},{prev.Y}. Second Point: {position.X},{position.Y}");
                 //DrawLine(prev, new Point(prev.X, position.X), true);
+
                 Point diag; diag.X = position.X; diag.Y = position.X;
-                DrawLine(prev, new Point(position.X, prev.Y), true);
-                DrawLine(new Point(position.X, prev.Y), position, true);
-                DrawLine(diag, new Point(prev.X, position.Y), true);
-                DrawLine(new Point(prev.X, position.Y), prev, true);
+                double length = position.X - prev.X;
+                if (position.X > prev.X)
+                {
+                    if (position.Y > prev.Y) DrawingSquare(length, length);
+                    else DrawingSquare(length, -length);
+                }
+                else
+                {
+                    if (position.Y > prev.Y) DrawingSquare(length, -length);
+                    else DrawingSquare(length, length);
+                }
+                
             }
             else
             {
@@ -285,6 +294,13 @@ namespace PaintTool
             //}
         }
 
+        private void DrawingSquare(double lengthX, double lengthY)
+        {
+            DrawLine(prev, new Point(prev.X + lengthX, prev.Y), true);
+            DrawLine(new Point(prev.X + lengthX, prev.Y), new Point(prev.X + lengthX, prev.Y + lengthY), true);
+            DrawLine(new Point(prev.X + lengthX, prev.Y + lengthY), new Point(prev.X, prev.Y + lengthY), true);
+            DrawLine(new Point(prev.X, prev.Y + lengthY), prev, true);
+        }
         public void DrawingLineOnField(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
