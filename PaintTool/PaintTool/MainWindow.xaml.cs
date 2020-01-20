@@ -61,6 +61,23 @@ namespace PaintTool
             PaintField.Height = height;
             PaintGrid.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         }
+
+        private int GetBytesPerPixel()
+        {
+            return (wb.Format.BitsPerPixel + 7) / 8;
+        }
+
+        private int GetStride()
+        {
+            return GetBytesPerPixel() * (int)PaintField.Width;
+        }
+
+        private byte[] GetPixelArrayLength()
+        {
+            int stride = GetStride();
+            byte[] pixels = new byte[stride * (int)PaintField.Height];
+            return pixels;
+        }
         #endregion
 
         #region РАБОЧАЯ СВЯЗКА МЕТОДОВ ДЛЯ РИСОВАНИЯ ПРЯМОЙ
@@ -295,10 +312,10 @@ namespace PaintTool
         }
         public void DrawingLineOnField(object sender, MouseEventArgs e)
         {
-                position.X = (int)(e.GetPosition(PaintField).X);
-                position.Y = (int)(e.GetPosition(PaintField).Y);
+            position.X = (int)(e.GetPosition(PaintField).X);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
 
-                DrawLine(prev, position);
+            DrawLine(prev, position);
         }
 
         public void DrawingBrush(object sender, MouseEventArgs e)
@@ -465,7 +482,7 @@ namespace PaintTool
             prev.X = (int)(e.GetPosition(PaintField).X);
             prev.Y = (int)(e.GetPosition(PaintField).Y);
 
-            if (ShapeList.SelectedItem == Filling)
+            if ((bool)Filling.IsChecked)
             {
                 PixelFill(e);
             }
@@ -562,7 +579,7 @@ namespace PaintTool
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
-               if (e.LeftButton == MouseButtonState.Pressed)
+                if (e.LeftButton == MouseButtonState.Pressed)
                 {
                     if (drawingBrokenLine == false)
                     {
@@ -762,28 +779,30 @@ namespace PaintTool
 
         private void PixelFill(MouseEventArgs e)
         {
-            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
-            int stride = bytesPerPixel * (int)PaintField.Width; // general formula valid for all PixelFormats
-
-            //Width * height *  bytes per pixel aka(32/8)
-            byte[] pixels = new byte[stride * (int)PaintField.Height];
-
+            Point currentPoint = new Point(e.GetPosition(PaintField).X, e.GetPosition(PaintField).Y);
+            byte[] pixels = GetPixelArrayLength();
+            wb.CopyPixels(pixels, GetStride(), 0);
             // Закрашиваем наш прямоугольник нужным цветом
-            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
-            {
-                //if (pixels[pixel] == (byte)255 && pixels[pixel + 1] == (byte)255 && pixels[pixel + 2] == (byte)255 && pixels[pixel + 3] == (byte)255)
-                //{
-                pixels[pixel] = 0;        // blue (depends normally on BitmapPalette)
-                pixels[pixel + 1] = 0;  // green (depends normally on BitmapPalette)
-                pixels[pixel + 2] = 255;    // red (depends normally on BitmapPalette)
-                pixels[pixel + 3] = 255;   // alpha (depends normally on BitmapPalette)
-                                           //}
-            }
+            //for (int pixel = 0; pixel < pixels.Length; pixel += GetBytesPerPixel())
+            //{
+            //    if (pixels[pixel] == 255 && pixels[pixel + 1] == 255 && pixels[pixel + 2] == 255 && pixels[pixel + 3] == 255)
+            //    {
+            //        pixels[pixel] = colorData[0];
+            //        pixels[pixel + 1] = colorData[1];
+            //        pixels[pixel + 2] = colorData[2];
+            //        pixels[pixel + 3] = colorData[3];
+            //    }
+            //}
+            // 1,0
+            int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (GetStride() * (int)currentPoint.Y);
+            if (pixels[currentPixel] != colorData[0] && pixels[currentPixel + 1] != colorData[1] && pixels[currentPixel + 2] != colorData[2]) SetPixel(currentPoint, false);
+            Trace.WriteLine(colorData[0]);
+            Trace.WriteLine(pixels[currentPixel]);
 
-            Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
+            //Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
 
-            //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-            wb.WritePixels(rect, pixels, stride, 0);
+                ////int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+                //wb.WritePixels(rect, pixels, GetStride(), 0);
         }
 
         // Удаление пикселей (закрашивание в белый цвет)
