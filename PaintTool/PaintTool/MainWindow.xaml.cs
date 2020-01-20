@@ -337,26 +337,43 @@ namespace PaintTool
         }
         public void DrawingCircle(object sender, MouseEventArgs e)
         {
+            position.X = (int)(e.GetPosition(PaintField).X);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
+
             int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
             int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
-            if (ShapeList.SelectedItem == RectangleShape || ShapeList.SelectedItem == TriangleShape)
-            {
-                wth--;
-                hght--;
-            }
+
             int x0 = Convert.ToInt32(prev.X);
             int y0 = Convert.ToInt32(prev.Y);
+
             int x;
             int y;
-            int[] xArr;
-            int[] yArr;
+
+            int[] xArr1;
+            int[] xArr2;
+            int[] xArr3;
+            int[] xArr4;
+
+            int[] yArr1;
+            int[] yArr2;
+            int[] yArr3;
+            int[] yArr4;
+
             double r;
+
             int quarter = FindQuarter(prev, position);
 
             if (hght >= wth)
             {
-                xArr = new int[hght];
-                yArr = new int[hght];
+                xArr1 = new int[hght];
+                xArr2 = new int[hght];
+                xArr3 = new int[hght];
+                xArr4 = new int[hght];
+                      
+                yArr1 = new int[hght];
+                yArr2 = new int[hght];
+                yArr3 = new int[hght];
+                yArr4 = new int[hght];
                 r = Math.Sqrt(wth * wth + hght * hght);
 
                 if (quarter == 4)
@@ -364,8 +381,20 @@ namespace PaintTool
                     for (int i = 0; i < hght; i++)
                     {
                         x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
-                        xArr[i] = x;
-                        yArr[i] = y0 + i;
+                        xArr4[i] = x;
+                        yArr4[i] = y0 + i;
+
+                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
+                        xArr1[i] = x;
+                        yArr1[i] = y0 - i;
+
+                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
+                        xArr3[i] = x;
+                        yArr3[i] = y0 + i;
+
+                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
+                        xArr2[i] = x;
+                        yArr2[i] = y0 - i;
                     }
                 }
                 if (quarter == 3)
@@ -373,8 +402,20 @@ namespace PaintTool
                     for (int i = 0; i < hght; i++)
                     {
                         x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
-                        xArr[i] = -x >= 0 ? -x : 0;
-                        yArr[i] = y0 + i;
+                        xArr3[i] = -x >= 0 ? -x : 0;
+                        yArr3[i] = y0 + i;
+
+                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
+                        xArr2[i] = -x >= 0 ? -x : 0;
+                        yArr2[i] = y0 - i;
+
+                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
+                        xArr4[i] = -x >= 0 ? -x : 0;
+                        yArr4[i] = y0 + i;
+
+                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
+                        xArr1[i] = -x >= 0 ? -x : 0;
+                        yArr1[i] = y0 - i;
                     }
                 }
 
@@ -383,8 +424,20 @@ namespace PaintTool
                     for (int i = 0; i < hght; i++)
                     {
                         x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
-                        xArr[i] = x;
-                        yArr[i] = y0 - i;
+                        xArr1[i] = x;
+                        yArr1[i] = y0 - i;
+
+                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
+                        xArr4[i] = x;
+                        yArr4[i] = y0 + i;
+
+                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
+                        xArr2[i] = x;
+                        yArr2[i] = y0 - i;
+
+                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
+                        xArr3[i] = x;
+                        yArr3[i] = y0 + i;
                     }
                 }
 
@@ -393,22 +446,51 @@ namespace PaintTool
                     for (int i = 0; i < hght; i++)
                     {
                         x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
-                        xArr[i] = -x;
-                        yArr[i] = y0 - i;
+                        xArr2[i] = -x;
+                        yArr2[i] = y0 - i;
+
+                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
+                        xArr3[i] = -x;
+                        yArr3[i] = y0 + i;
+
+                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
+                        xArr1[i] = -x;
+                        yArr1[i] = y0 - i;
+
+                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
+                        xArr4[i] = -x;
+                        yArr4[i] = y0 + i;
                     }
                 }
 
                 for (int i = 0; i < hght; i++)
                 {
-                    prev.Y = yArr[i];
-                    prev.X = xArr[i];
-                    SetPixel(prev, false);
+                    Point res;
+                    res.Y = yArr1[i];
+                    res.X = xArr1[i];
+                    SetPixel(res, false);
+                    res.Y = yArr2[i];
+                    res.X = xArr2[i];
+                    SetPixel(res, false);
+                    res.Y = yArr3[i];
+                    res.X = xArr3[i];
+                    SetPixel(res, false);
+                    res.Y = yArr4[i];
+                    res.X = xArr4[i];
+                    SetPixel(res, false);
                 }
             }
             else if (hght < wth)
             {
-                xArr = new int[wth];
-                yArr = new int[wth];
+                xArr1 = new int[wth];
+                xArr2 = new int[wth];
+                xArr3 = new int[wth];
+                xArr4 = new int[wth];
+                                
+                yArr1 = new int[wth];
+                yArr2 = new int[wth];
+                yArr3 = new int[wth];
+                yArr4 = new int[wth];
                 r = Math.Sqrt(wth * wth + hght * hght);
 
                 if (quarter == 1)
@@ -416,8 +498,20 @@ namespace PaintTool
                     for (int i = 0; i < wth; i++)
                     {
                         y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
-                        yArr[i] = -y;
-                        xArr[i] = x0 + i;
+                        yArr1[i] = -y;
+                        xArr1[i] = x0 + i;
+
+                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
+                        yArr2[i] = -y;
+                        xArr2[i] = x0 - i;
+
+                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
+                        yArr4[i] = -y;
+                        xArr4[i] = x0 + i;
+
+                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
+                        yArr3[i] = -y;
+                        xArr3[i] = x0 - i;
                     }
                 }
 
@@ -426,8 +520,20 @@ namespace PaintTool
                     for (int i = 0; i < wth; i++)
                     {
                         y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
-                        yArr[i] = -y;
-                        xArr[i] = x0 - i;
+                        yArr2[i] = -y;
+                        xArr2[i] = x0 - i;
+
+                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
+                        yArr1[i] = -y;
+                        xArr1[i] = x0 + i;
+
+                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
+                        yArr3[i] = -y;
+                        xArr3[i] = x0 - i;
+
+                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
+                        yArr4[i] = -y;
+                        xArr4[i] = x0 + i;
                     }
                 }
 
@@ -436,8 +542,20 @@ namespace PaintTool
                     for (int i = 0; i < wth; i++)
                     {
                         y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
-                        yArr[i] = y;
-                        xArr[i] = x0 + i;
+                        yArr4[i] = y;
+                        xArr4[i] = x0 + i;
+
+                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
+                        yArr2[i] = y;
+                        xArr2[i] = x0 - i;
+
+                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
+                        yArr3[i] = y;
+                        xArr3[i] = x0 + i;
+
+                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
+                        yArr1[i] = y;
+                        xArr1[i] = x0 - i;
                     }
                 }
 
@@ -446,16 +564,38 @@ namespace PaintTool
                     for (int i = 0; i < wth; i++)
                     {
                         y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
-                        yArr[i] = y;
-                        xArr[i] = x0 - i;
+                        yArr3[i] = y;
+                        xArr3[i] = x0 - i;
+
+                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
+                        yArr4[i] = y;
+                        xArr4[i] = x0 + i;
+
+                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
+                        yArr2[i] = y;
+                        xArr2[i] = x0 - i;
+
+                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
+                        yArr1[i] = y;
+                        xArr1[i] = x0 + i;
                     }
                 }
 
                 for (int i = 0; i < wth; i++)
                 {
-                    prev.Y = yArr[i];
-                    prev.X = xArr[i];
-                    SetPixel(prev, false);
+                    Point res;
+                    res.Y = yArr1[i];
+                    res.X = xArr1[i];
+                    SetPixel(res, false);
+                    res.Y = yArr2[i];
+                    res.X = xArr2[i];
+                    SetPixel(res, false);
+                    res.Y = yArr3[i];
+                    res.X = xArr3[i];
+                    SetPixel(res, false);
+                    res.Y = yArr4[i];
+                    res.X = xArr4[i];
+                    SetPixel(res, false);
                 }
             }
         }
@@ -538,7 +678,7 @@ namespace PaintTool
         {
             position.X = e.GetPosition(PaintField).X;
             position.Y = e.GetPosition(PaintField).Y;
-            // Метод для рисования КИСТЬЮ при нажатой ЛКМ
+            // Метод для рисования при нажатой ЛКМ
 
             if ((bool)BrushToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
             {
