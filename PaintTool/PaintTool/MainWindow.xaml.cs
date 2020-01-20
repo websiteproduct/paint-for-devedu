@@ -26,7 +26,7 @@ namespace PaintTool
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
-        Point prev, position, tempBrokenLine, startBrokenLine;
+        Point prev, position, tempBrokenLine, startBrokenLine, circleStart;
 
         // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
         // хранит состояние битмапа после отмены(redoStack)
@@ -240,11 +240,6 @@ namespace PaintTool
                         1,
                         1);
 
-                //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-                //if ((pxl.X < 1 || pxl.X > PaintField.Width) || (pxl.Y < 1 || pxl.Y > PaintField.Height))
-                //{
-                //    return;
-                //} else 
                 if (altBitmap)
                     wbCopy.WritePixels(rect, GetColor(), 4, 0);
                 else
@@ -339,266 +334,295 @@ namespace PaintTool
         {
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
-
-            int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
-            int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
-
-            int x0 = Convert.ToInt32(prev.X);
-            int y0 = Convert.ToInt32(prev.Y);
-
-            int x;
-            int y;
-
-            int[] xArr1;
-            int[] xArr2;
-            int[] xArr3;
-            int[] xArr4;
-
-            int[] yArr1;
-            int[] yArr2;
-            int[] yArr3;
-            int[] yArr4;
-
-            double r;
-
-            int quarter = FindQuarter(prev, position);
-
-            if (hght >= wth)
+            double y = Math.Abs(circleStart.Y - position.Y);
+            double x = 0;
+            double delta = 1 - 2 * y;
+            double error = 0;
+            while (y >= 0)
             {
-                xArr1 = new int[hght];
-                xArr2 = new int[hght];
-                xArr3 = new int[hght];
-                xArr4 = new int[hght];
-                      
-                yArr1 = new int[hght];
-                yArr2 = new int[hght];
-                yArr3 = new int[hght];
-                yArr4 = new int[hght];
-                r = Math.Sqrt(wth * wth + hght * hght);
-
-                if (quarter == 4)
+                SetPixel(new Point(circleStart.X + x, circleStart.Y + y), true);
+                SetPixel(new Point(circleStart.X + x, circleStart.Y - y), true);
+                SetPixel(new Point(circleStart.X - x, circleStart.Y + y), true);
+                SetPixel(new Point(circleStart.X - x, circleStart.Y - y), true);
+                error = 2 * (delta + y) - 1;
+                if ((delta < 0) && (error <= 0))
                 {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
-                        xArr4[i] = x;
-                        yArr4[i] = y0 + i;
-
-                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
-                        xArr1[i] = x;
-                        yArr1[i] = y0 - i;
-
-                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
-                        xArr3[i] = x;
-                        yArr3[i] = y0 + i;
-
-                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
-                        xArr2[i] = x;
-                        yArr2[i] = y0 - i;
-                    }
+                    delta += 2 * ++x + 1;
+                    continue;
                 }
-                if (quarter == 3)
+                if ((delta > 0) && (error > 0))
                 {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
-                        xArr3[i] = -x >= 0 ? -x : 0;
-                        yArr3[i] = y0 + i;
-
-                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
-                        xArr2[i] = -x >= 0 ? -x : 0;
-                        yArr2[i] = y0 - i;
-
-                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
-                        xArr4[i] = -x >= 0 ? -x : 0;
-                        yArr4[i] = y0 + i;
-
-                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
-                        xArr1[i] = -x >= 0 ? -x : 0;
-                        yArr1[i] = y0 - i;
-                    }
+                    delta -= 2 * --y + 1;
+                    continue;
                 }
-
-                if (quarter == 1)
-                {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
-                        xArr1[i] = x;
-                        yArr1[i] = y0 - i;
-
-                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
-                        xArr4[i] = x;
-                        yArr4[i] = y0 + i;
-
-                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
-                        xArr2[i] = x;
-                        yArr2[i] = y0 - i;
-
-                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
-                        xArr3[i] = x;
-                        yArr3[i] = y0 + i;
-                    }
-                }
-
-                if (quarter == 2)
-                {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
-                        xArr2[i] = -x;
-                        yArr2[i] = y0 - i;
-
-                        x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
-                        xArr3[i] = -x;
-                        yArr3[i] = y0 + i;
-
-                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
-                        xArr1[i] = -x;
-                        yArr1[i] = y0 - i;
-
-                        x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
-                        xArr4[i] = -x;
-                        yArr4[i] = y0 + i;
-                    }
-                }
-
-                for (int i = 0; i < hght; i++)
-                {
-                    Point res;
-                    res.Y = yArr1[i];
-                    res.X = xArr1[i];
-                    SetPixel(res, false);
-                    res.Y = yArr2[i];
-                    res.X = xArr2[i];
-                    SetPixel(res, false);
-                    res.Y = yArr3[i];
-                    res.X = xArr3[i];
-                    SetPixel(res, false);
-                    res.Y = yArr4[i];
-                    res.X = xArr4[i];
-                    SetPixel(res, false);
-                }
-            }
-            else if (hght < wth)
-            {
-                xArr1 = new int[wth];
-                xArr2 = new int[wth];
-                xArr3 = new int[wth];
-                xArr4 = new int[wth];
-                                
-                yArr1 = new int[wth];
-                yArr2 = new int[wth];
-                yArr3 = new int[wth];
-                yArr4 = new int[wth];
-                r = Math.Sqrt(wth * wth + hght * hght);
-
-                if (quarter == 1)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
-                        yArr1[i] = -y;
-                        xArr1[i] = x0 + i;
-
-                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
-                        yArr2[i] = -y;
-                        xArr2[i] = x0 - i;
-
-                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
-                        yArr4[i] = -y;
-                        xArr4[i] = x0 + i;
-
-                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
-                        yArr3[i] = -y;
-                        xArr3[i] = x0 - i;
-                    }
-                }
-
-                if (quarter == 2)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
-                        yArr2[i] = -y;
-                        xArr2[i] = x0 - i;
-
-                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
-                        yArr1[i] = -y;
-                        xArr1[i] = x0 + i;
-
-                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
-                        yArr3[i] = -y;
-                        xArr3[i] = x0 - i;
-
-                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
-                        yArr4[i] = -y;
-                        xArr4[i] = x0 + i;
-                    }
-                }
-
-                if (quarter == 4)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
-                        yArr4[i] = y;
-                        xArr4[i] = x0 + i;
-
-                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
-                        yArr2[i] = y;
-                        xArr2[i] = x0 - i;
-
-                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
-                        yArr3[i] = y;
-                        xArr3[i] = x0 + i;
-
-                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
-                        yArr1[i] = y;
-                        xArr1[i] = x0 - i;
-                    }
-                }
-
-                if (quarter == 3)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
-                        yArr3[i] = y;
-                        xArr3[i] = x0 - i;
-
-                        y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
-                        yArr4[i] = y;
-                        xArr4[i] = x0 + i;
-
-                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
-                        yArr2[i] = y;
-                        xArr2[i] = x0 - i;
-
-                        y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
-                        yArr1[i] = y;
-                        xArr1[i] = x0 + i;
-                    }
-                }
-
-                for (int i = 0; i < wth; i++)
-                {
-                    Point res;
-                    res.Y = yArr1[i];
-                    res.X = xArr1[i];
-                    SetPixel(res, false);
-                    res.Y = yArr2[i];
-                    res.X = xArr2[i];
-                    SetPixel(res, false);
-                    res.Y = yArr3[i];
-                    res.X = xArr3[i];
-                    SetPixel(res, false);
-                    res.Y = yArr4[i];
-                    res.X = xArr4[i];
-                    SetPixel(res, false);
-                }
+                delta += 2 * (++x - y--);
             }
         }
+
+        //public void DrawingCircle(object sender, MouseEventArgs e)
+        //{
+        //    position.X = (int)(e.GetPosition(PaintField).X);
+        //    position.Y = (int)(e.GetPosition(PaintField).Y);
+
+        //    int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
+        //    int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
+
+        //    int x0 = Convert.ToInt32(prev.X);
+        //    int y0 = Convert.ToInt32(prev.Y);
+
+        //    int x;
+        //    int y;
+
+        //    int[] xArr1;
+        //    int[] xArr2;
+        //    int[] xArr3;
+        //    int[] xArr4;
+
+        //    int[] yArr1;
+        //    int[] yArr2;
+        //    int[] yArr3;
+        //    int[] yArr4;
+
+        //    double r;
+
+        //    int quarter = FindQuarter(prev, position);
+
+        //    if (hght >= wth)
+        //    {
+        //        xArr1 = new int[hght];
+        //        xArr2 = new int[hght];
+        //        xArr3 = new int[hght];
+        //        xArr4 = new int[hght];
+
+        //        yArr1 = new int[hght];
+        //        yArr2 = new int[hght];
+        //        yArr3 = new int[hght];
+        //        yArr4 = new int[hght];
+        //        r = Math.Sqrt(wth * wth + hght * hght);
+
+        //        if (quarter == 4)
+        //        {
+        //            for (int i = 0; i < hght; i++)
+        //            {
+        //                x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
+        //                xArr4[i] = x;
+        //                yArr4[i] = y0 + i;
+
+        //                x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
+        //                xArr1[i] = x;
+        //                yArr1[i] = y0 - i;
+
+        //                x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
+        //                xArr3[i] = x;
+        //                yArr3[i] = y0 + i;
+
+        //                x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
+        //                xArr2[i] = x;
+        //                yArr2[i] = y0 - i;
+        //            }
+        //        }
+        //        if (quarter == 3)
+        //        {
+        //            for (int i = 0; i < hght; i++)
+        //            {
+        //                x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
+        //                xArr3[i] = -x >= 0 ? -x : 0;
+        //                yArr3[i] = y0 + i;
+
+        //                x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
+        //                xArr2[i] = -x >= 0 ? -x : 0;
+        //                yArr2[i] = y0 - i;
+
+        //                x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
+        //                xArr4[i] = -x >= 0 ? -x : 0;
+        //                yArr4[i] = y0 + i;
+
+        //                x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
+        //                xArr1[i] = -x >= 0 ? -x : 0;
+        //                yArr1[i] = y0 - i;
+        //            }
+        //        }
+
+        //        if (quarter == 1)
+        //        {
+        //            for (int i = 0; i < hght; i++)
+        //            {
+        //                x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
+        //                xArr1[i] = x;
+        //                yArr1[i] = y0 - i;
+
+        //                x = Convert.ToInt32(Math.Sqrt(r * r - i * i) + x0);
+        //                xArr4[i] = x;
+        //                yArr4[i] = y0 + i;
+
+        //                x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
+        //                xArr2[i] = x;
+        //                yArr2[i] = y0 - i;
+
+        //                x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + x0);
+        //                xArr3[i] = x;
+        //                yArr3[i] = y0 + i;
+        //            }
+        //        }
+
+        //        if (quarter == 2)
+        //        {
+        //            for (int i = 0; i < hght; i++)
+        //            {
+        //                x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
+        //                xArr2[i] = -x;
+        //                yArr2[i] = y0 - i;
+
+        //                x = Convert.ToInt32(Math.Sqrt(r * r - i * i) - x0);
+        //                xArr3[i] = -x;
+        //                yArr3[i] = y0 + i;
+
+        //                x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
+        //                xArr1[i] = -x;
+        //                yArr1[i] = y0 - i;
+
+        //                x = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - x0);
+        //                xArr4[i] = -x;
+        //                yArr4[i] = y0 + i;
+        //            }
+        //        }
+
+        //        for (int i = 0; i < hght; i++)
+        //        {
+        //            Point res;
+        //            res.Y = yArr1[i];
+        //            res.X = xArr1[i];
+        //            SetPixel(res, false);
+        //            res.Y = yArr2[i];
+        //            res.X = xArr2[i];
+        //            SetPixel(res, false);
+        //            res.Y = yArr3[i];
+        //            res.X = xArr3[i];
+        //            SetPixel(res, false);
+        //            res.Y = yArr4[i];
+        //            res.X = xArr4[i];
+        //            SetPixel(res, false);
+        //        }
+        //    }
+        //    else if (hght < wth)
+        //    {
+        //        xArr1 = new int[wth];
+        //        xArr2 = new int[wth];
+        //        xArr3 = new int[wth];
+        //        xArr4 = new int[wth];
+
+        //        yArr1 = new int[wth];
+        //        yArr2 = new int[wth];
+        //        yArr3 = new int[wth];
+        //        yArr4 = new int[wth];
+        //        r = Math.Sqrt(wth * wth + hght * hght);
+
+        //        if (quarter == 1)
+        //        {
+        //            for (int i = 0; i < wth; i++)
+        //            {
+        //                y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
+        //                yArr1[i] = -y;
+        //                xArr1[i] = x0 + i;
+
+        //                y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
+        //                yArr2[i] = -y;
+        //                xArr2[i] = x0 - i;
+
+        //                y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
+        //                yArr4[i] = -y;
+        //                xArr4[i] = x0 + i;
+
+        //                y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
+        //                yArr3[i] = -y;
+        //                xArr3[i] = x0 - i;
+        //            }
+        //        }
+
+        //        if (quarter == 2)
+        //        {
+        //            for (int i = 0; i < wth; i++)
+        //            {
+        //                y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
+        //                yArr2[i] = -y;
+        //                xArr2[i] = x0 - i;
+
+        //                y = Convert.ToInt32(Math.Sqrt(r * r - i * i) - y0);
+        //                yArr1[i] = -y;
+        //                xArr1[i] = x0 + i;
+
+        //                y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
+        //                yArr3[i] = -y;
+        //                xArr3[i] = x0 - i;
+
+        //                y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) - y0);
+        //                yArr4[i] = -y;
+        //                xArr4[i] = x0 + i;
+        //            }
+        //        }
+
+        //        if (quarter == 4)
+        //        {
+        //            for (int i = 0; i < wth; i++)
+        //            {
+        //                y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
+        //                yArr4[i] = y;
+        //                xArr4[i] = x0 + i;
+
+        //                y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
+        //                yArr2[i] = y;
+        //                xArr2[i] = x0 - i;
+
+        //                y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
+        //                yArr3[i] = y;
+        //                xArr3[i] = x0 + i;
+
+        //                y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
+        //                yArr1[i] = y;
+        //                xArr1[i] = x0 - i;
+        //            }
+        //        }
+
+        //        if (quarter == 3)
+        //        {
+        //            for (int i = 0; i < wth; i++)
+        //            {
+        //                y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
+        //                yArr3[i] = y;
+        //                xArr3[i] = x0 - i;
+
+        //                y = Convert.ToInt32(Math.Sqrt(r * r - i * i) + y0);
+        //                yArr4[i] = y;
+        //                xArr4[i] = x0 + i;
+
+        //                y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
+        //                yArr2[i] = y;
+        //                xArr2[i] = x0 - i;
+
+        //                y = Convert.ToInt32(-Math.Sqrt(r * r - i * i) + y0);
+        //                yArr1[i] = y;
+        //                xArr1[i] = x0 + i;
+        //            }
+        //        }
+
+        //        for (int i = 0; i < wth; i++)
+        //        {
+        //            Point res;
+        //            res.Y = yArr1[i];
+        //            res.X = xArr1[i];
+        //            SetPixel(res, false);
+        //            res.Y = yArr2[i];
+        //            res.X = xArr2[i];
+        //            SetPixel(res, false);
+        //            res.Y = yArr3[i];
+        //            res.X = xArr3[i];
+        //            SetPixel(res, false);
+        //            res.Y = yArr4[i];
+        //            res.X = xArr4[i];
+        //            SetPixel(res, false);
+        //        }
+        //    }
+        //}
 
         public void DrawingBrokenLine(object sender, MouseEventArgs e)
         {
@@ -610,7 +634,11 @@ namespace PaintTool
         private void EndOfBrokenLine(object sender, MouseButtonEventArgs e)
         {
             drawingBrokenLine = false;
-            DrawLine(tempBrokenLine, startBrokenLine);
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+                DrawLine(tempBrokenLine, startBrokenLine);
+            }
+                
         }
 
         #endregion
@@ -727,6 +755,10 @@ namespace PaintTool
                     DrawingCircle(sender, e);
                     PaintField.Source = wbCopy;
                 }
+                if (e.LeftButton == MouseButtonState.Released)
+                {
+                    circleStart = position;
+                }
             }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
@@ -745,7 +777,6 @@ namespace PaintTool
                 }
             }
         }
-
         //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
         //{
         //    DrawingLineOnField(sender, e);
