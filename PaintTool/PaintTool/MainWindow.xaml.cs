@@ -578,6 +578,17 @@ namespace PaintTool
                 }
             }
 
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
+            {
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    wbCopy = new WriteableBitmap(wb);
+                    PaintField.Source = wb;
+                    DrawingCircle(sender, e);
+                    PaintField.Source = wbCopy;
+                }
+            }
+
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
