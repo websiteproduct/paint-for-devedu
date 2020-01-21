@@ -26,7 +26,7 @@ namespace PaintTool
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
-        Point prev, position, tempBrokenLine, startBrokenLine;
+        Point prev, position, tempBrokenLine, startBrokenLine, circleStart;
 
         // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
         // хранит состояние битмапа после отмены(redoStack)
@@ -240,11 +240,6 @@ namespace PaintTool
                         1,
                         1);
 
-                //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-                //if ((pxl.X < 1 || pxl.X > PaintField.Width) || (pxl.Y < 1 || pxl.Y > PaintField.Height))
-                //{
-                //    return;
-                //} else 
                 if (altBitmap)
                     wbCopy.WritePixels(rect, GetColor(), 4, 0);
                 else
@@ -337,126 +332,63 @@ namespace PaintTool
         }
         public void DrawingCircle(object sender, MouseEventArgs e)
         {
-            int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
-            int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
-            int x0 = Convert.ToInt32(prev.X);
-            int y0 = Convert.ToInt32(prev.Y);
-            int x;
-            int y;
-            int[] xArr;
-            int[] yArr;
-            int quarter = FindQuarter(prev, position);
-
-            Point center;
-            center.X = (int)((Math.Abs(position.X - prev.X) + 1) / 2);
-            center.Y = (int)((Math.Abs(position.Y - prev.Y) + 1) / 2);
-            double r = Math.Sqrt(wth * wth + hght * hght);
-
-            if (hght >= wth)
+            position.X = (int)(e.GetPosition(PaintField).X);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
+            double y = Math.Abs(circleStart.Y - position.Y);
+            double x = 0;
+            double delta = 1 - 2 * y;
+            double error = 0;
+            while (y >= 0)
             {
-                xArr = new int[hght];
-                yArr = new int[hght];
-
-                if (quarter == 4)
+                SetPixel(new Point(circleStart.X + x, circleStart.Y + y), true);
+                SetPixel(new Point(circleStart.X + x, circleStart.Y - y), true);
+                SetPixel(new Point(circleStart.X - x, circleStart.Y + y), true);
+                SetPixel(new Point(circleStart.X - x, circleStart.Y - y), true);
+                error = 2 * (delta + y) - 1;
+                if ((delta < 0) && (error <= 0))
                 {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        x = (int)Math.Sqrt(r * r - i * i) - 1;
-                        xArr[i] = (int)center.X + x;
-                        yArr[i] = (int)center.Y + i;
-                    }
+                    delta += 2 * ++x + 1;
+                    continue;
                 }
-                if (quarter == 3)
+                if ((delta > 0) && (error > 0))
                 {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        x = (int)Math.Sqrt(r * r - i * i) - 1;
-                        xArr[i] = (int)center.X - x >= 0 ? -x : 0;
-                        yArr[i] = (int)center.Y + i;
-                    }
+                    delta -= 2 * --y + 1;
+                    continue;
                 }
+                delta += 2 * (++x - y--);
+            }
+        }
 
-                if (quarter == 1)
+        public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 10)
+        {
+            if (numberOfSide > 3) 
                 {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        x = (int)Math.Sqrt(r * r - i * i) - 1;
-                        xArr[i] = (int)center.X + x;
-                        yArr[i] = (int)center.Y - i;
-                    }
-                }
+                int R = 100;
 
-                if (quarter == 2)
-                {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        x = (int)Math.Sqrt(r * r - i * i) - 1;
-                        xArr[i] = (int)center.X - x;
-                        yArr[i] = (int)center.Y - i;
-                    }
-                }
+                Point Center = position;
+                Point tempPrev;
+                Point tempNext;
 
-                for (int i = 0; i < hght; i++)
+                double z = 0;
+                int i = 0;
+                double angle = 360 / numberOfSide;
+
+                tempPrev = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * R)),
+                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * R)));
+                z += angle;
+
+
+                while (i < numberOfSide)
                 {
-                    prev.Y = yArr[i];
-                    prev.X = xArr[i];
-                    //SetPixel(prev);
+                    tempNext = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * R)),
+                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * R)));
+                    DrawLine(tempPrev, tempNext, true);
+                    tempPrev = tempNext;
+                    z += angle;
+                    i++;
                 }
             }
-            else if (hght < wth)
-            {
-                xArr = new int[wth];
-                yArr = new int[wth];
-
-
-                if (quarter == 1)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        y = (int)Math.Sqrt(r * r - i * i) - 1;
-                        yArr[i] = (int)center.Y - y;
-                        xArr[i] = (int)center.X + i;
-                    }
-                }
-
-                if (quarter == 2)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        y = (int)Math.Sqrt(r * r - i * i) - 1;
-                        yArr[i] = (int)center.Y - y;
-                        xArr[i] = (int)center.X - i;
-                    }
-                }
-
-                if (quarter == 4)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        y = (int)Math.Sqrt(r * r - i * i) - 1;
-                        yArr[i] = (int)center.Y + y;
-                        xArr[i] = (int)center.X + i;
-                    }
-                }
-
-                if (quarter == 3)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        y = (int)Math.Sqrt(r * r - i * i) - 1;
-                        yArr[i] = (int)center.Y + y;
-                        xArr[i] = (int)center.X - i;
-                    }
-                }
-
-                for (int i = 0; i < wth; i++)
-                {
-                    prev.Y = yArr[i];
-                    prev.X = xArr[i];
-                    //SetPixel(prev);
-                    Trace.WriteLine(prev);
-                }
-            }
+            
         }
 
         public void DrawingBrokenLine(object sender, MouseEventArgs e)
@@ -469,7 +401,11 @@ namespace PaintTool
         private void EndOfBrokenLine(object sender, MouseButtonEventArgs e)
         {
             drawingBrokenLine = false;
-            DrawLine(tempBrokenLine, startBrokenLine);
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+                DrawLine(tempBrokenLine, startBrokenLine);
+            }
+                
         }
 
         #endregion
@@ -500,6 +436,17 @@ namespace PaintTool
                     DrawingBrokenLine(sender, e);
                     PaintField.Source = wbCopy;
                 }
+            }
+
+
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
+            {
+
+                wbCopy = new WriteableBitmap(wb);
+                PaintField.Source = wb;
+                DrawingPolygon(sender, e);
+                PaintField.Source = wbCopy;
+
             }
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -537,7 +484,7 @@ namespace PaintTool
         {
             position.X = e.GetPosition(PaintField).X;
             position.Y = e.GetPosition(PaintField).Y;
-            // Метод для рисования КИСТЬЮ при нажатой ЛКМ
+            // Метод для рисования при нажатой ЛКМ
 
             if ((bool)BrushToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
             {
@@ -577,6 +524,21 @@ namespace PaintTool
                 }
             }
 
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
+            {
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    wbCopy = new WriteableBitmap(wb);
+                    PaintField.Source = wb;
+                    DrawingCircle(sender, e);
+                    PaintField.Source = wbCopy;
+                }
+                if (e.LeftButton == MouseButtonState.Released)
+                {
+                    circleStart = position;
+                }
+            }
+
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
@@ -592,8 +554,15 @@ namespace PaintTool
                     PaintField.Source = wbCopy;
                 }
             }
-        }
 
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
+            {
+                wbCopy = new WriteableBitmap(wb);
+                PaintField.Source = wb;
+                DrawingPolygon(sender, e);
+                PaintField.Source = wbCopy;
+            }
+        }
         //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
         //{
         //    DrawingLineOnField(sender, e);
