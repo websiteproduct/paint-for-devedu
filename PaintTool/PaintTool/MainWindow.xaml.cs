@@ -276,17 +276,30 @@ namespace PaintTool
 
             if (isShiftPressed)
             {
-
-                double length = position.X - prev.X;
-                if (position.X > prev.X)
+                double length;
+                if (Math.Abs(position.X - prev.X) < Math.Abs(position.Y - prev.Y))
                 {
-                    if (position.Y > prev.Y) DrawingSquare(length, length);
-                    else DrawingSquare(length, -length);
+                    length = Math.Abs(position.X - prev.X);
                 }
                 else
                 {
-                    if (position.Y > prev.Y) DrawingSquare(length, -length);
+                    length = Math.Abs(position.Y - prev.Y);
+                }
+
+
+                if (position.X == prev.X || position.Y == prev.Y)
+                {
+                    DrawingSquare(length, 0);
+                }         
+                if (position.X > prev.X)
+                {
+                    if (position.Y < prev.Y) DrawingSquare(length, -length);
                     else DrawingSquare(length, length);
+                }
+                else
+                {
+                    if (position.Y > prev.Y) DrawingSquare(-length, length);
+                    else if (position.Y < prev.Y) DrawingSquare(-length, -length);
                 }
 
             }
@@ -331,10 +344,30 @@ namespace PaintTool
         {
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
-
-            DrawLine(prev, position, true);
-            DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
-            DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
+            double rad = Math.Abs((prev.Y - position.Y)) / 2;
+            //if (Convert.ToInt32(SizeInput.Text) > 1)
+            //{
+            //    SizeDrawer(prev, position);
+            //    SizeDrawer(position, new Point(2 * prev.X - position.X, position.Y));
+            //    SizeDrawer(new Point(2 * prev.X - position.X, position.Y), prev);
+            //}
+            //else
+            //{
+            //    DrawLine(prev, position, true);
+            //    DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
+            //    DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
+            //}
+           
+            if (isShiftPressed)
+            {
+                DrawingPolygon(sender, e, 3, rad);
+            }
+            else
+            {
+                DrawLine(prev, position, true);
+                DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
+                DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
+            }
         }
 
         public void DrawingCircle(object sender, MouseEventArgs e)
@@ -379,11 +412,11 @@ namespace PaintTool
             }
         }
 
-        public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 10)
+        public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 10, double radius=100)
         {
             if (numberOfSide > 3)
             {
-                int R = 100;
+                radius = 100;
 
                 Point Center = position;
                 Point tempPrev;
@@ -393,15 +426,15 @@ namespace PaintTool
                 int i = 0;
                 double angle = 360 / numberOfSide;
 
-                tempPrev = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * R)),
-                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * R)));
+                tempPrev = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * radius)),
+                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * radius)));
                 z += angle;
 
 
                 while (i < numberOfSide)
                 {
-                    tempNext = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * R)),
-                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * R)));
+                    tempNext = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * radius)),
+                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * radius)));
                     DrawLine(tempPrev, tempNext, true);
                     tempPrev = tempNext;
                     z += angle;
@@ -630,7 +663,7 @@ namespace PaintTool
         private void AdditionalPanelToggler()
         {
             // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
-            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
             SizePanel.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -641,6 +674,7 @@ namespace PaintTool
             if ((bool)Shapes.IsChecked)
             {
                 ShapeList.Visibility = Visibility.Visible;
+
             }
             else ShapeList.Visibility = Visibility.Collapsed;
             AdditionalPanelToggler();
