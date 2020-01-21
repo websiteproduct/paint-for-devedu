@@ -418,7 +418,7 @@
                 </Grid>
             </Border>
             <Grid x:Name="PaintGrid" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Height="480" Margin="6,35,5,5">
-                <Image Grid.Row="0" Grid.Column="0" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseRightButtonDown="PaintField_MouseRightButtonDown" MouseMove="PaintField_MouseMove" MouseLeftButtonUp="PaintField_MouseLeftButtonUp"></Image>
+                <Image Grid.Row="0" Grid.Column="0" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseMove="PaintField_MouseMove" MouseLeftButtonUp="PaintField_MouseLeftButtonUp"></Image>
             </Grid>
         </Grid>
     </ScrollViewer>

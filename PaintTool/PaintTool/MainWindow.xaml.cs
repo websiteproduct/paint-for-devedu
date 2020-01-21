@@ -18,11 +18,10 @@ namespace PaintTool
     public partial class MainWindow : Window
     {
         // Инициализируем WriteableBitmap
-        WriteableBitmap wb;
+        WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
 
         // Инициализируем переменную для хранения цвета в формате Bgra32
         byte[] colorData = { 0, 0, 0, 255 };
-
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
@@ -33,7 +32,6 @@ namespace PaintTool
         Stack<WriteableBitmap> undoStack = new Stack<WriteableBitmap>();
         Stack<WriteableBitmap> redoStack = new Stack<WriteableBitmap>();
         // Переменные, которые являются промежуточными. В них записывается клон битмапа, а потом они записываются в свои стеки.
-        WriteableBitmap copyUndo, copyRedo, wbCopy;
 
         public MainWindow()
         {
@@ -41,9 +39,7 @@ namespace PaintTool
             InitializeComponent();
             SetGridSize(640, 480);
             Paint(255, 255, 255, 255);
-            //BrushToggleBtn.IsChecked = true;
-            Shapes.IsChecked = true;
-            ShapeList.SelectedItem = RectangleShape;
+            BrushToggleBtn.IsChecked = true;
         }
 
         #region СОЗДАНИЕ НОВОГО ФАЙЛА
@@ -90,6 +86,7 @@ namespace PaintTool
                 wth--;
                 hght--;
             }
+
             int x0 = Convert.ToInt32(prev.X);
             int y0 = Convert.ToInt32(prev.Y);
             int x;
@@ -240,7 +237,11 @@ namespace PaintTool
                         1,
                         1);
 
-                if (altBitmap)
+                if ((bool)EraserToggleBtn.IsChecked)
+                {
+                    wb.WritePixels(rect, new byte[] { 255, 255, 255, 255 }, 4, 0);
+                }
+                else if (altBitmap)
                     wbCopy.WritePixels(rect, GetColor(), 4, 0);
                 else
                     wb.WritePixels(rect, GetColor(), 4, 0);
@@ -315,7 +316,12 @@ namespace PaintTool
 
         public void DrawingBrush(object sender, MouseEventArgs e)
         {
-            DrawLine(prev, position);
+            if (Convert.ToInt32(SizeInput.Text) > 1)
+                SizeDrawer(prev, position);
+            else
+            {
+                DrawLine(prev, position, true);
+            }
             prev = position;
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
@@ -361,8 +367,8 @@ namespace PaintTool
 
         public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 10)
         {
-            if (numberOfSide > 3) 
-                {
+            if (numberOfSide > 3)
+            {
                 int R = 100;
 
                 Point Center = position;
@@ -388,7 +394,7 @@ namespace PaintTool
                     i++;
                 }
             }
-            
+
         }
 
         public void DrawingBrokenLine(object sender, MouseEventArgs e)
@@ -405,7 +411,7 @@ namespace PaintTool
             {
                 DrawLine(tempBrokenLine, startBrokenLine);
             }
-                
+
         }
 
         #endregion
@@ -413,10 +419,15 @@ namespace PaintTool
         #region КНОПКИ
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //запоминаем координаты в момент нажатия ЛКМ
+            //запоминаем координаты в момент нажатия ЛКМLineShpe
 
             prev.X = (int)(e.GetPosition(PaintField).X);
             prev.Y = (int)(e.GetPosition(PaintField).Y);
+
+            if ((bool)EraserToggleBtn.IsChecked)
+            {
+                ErasePixel(e);
+            }
 
             if ((bool)Filling.IsChecked)
             {
@@ -437,7 +448,6 @@ namespace PaintTool
                     PaintField.Source = wbCopy;
                 }
             }
-
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
             {
@@ -480,13 +490,26 @@ namespace PaintTool
             }
         }
 
+        private void SizeDrawer(Point p1, Point p2)
+        {
+            int size = Convert.ToInt32(SizeInput.Text);
+            for (int i = 1; i <= size; i++)
+            {
+                for (int j = 1; j <= size; j++)
+                {
+                    if ((i != 1 && j != 1) || (i != size && j != 1) || (i != 1 && j != size) || (i != size && j != size))
+                        DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
+                }
+            }
+        }
+
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
             position.X = e.GetPosition(PaintField).X;
             position.Y = e.GetPosition(PaintField).Y;
             // Метод для рисования при нажатой ЛКМ
 
-            if ((bool)BrushToggleBtn.IsChecked && e.LeftButton == MouseButtonState.Pressed)
+            if (((bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked) && e.LeftButton == MouseButtonState.Pressed)
             {
                 DrawingBrush(sender, e);
             }
@@ -519,7 +542,12 @@ namespace PaintTool
                 {
                     wbCopy = new WriteableBitmap(wb);
                     PaintField.Source = wb;
-                    DrawLine(prev, position, true);
+                    if (Convert.ToInt32(SizeInput.Text) > 1)
+                        SizeDrawer(prev, position);
+                    else
+                    {
+                        DrawLine(prev, position, true);
+                    }
                     PaintField.Source = wbCopy;
                 }
             }
@@ -770,30 +798,30 @@ namespace PaintTool
 
             //Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
 
-                ////int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-                //wb.WritePixels(rect, pixels, GetStride(), 0);
+            ////int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
+            //wb.WritePixels(rect, pixels, GetStride(), 0);
         }
 
         // Удаление пикселей (закрашивание в белый цвет)
         private void ErasePixel(MouseEventArgs e)
         {
-            // Удаление пикселей (закрашивание в белый цвет)
-            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8;
-            int stride = bytesPerPixel;
-            // умножаем на ширину пикселей
-            //int stride = bytesPerPixel * 5;
+            //// Удаление пикселей (закрашивание в белый цвет)
+            //int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8;
+            //int stride = bytesPerPixel;
+            //// умножаем на ширину пикселей
+            ////int stride = bytesPerPixel * 5;
 
-            byte[] pixels = new byte[stride];
-            // количество пикселей, которые будем добавлять: умножаем на высота добавляемого участка
-            //byte[] pixels = new byte[stride * 5];
+            //byte[] pixels = new byte[stride];
+            //// количество пикселей, которые будем добавлять: умножаем на высота добавляемого участка
+            ////byte[] pixels = new byte[stride * 5];
 
-            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
-            {
-                pixels[pixel] = 255;        // blue (depends normally on BitmapPalette)
-                pixels[pixel + 1] = 255;  // green (depends normally on BitmapPalette)
-                pixels[pixel + 2] = 255;    // red (depends normally on BitmapPalette)
-                pixels[pixel + 3] = 255;   // alpha (depends normally on BitmapPalette)
-            }
+            //for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
+            //{
+            //    pixels[pixel] = 255;        // blue (depends normally on BitmapPalette)
+            //    pixels[pixel + 1] = 255;  // green (depends normally on BitmapPalette)
+            //    pixels[pixel + 2] = 255;    // red (depends normally on BitmapPalette)
+            //    pixels[pixel + 3] = 255;   // alpha (depends normally on BitmapPalette)
+            //}
 
             Int32Rect rect = new Int32Rect(
                     (int)(e.GetPosition(PaintGrid).X),
@@ -801,7 +829,7 @@ namespace PaintTool
                     1,
                     1);
 
-            wb.WritePixels(rect, pixels, stride, 0);
+            wb.WritePixels(rect, new byte[] { 255, 255, 255, 255 }, 4, 0);
             //Trace.WriteLine(stride);
         }
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
