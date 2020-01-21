@@ -320,7 +320,7 @@ namespace PaintTool
                 SizeDrawer(prev, position);
             else
             {
-                DrawLine(prev, position, true);
+                DrawLine(prev, position, false);
             }
             prev = position;
             position.X = (int)(e.GetPosition(PaintField).X);

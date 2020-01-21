@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PaintTool
 {
-    public class Rectangle : Figure
+    public class Rect1 : Figure
     {
     }
 }
