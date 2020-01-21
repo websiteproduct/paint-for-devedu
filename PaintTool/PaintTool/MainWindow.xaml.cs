@@ -330,7 +330,21 @@ namespace PaintTool
             DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
             DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
         }
+
         public void DrawingCircle(object sender, MouseEventArgs e)
+        {
+            double coeff = Math.Abs((circleStart.X - position.X) / (circleStart.Y - position.Y));
+            if (isShiftPressed)
+            {
+                DrawingCircleMethod(sender, e);
+            }
+            else
+            {
+                DrawingCircleMethod(sender, e, coeff);
+            }
+        }
+        
+        public void DrawingCircleMethod(object sender, MouseEventArgs e, double coeff=1)
         {
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
@@ -340,10 +354,10 @@ namespace PaintTool
             double error = 0;
             while (y >= 0)
             {
-                SetPixel(new Point(circleStart.X + x, circleStart.Y + y), true);
-                SetPixel(new Point(circleStart.X + x, circleStart.Y - y), true);
-                SetPixel(new Point(circleStart.X - x, circleStart.Y + y), true);
-                SetPixel(new Point(circleStart.X - x, circleStart.Y - y), true);
+                SetPixel(new Point(circleStart.X + coeff * x, circleStart.Y + y), true);
+                SetPixel(new Point(circleStart.X + coeff * x, circleStart.Y - y), true);
+                SetPixel(new Point(circleStart.X - coeff * x, circleStart.Y + y), true);
+                SetPixel(new Point(circleStart.X - coeff * x, circleStart.Y - y), true);
                 error = 2 * (delta + y) - 1;
                 if ((delta < 0) && (error <= 0))
                 {
@@ -528,6 +542,7 @@ namespace PaintTool
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
+
                     wbCopy = new WriteableBitmap(wb);
                     PaintField.Source = wb;
                     DrawingCircle(sender, e);
