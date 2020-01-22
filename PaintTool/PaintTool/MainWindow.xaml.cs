@@ -885,6 +885,11 @@ namespace PaintTool
         {
             if (wb != null) Paint(255, 255, 255, 255);
         }
+
+        private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         #endregion
 
         #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ

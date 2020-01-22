@@ -13,6 +13,7 @@
     <None Remove="images\cross.png" />
     <None Remove="images\ellipse.png" />
     <None Remove="images\eraser.png" />
+    <None Remove="images\import.png" />
     <None Remove="images\line.png" />
     <None Remove="images\new.png" />
     <None Remove="images\polygon.png" />
@@ -60,6 +61,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\redo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\import.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\save.png">

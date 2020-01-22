@@ -415,6 +415,11 @@
                             <ImageBrush ImageSource="images\close.png" Stretch="None" />
                         </Button.Background>
                     </Button>
+                    <Button x:Name="ImportImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Click="ImportImageBtn_Click" HorizontalAlignment="Right" Width="25" Margin="0,4,-23,-4">
+                        <Button.Background>
+                            <ImageBrush ImageSource="images\import.png" Stretch="None" />
+                        </Button.Background>
+                    </Button>
                 </Grid>
             </Border>
             <Grid x:Name="PaintGrid" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Height="480" Margin="6,35,5,5">
