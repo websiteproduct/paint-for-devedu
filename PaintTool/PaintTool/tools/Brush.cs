@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PaintTool
 {
-    public class Figure
+    public class Brush
     {
     }
 }

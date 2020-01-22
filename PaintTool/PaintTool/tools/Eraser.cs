@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PaintTool
 {
-    public class Rect1 : Figure
+    public class Eraser
     {
     }
 }

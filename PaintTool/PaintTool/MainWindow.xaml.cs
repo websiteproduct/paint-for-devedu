@@ -20,6 +20,8 @@ namespace PaintTool
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
 
+        private Shape shape;
+
         // Инициализируем переменную для хранения цвета в формате Bgra32
         byte[] colorData = { 0, 0, 0, 255 };
         bool drawingBrokenLine = false;
@@ -247,24 +249,6 @@ namespace PaintTool
                     wb.WritePixels(rect, GetColor(), 4, 0);
             }
         }
-        public void SetPixel(int x, int y, bool altBitmap)
-        {
-
-            if (x <= PaintField.Width && y <= PaintField.Height)
-            {
-                Int32Rect rect = new Int32Rect(
-                        Convert.ToInt32(x),
-                        Convert.ToInt32(y),
-                        1,
-                        1);
-
-                //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-                if (altBitmap)
-                    wbCopy.WritePixels(rect, GetColor(), 4, 0);
-                else
-                    wb.WritePixels(rect, GetColor(), 4, 0);
-            }
-        }
 
         #endregion
 
@@ -276,30 +260,17 @@ namespace PaintTool
 
             if (isShiftPressed)
             {
-                double length;
-                if (Math.Abs(position.X - prev.X) < Math.Abs(position.Y - prev.Y))
-                {
-                    length = Math.Abs(position.X - prev.X);
-                }
-                else
-                {
-                    length = Math.Abs(position.Y - prev.Y);
-                }
 
-
-                if (position.X == prev.X || position.Y == prev.Y)
-                {
-                    DrawingSquare(length, 0);
-                }         
+                double length = position.X - prev.X;
                 if (position.X > prev.X)
                 {
-                    if (position.Y < prev.Y) DrawingSquare(length, -length);
-                    else DrawingSquare(length, length);
+                    if (position.Y > prev.Y) DrawingSquare(length, length);
+                    else DrawingSquare(length, -length);
                 }
                 else
                 {
-                    if (position.Y > prev.Y) DrawingSquare(-length, length);
-                    else if (position.Y < prev.Y) DrawingSquare(-length, -length);
+                    if (position.Y > prev.Y) DrawingSquare(length, -length);
+                    else DrawingSquare(length, length);
                 }
 
             }
@@ -344,30 +315,10 @@ namespace PaintTool
         {
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
-            double rad = Math.Abs((prev.Y - position.Y)) / 2;
-            //if (Convert.ToInt32(SizeInput.Text) > 1)
-            //{
-            //    SizeDrawer(prev, position);
-            //    SizeDrawer(position, new Point(2 * prev.X - position.X, position.Y));
-            //    SizeDrawer(new Point(2 * prev.X - position.X, position.Y), prev);
-            //}
-            //else
-            //{
-            //    DrawLine(prev, position, true);
-            //    DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
-            //    DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
-            //}
-           
-            if (isShiftPressed)
-            {
-                DrawingPolygon(sender, e, 3, rad);
-            }
-            else
-            {
-                DrawLine(prev, position, true);
-                DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
-                DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
-            }
+
+            DrawLine(prev, position, true);
+            DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
+            DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
         }
 
         public void DrawingCircle(object sender, MouseEventArgs e)
@@ -412,11 +363,11 @@ namespace PaintTool
             }
         }
 
-        public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 10, double radius=100)
+        public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 10)
         {
             if (numberOfSide > 3)
             {
-                radius = 100;
+                int R = 100;
 
                 Point Center = position;
                 Point tempPrev;
@@ -426,15 +377,15 @@ namespace PaintTool
                 int i = 0;
                 double angle = 360 / numberOfSide;
 
-                tempPrev = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * radius)),
-                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * radius)));
+                tempPrev = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * R)),
+                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * R)));
                 z += angle;
 
 
                 while (i < numberOfSide)
                 {
-                    tempNext = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * radius)),
-                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * radius)));
+                    tempNext = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * R)),
+                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * R)));
                     DrawLine(tempPrev, tempNext, true);
                     tempPrev = tempNext;
                     z += angle;
@@ -663,7 +614,7 @@ namespace PaintTool
         private void AdditionalPanelToggler()
         {
             // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
-            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked ? Visibility.Visible : Visibility.Collapsed;
             SizePanel.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -674,7 +625,6 @@ namespace PaintTool
             if ((bool)Shapes.IsChecked)
             {
                 ShapeList.Visibility = Visibility.Visible;
-
             }
             else ShapeList.Visibility = Visibility.Collapsed;
             AdditionalPanelToggler();
