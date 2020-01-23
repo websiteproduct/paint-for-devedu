@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PaintTool.figures
+namespace PaintTool.ThicknessStrategy
 {
-    class Circle : Shape
+    class MediumStrategy : ThicknessStrategy
     {
     }
 }

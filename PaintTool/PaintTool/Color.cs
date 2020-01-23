@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PaintTool.figures
+namespace PaintTool
 {
-    class Circle : Shape
+    class Color
     {
+        //CurrentColor { get; set }
     }
 }

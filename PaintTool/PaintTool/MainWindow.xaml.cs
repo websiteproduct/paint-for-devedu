@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -8,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PaintTool.figures;
 
 namespace PaintTool
 {
@@ -20,7 +22,7 @@ namespace PaintTool
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
 
-        private Shape shape;
+      
 
         // Инициализируем переменную для хранения цвета в формате Bgra32
         byte[] colorData = { 0, 0, 0, 255 };
@@ -309,6 +311,7 @@ namespace PaintTool
             prev = position;
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
+            position.Y = (int)(e.GetPosition(PaintField).Y);
         }
 
         public void DrawingTriangle(object sender, MouseEventArgs e)
@@ -333,8 +336,8 @@ namespace PaintTool
                 DrawingCircleMethod(sender, e, coeff);
             }
         }
-        
-        public void DrawingCircleMethod(object sender, MouseEventArgs e, double coeff=1)
+
+        public void DrawingCircleMethod(object sender, MouseEventArgs e, double coeff = 1)
         {
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
@@ -495,8 +498,15 @@ namespace PaintTool
             {
                 for (int j = 1; j <= size; j++)
                 {
-                    if ((i != 1 && j != 1) || (i != size && j != 1) || (i != 1 && j != size) || (i != size && j != size))
+                    if (size > 2)
+                    {
+                        if ((i != 1 && j != 1) || (i != size && j != 1) || (i != 1 && j != size) || (i != size && j != size))
+                            DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
+                    }
+                    else
+                    {
                         DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
+                    }
                 }
             }
         }
@@ -776,9 +786,40 @@ namespace PaintTool
         private void PixelFill(MouseEventArgs e)
         {
             Point currentPoint = new Point(e.GetPosition(PaintField).X, e.GetPosition(PaintField).Y);
+            int x = (int)e.GetPosition(PaintField).X;
+            int y = (int)e.GetPosition(PaintField).Y;
+            int xOld = x;
+            int yOld = y;
             byte[] pixels = GetPixelArrayLength();
             wb.CopyPixels(pixels, GetStride(), 0);
-            // Закрашиваем наш прямоугольник нужным цветом
+            int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (int)currentPoint.Y * GetStride();
+            byte[] firstColor = GetPixel(new Point(e.GetPosition(PaintField).X, e.GetPosition(PaintField).Y));
+            byte[] currentColor = GetPixel(new Point(x, y));
+            //Trace.WriteLine($"Current Color: {currentColor[0]}, {currentColor[1]}, {currentColor[2]}, {currentColor[3]}");
+            //Trace.WriteLine($"Set Color: {colorData[0]}, {colorData[1]}, {colorData[2]}, {colorData[3]}");
+
+            for(int i = y; y < PaintField.Height; i++)
+            {
+                while (currentColor.SequenceEqual(firstColor) && x > 0)
+                {
+                    currentColor = GetPixel(new Point(x, i));
+                    SetPixel(new Point(x, i), false);
+                    x--;
+                }
+            }            
+            x = xOld +1;
+            y = yOld;
+            currentColor = GetPixel(new Point(x, y));
+            for (int i = y; y > 0; i--)
+            {
+                while (currentColor.SequenceEqual(firstColor) && x < PaintField.Width)
+                {
+                    currentColor = GetPixel(new Point(x, i));
+                    SetPixel(new Point(x, i), false);
+                    x++;
+                }
+            }
+            
             //for (int pixel = 0; pixel < pixels.Length; pixel += GetBytesPerPixel())
             //{
             //    if (pixels[pixel] == 255 && pixels[pixel + 1] == 255 && pixels[pixel + 2] == 255 && pixels[pixel + 3] == 255)
@@ -789,16 +830,19 @@ namespace PaintTool
             //        pixels[pixel + 3] = colorData[3];
             //    }
             //}
-            // 1,0
-            int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (GetStride() * (int)currentPoint.Y);
-            if (pixels[currentPixel] != colorData[0] && pixels[currentPixel + 1] != colorData[1] && pixels[currentPixel + 2] != colorData[2]) SetPixel(currentPoint, false);
-            Trace.WriteLine(colorData[0]);
-            Trace.WriteLine(pixels[currentPixel]);
 
             //Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
-
-            ////int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
             //wb.WritePixels(rect, pixels, GetStride(), 0);
+        }
+
+        private byte[] GetPixel(Point point)
+        {
+            Point currentPoint = point;
+            byte[] pixels = GetPixelArrayLength();
+            wb.CopyPixels(pixels, GetStride(), 0);
+            int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (int)currentPoint.Y * GetStride();
+            byte[] color = new byte[] { pixels[currentPixel], pixels[currentPixel + 1], pixels[currentPixel + 2], 255 };
+            return color;
         }
 
         // Удаление пикселей (закрашивание в белый цвет)
@@ -835,6 +879,7 @@ namespace PaintTool
         {
             if (wb != null) Paint(255, 255, 255, 255);
         }
+
         #endregion
 
         #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
