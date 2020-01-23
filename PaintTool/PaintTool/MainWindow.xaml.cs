@@ -59,7 +59,7 @@ namespace PaintTool
             PaintGrid.Height = height;
             PaintField.Width = width;
             PaintField.Height = height;
-            PaintGrid.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            PaintGrid.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
         }
 
         private int GetBytesPerPixel()
@@ -657,7 +657,7 @@ namespace PaintTool
             Grid currentSelectedComboBoxItemGrid = (Grid)currentSelectedComboBoxItem.Content;
             Rectangle colorRectangle = (Rectangle)currentSelectedComboBoxItemGrid.Children[0];
 
-            Color clr = (Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
+            System.Windows.Media.Color clr = (System.Windows.Media.Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
 
             SetColor(clr.B, clr.G, clr.R);
         }
