@@ -16,7 +16,6 @@ namespace PaintTool.figures
     {
         private byte[] colorData;
         private int size;
-        private Pixel px;
 
         public Line(byte[] colorData, int size)
         {
@@ -97,7 +96,7 @@ namespace PaintTool.figures
                 {
                     prev.Y = yArr[i];
                     prev.X = xArr[i];
-                    px.SetPixel(wb, prev, altBitmap);
+                    SetPixel(wb, prev, altBitmap);
                 }
             }
             else if (hght < wth)
@@ -150,12 +149,12 @@ namespace PaintTool.figures
                 {
                     prev.Y = yArr[i];
                     prev.X = xArr[i];
-                    px.SetPixel(wb, prev, altBitmap);
+                    SetPixel(wb, prev, altBitmap);
                 }
             }
         }
 
-        public int FindQuarter(Point prev, Point position)
+        private int FindQuarter(Point prev, Point position)
         {
             int quarter = 0;
             if (position.X >= prev.X && position.Y >= prev.Y)
@@ -177,6 +176,33 @@ namespace PaintTool.figures
             return quarter;
         }
 
-        
+        private void SetPixel(WriteableBitmap wb, Point pxl, bool altBitmap)
+        {
+
+            //if ((pxl.X < PaintField.Width && pxl.X > 0) && (pxl.Y < PaintField.Height && pxl.Y > 0))
+            //{ (сейчас не знает PaintField)
+            Int32Rect rect = new Int32Rect(
+            Convert.ToInt32(pxl.X),
+            Convert.ToInt32(pxl.Y),
+            1,
+            1);
+
+            ////if (EraserToggleBtnIsChecked)
+            ////{
+            //    wb.WritePixels(rect, new byte[] { 255, 255, 255, 255 }, 4, 0);
+            ////}
+            ////else if (altBitmap)
+            ////{
+            //    //wbCopy.WritePixels(rect, GetColor(), 4, 0);
+            //}
+            //else
+                wb.WritePixels(rect, GetColor(), 4, 0);
+            //}
+        }
+        private byte[] GetColor()
+        {
+            // Метод для возвращения значения цвета в Bgra32
+            return colorData;
+        }
     }
 }

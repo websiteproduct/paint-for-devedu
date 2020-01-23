@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
+
 
 namespace PaintTool.Strategy
 {
@@ -8,7 +10,7 @@ namespace PaintTool.Strategy
     {
         Color currentColor;
 
-        public virtual void DrawLine()
+        public virtual void DrawLine(Point prev, Point position)
         {
 
         }
