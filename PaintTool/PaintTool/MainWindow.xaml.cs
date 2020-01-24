@@ -22,7 +22,6 @@ namespace PaintTool
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
 
-        List<Point> polygonDots = new List<Point>();
 
         // Инициализируем переменную для хранения цвета в формате Bgra32
         byte[] colorData = { 0, 0, 0, 255 };
@@ -91,144 +90,95 @@ namespace PaintTool
                 hght--;
             }
 
-            int x0 = Convert.ToInt32(prev.X);
-            int y0 = Convert.ToInt32(prev.Y);
-            int x;
-            int y;
-            int[] xArr;
-            int[] yArr;
+            int x0 = Convert.ToInt32(prev.X), y0 = Convert.ToInt32(prev.Y);
+            List<Point> LineDots = new List<Point>();
+ 
             double k;
-            int quarter = FindQuarter(prev, position);
 
             if (hght >= wth)
-            {
-                xArr = new int[hght];
-                yArr = new int[hght];
+            { 
                 k = wth * 1.0 / hght;
 
-                if (quarter == 4)
+                if (position.X >= prev.X && position.Y >= prev.Y)
                 {
                     for (int i = 0; i < hght; i++)
                     {
-                        x = Convert.ToInt32(k * i + x0);
-                        xArr[i] = x;
-                        yArr[i] = y0 + i;
+                        LineDots.Add(new Point(Convert.ToInt32(k * i + x0), y0 + i));
                     }
                 }
-                if (quarter == 3)
+                if (position.X <= prev.X && position.Y >= prev.Y)
                 {
                     for (int i = 0; i < hght; i++)
                     {
-                        x = Convert.ToInt32(k * i - x0);
-                        xArr[i] = -x >= 0 ? -x : 0;
-                        yArr[i] = y0 + i;
+                        LineDots.Add(new Point(-Convert.ToInt32(k * i - x0), y0 + i));
                     }
                 }
 
-                if (quarter == 1)
+                if (position.X >= prev.X && position.Y <= prev.Y)
                 {
                     for (int i = 0; i < hght; i++)
                     {
-                        x = Convert.ToInt32(k * i + x0);
-                        xArr[i] = x;
-                        yArr[i] = y0 - i;
+                        LineDots.Add(new Point(Convert.ToInt32(k * i + x0), y0 - i));
                     }
                 }
 
-                if (quarter == 2)
+                if (position.X <= prev.X && position.Y <= prev.Y)
                 {
                     for (int i = 0; i < hght; i++)
                     {
-                        x = Convert.ToInt32(k * i - x0);
-                        xArr[i] = -x;
-                        yArr[i] = y0 - i;
+                        LineDots.Add(new Point(-Convert.ToInt32(k * i - x0), y0 - i));
                     }
                 }
 
                 for (int i = 0; i < hght; i++)
                 {
-                    prev.Y = yArr[i];
-                    prev.X = xArr[i];
-                    SetPixel(prev, altBitmap);
+                    SetPixel(LineDots[i], altBitmap);
                 }
             }
-            else if (hght < wth)
+            else 
             {
-                xArr = new int[wth];
-                yArr = new int[wth];
                 k = hght * 1.0 / wth;
 
-                if (quarter == 1)
+                if (position.X >= prev.X && position.Y <= prev.Y)
                 {
                     for (int i = 0; i < wth; i++)
                     {
-                        y = Convert.ToInt32(k * i - y0);
-                        yArr[i] = -y;
-                        xArr[i] = x0 + i;
+                        LineDots.Add(new Point(x0 + i, - Convert.ToInt32(k * i - y0)));
                     }
                 }
 
-                if (quarter == 2)
+                if (position.X <= prev.X && position.Y <= prev.Y)
                 {
                     for (int i = 0; i < wth; i++)
                     {
-                        y = Convert.ToInt32(k * i - y0);
-                        yArr[i] = -y;
-                        xArr[i] = x0 - i;
+                        LineDots.Add(new Point(x0 - i, -Convert.ToInt32(k * i - y0)));
                     }
                 }
 
-                if (quarter == 4)
+                if (position.X >= prev.X && position.Y >= prev.Y)
                 {
                     for (int i = 0; i < wth; i++)
                     {
-                        y = Convert.ToInt32(k * i + y0);
-                        yArr[i] = y;
-                        xArr[i] = x0 + i;
+                        LineDots.Add(new Point(x0 + i, Convert.ToInt32(k * i + y0)));
                     }
                 }
 
-                if (quarter == 3)
+                if (position.X <= prev.X && position.Y >= prev.Y)
                 {
                     for (int i = 0; i < wth; i++)
                     {
-                        y = Convert.ToInt32(k * i + y0);
-                        yArr[i] = y;
-                        xArr[i] = x0 - i;
+                        LineDots.Add(new Point(x0 - i, Convert.ToInt32(k * i + y0)));
                     }
                 }
 
                 for (int i = 0; i < wth; i++)
                 {
-                    prev.Y = yArr[i];
-                    prev.X = xArr[i];
-                    SetPixel(prev, altBitmap);
+                    SetPixel(LineDots[i], altBitmap);
                 }
             }
 
         }
 
-        public int FindQuarter(Point prev, Point position)
-        {
-            int quarter = 0;
-            if (position.X >= prev.X && position.Y >= prev.Y)
-            {
-                quarter = 4;
-            }
-            if (position.X <= prev.X && position.Y <= prev.Y)
-            {
-                quarter = 2;
-            }
-            if (position.X >= prev.X && position.Y <= prev.Y)
-            {
-                quarter = 1;
-            }
-            if (position.X <= prev.X && position.Y >= prev.Y)
-            {
-                quarter = 3;
-            }
-            return quarter;
-        }
 
         public void SetPixel(Point pxl, bool altBitmap)
         {
@@ -267,31 +217,38 @@ namespace PaintTool
                 double length = position.X - prev.X;
                 if (position.X > prev.X)
                 {
-                    if (position.Y > prev.Y) DrawingSquare(length, length);
-                    else DrawingSquare(length, -length);
+                    if (position.Y > prev.Y) rectangleDots = DrawingSquare(length, length);
+                    else rectangleDots = DrawingSquare(length, -length);
                 }
                 else
                 {
-                    if (position.Y > prev.Y) DrawingSquare(length, -length);
-                    else DrawingSquare(length, length);
+                    if (position.Y > prev.Y) rectangleDots = DrawingSquare(length, -length);
+                    else rectangleDots = DrawingSquare(length, length);
                 }
 
             }
             else
             {
-                DrawLine(prev, new Point(position.X, prev.Y), true);
-                DrawLine(new Point(position.X, prev.Y), position, true);
-                DrawLine(position, new Point(prev.X, position.Y), true);
-                DrawLine(new Point(prev.X, position.Y), prev, true);
+                rectangleDots.Add(prev);
+                rectangleDots.Add(new Point(position.X, prev.Y));
+                rectangleDots.Add(position);
+                rectangleDots.Add(new Point(prev.X, position.Y));
             }
+
+            DrawLine(rectangleDots[0], rectangleDots[1], true);
+            DrawLine(rectangleDots[1], rectangleDots[2], true);
+            DrawLine(rectangleDots[2], rectangleDots[3], true);
+            DrawLine(rectangleDots[3], rectangleDots[0], true);
         }
 
-        private void DrawingSquare(double lengthX, double lengthY)
+        private List<Point> DrawingSquare(double lengthX, double lengthY)
         {
-            DrawLine(prev, new Point(prev.X + lengthX, prev.Y), true);
-            DrawLine(new Point(prev.X + lengthX, prev.Y), new Point(prev.X + lengthX, prev.Y + lengthY), true);
-            DrawLine(new Point(prev.X + lengthX, prev.Y + lengthY), new Point(prev.X, prev.Y + lengthY), true);
-            DrawLine(new Point(prev.X, prev.Y + lengthY), prev, true);
+            List<Point> tempDots = new List<Point>();
+            tempDots.Add(prev);
+            tempDots.Add(new Point(prev.X + lengthX, prev.Y));
+            tempDots.Add(new Point(prev.X + lengthX, prev.Y + lengthY));
+            tempDots.Add(new Point(prev.X, prev.Y + lengthY));
+            return tempDots;
         }
         public void DrawingLineOnField(object sender, MouseEventArgs e)
         {
@@ -311,7 +268,6 @@ namespace PaintTool
             }
             prev = position;
             position.X = (int)(e.GetPosition(PaintField).X);
-            position.Y = (int)(e.GetPosition(PaintField).Y);
             position.Y = (int)(e.GetPosition(PaintField).Y);
         }
 
@@ -365,19 +321,25 @@ namespace PaintTool
         }
         public void DrawingCircle(object sender, MouseEventArgs e)
         {
+            List<Point> circleDots = new List<Point>();
             double coeff = Math.Abs((circleStart.X - position.X) / (circleStart.Y - position.Y));
             if (isShiftPressed)
             {
-                DrawingCircleMethod(sender, e);
+                circleDots = DrawingCircleMethod(sender, e);
             }
             else
             {
-                DrawingCircleMethod(sender, e, coeff);
+                circleDots = DrawingCircleMethod(sender, e, coeff);
+            }
+            for (int i = 0; i < circleDots.Count - 4; i += 1)
+            {
+                DrawLine(circleDots[i], circleDots[i + 4], true);
             }
         }
 
-        public void DrawingCircleMethod(object sender, MouseEventArgs e, double coeff = 1)
+        public List<Point> DrawingCircleMethod(object sender, MouseEventArgs e, double coeff = 1)
         {
+            List<Point> tempDots = new List<Point>();
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
             double y = Math.Abs(circleStart.Y - position.Y);
@@ -386,10 +348,11 @@ namespace PaintTool
             double error = 0;
             while (y >= 0)
             {
-                SetPixel(new Point(circleStart.X + coeff * x, circleStart.Y + y), true);
-                SetPixel(new Point(circleStart.X + coeff * x, circleStart.Y - y), true);
-                SetPixel(new Point(circleStart.X - coeff * x, circleStart.Y + y), true);
-                SetPixel(new Point(circleStart.X - coeff * x, circleStart.Y - y), true);
+                tempDots.Add(new Point(circleStart.X + coeff * x, circleStart.Y + y));
+                tempDots.Add(new Point(circleStart.X + coeff * x, circleStart.Y - y));
+                tempDots.Add(new Point(circleStart.X - coeff * x, circleStart.Y + y));
+                tempDots.Add(new Point(circleStart.X - coeff * x, circleStart.Y - y));
+
                 error = 2 * (delta + y) - 1;
                 if ((delta < 0) && (error <= 0))
                 {
@@ -403,10 +366,12 @@ namespace PaintTool
                 }
                 delta += 2 * (++x - y--);
             }
+            return tempDots;
         }
 
         public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 7)
         {
+            List<Point> polygonDots = new List<Point>();
             if (numberOfSide > 3)
             {
                 CenterPolygon = prev;
