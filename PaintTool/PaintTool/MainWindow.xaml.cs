@@ -9,13 +9,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+
 namespace PaintTool
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    
+    public class FileDialog
+    {
 
+    }
     public partial class MainWindow : Window
+
     {
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
@@ -741,6 +747,7 @@ namespace PaintTool
         //}
 
         int[] p1 = new int[2], p2 = new int[2];
+        private object openFileDialog;
 
         private void DownDown(object sender, MouseEventArgs e)
         {
@@ -888,21 +895,77 @@ namespace PaintTool
 
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
         {
-            // todo: Задача импорта
-            Image image1 = Image.FromFile("c:\\FakePhoto1.jpg");
-            Image image2 = Image.FromFile("c:\\FakePhoto2.jpg");
+           Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
-            // Get a PropertyItem from image1.
-            PropertyItem propItem = image1.GetPropertyItem(20624);
 
-            // Change the ID of the PropertyItem.
-            propItem.Id = 20625;
 
-            // Set the PropertyItem for image2.
-            image2.SetPropertyItem(propItem);
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".png";
+            dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg";
 
-            // Draw the image.
-            e.Graphics.DrawImage(image2, 20.0F, 20.0F);
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Open document 
+                string filename = dlg.FileName;
+                MessageBox.Show(filename);
+            }
+            
+
+        }
+
+
+        private void SaveImageBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+
+
+            //PaintGrid
+
+
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".bmp";
+            dlg.Filter = "BITMAP Files (*.bmp)|*.bmp";
+
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Open document 
+                string filename = dlg.FileName;
+
+                int width = Convert.ToInt32(PaintGrid.Width);
+                int height = Convert.ToInt32(PaintGrid.Height);
+                //Bitmap bmp = new Bitmap(width, height);
+                //drawImage.DrawToBitmap(bmp, new Rectangle(0, 0, width, height);
+                //bmp.Save(dialog.FileName, ImageFormat.Jpeg);
+
+                MessageBox.Show(width + " " + height + " " + filename);
+            }
+
+
         }
         #endregion
 
