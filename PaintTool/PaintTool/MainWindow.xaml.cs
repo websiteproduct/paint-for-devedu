@@ -29,7 +29,7 @@ namespace PaintTool
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
-        Point prev, position, tempBrokenLine, startBrokenLine, circleStart;
+        Point prev, position, tempBrokenLine, startBrokenLine, circleStart, CenterPolygon;
 
         // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
         // хранит состояние битмапа после отмены(redoStack)
@@ -318,12 +318,41 @@ namespace PaintTool
         {
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
+            double rad = Math.Abs((prev.Y - position.Y)) / 2;
+            if (isShiftPressed)
+                {
+                double temp = Math.Abs(position.X - prev.X);
+                double offsetY = Math.Sqrt(3) / 2 * temp;
+                if (position.X > prev.X)
+                {
+                        DrawingEquilateralTriangle(temp / 2, offsetY);
+                    if (prev.Y > position.Y)
+                    else
+                        DrawingEquilateralTriangle(temp / 2, -offsetY);
+                }
+                else
+                {
+                    if (prev.Y > position.Y)
+                        DrawingEquilateralTriangle( -temp / 2, offsetY);
+                    else
+                        DrawingEquilateralTriangle( -temp / 2, -offsetY);
+                }
 
-            DrawLine(prev, position, true);
-            DrawLine(position, new Point(2 * prev.X - position.X, position.Y), true);
-            DrawLine(new Point(2 * prev.X - position.X, position.Y), prev, true);
+                }
+            {
+            else
+                DrawLine(prev, new Point(prev.X + (position.X-prev.X)/2, position.Y), true);
+                DrawLine(new Point(prev.X + (position.X - prev.X) / 2, position.Y), new Point(position.X, prev.Y), true);
+                DrawLine(new Point(position.X, prev.Y), prev, true);
+            }
         }
 
+        private void DrawingEquilateralTriangle(double offsetX, double offsetY)
+        {
+            DrawLine(prev, new Point(prev.X + offsetX, prev.Y - offsetY), true);
+            DrawLine(new Point(prev.X + offsetX, prev.Y - offsetY), new Point(position.X, prev.Y), true);
+            DrawLine(new Point(position.X, prev.Y), prev, true);
+        }
         public void DrawingCircle(object sender, MouseEventArgs e)
         {
             double coeff = Math.Abs((circleStart.X - position.X) / (circleStart.Y - position.Y));
@@ -341,6 +370,8 @@ namespace PaintTool
         {
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
+            Point[] prevTemp = new Point[4];
+            Point[] nextTemp = new Point[4];
             double y = Math.Abs(circleStart.Y - position.Y);
             double x = 0;
             double delta = 1 - 2 * y;
@@ -366,34 +397,42 @@ namespace PaintTool
             }
         }
 
-        public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 10)
+        public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 7)
         {
             if (numberOfSide > 3)
             {
-                int R = 100;
+                CenterPolygon = prev;
+                double radius;
+                if (Math.Abs(CenterPolygon.X - position.X) > Math.Abs(CenterPolygon.Y - position.Y))
+                    radius = Math.Abs(CenterPolygon.X - position.X);
+                else
+                    radius = Math.Abs(CenterPolygon.Y - position.Y);
 
-                Point Center = position;
-                Point tempPrev;
-                Point tempNext;
 
-                double z = 0;
+                List<Point> polygonDots = new List<Point>();
+
+                double z = Math.Atan(position.X/position.Y)*180/Math.PI;
                 int i = 0;
                 double angle = 360 / numberOfSide;
 
-                tempPrev = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * R)),
-                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * R)));
-                z += angle;
+                //z -= angle ;
 
 
                 while (i < numberOfSide)
                 {
-                    tempNext = new Point(Center.X + (int)(Math.Round(Math.Cos(z / 180 * Math.PI) * R)),
-                    Center.Y - (int)(Math.Round(Math.Sin(z / 180 * Math.PI) * R)));
-                    DrawLine(tempPrev, tempNext, true);
-                    tempPrev = tempNext;
-                    z += angle;
+                    polygonDots.Add(new Point(CenterPolygon.X + (Math.Cos(z / 180 * Math.PI) * radius),
+                                     CenterPolygon.Y - (Math.Sin(z / 180 * Math.PI) * radius)));
+                    z -= angle;
                     i++;
                 }
+                for (int j = 0; j < numberOfSide; j++)
+                {
+                    if (j < numberOfSide-1) 
+                        DrawLine(polygonDots[j], polygonDots[j+1],true);
+                    else 
+                        DrawLine(polygonDots[j], polygonDots[0], true);
+                }
+                
             }
 
         }
@@ -594,10 +633,13 @@ namespace PaintTool
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
             {
-                wbCopy = new WriteableBitmap(wb);
-                PaintField.Source = wb;
-                DrawingPolygon(sender, e);
-                PaintField.Source = wbCopy;
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    wbCopy = new WriteableBitmap(wb);
+                    PaintField.Source = wb;
+                    DrawingPolygon(sender, e);
+                    PaintField.Source = wbCopy;
+                }
             }
         }
         //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
