@@ -22,7 +22,7 @@ namespace PaintTool
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
 
-      
+        List<Point> polygonDots = new List<Point>();
 
         // Инициализируем переменную для хранения цвета в формате Bgra32
         byte[] colorData = { 0, 0, 0, 255 };
@@ -257,6 +257,7 @@ namespace PaintTool
         #region Методы Рисования Фигур
         public void DrawingRectangle(object sender, MouseEventArgs e)
         {
+            List<Point> rectangleDots = new List<Point>();
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
 
@@ -316,42 +317,51 @@ namespace PaintTool
 
         public void DrawingTriangle(object sender, MouseEventArgs e)
         {
+            List<Point> triangleDots = new List<Point>();
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
             double rad = Math.Abs((prev.Y - position.Y)) / 2;
             if (isShiftPressed)
-                {
+            {
                 double temp = Math.Abs(position.X - prev.X);
                 double offsetY = Math.Sqrt(3) / 2 * temp;
                 if (position.X > prev.X)
                 {
-                        DrawingEquilateralTriangle(temp / 2, offsetY);
                     if (prev.Y > position.Y)
+                        triangleDots = DrawingEquilateralTriangle(temp / 2, offsetY);
                     else
-                        DrawingEquilateralTriangle(temp / 2, -offsetY);
+                        triangleDots = DrawingEquilateralTriangle(temp / 2, -offsetY);
                 }
                 else
                 {
                     if (prev.Y > position.Y)
-                        DrawingEquilateralTriangle( -temp / 2, offsetY);
+                        triangleDots = DrawingEquilateralTriangle(-temp / 2, offsetY);
                     else
-                        DrawingEquilateralTriangle( -temp / 2, -offsetY);
+                        triangleDots = DrawingEquilateralTriangle(-temp / 2, -offsetY);
                 }
 
-                }
-            {
-            else
-                DrawLine(prev, new Point(prev.X + (position.X-prev.X)/2, position.Y), true);
-                DrawLine(new Point(prev.X + (position.X - prev.X) / 2, position.Y), new Point(position.X, prev.Y), true);
-                DrawLine(new Point(position.X, prev.Y), prev, true);
             }
+            else
+            {
+                triangleDots.Add(prev);
+                triangleDots.Add(new Point(prev.X + (position.X - prev.X) / 2, position.Y));
+                triangleDots.Add(new Point(position.X, prev.Y));
+            }
+
+                DrawLine(triangleDots[0], triangleDots[1], true);
+                DrawLine(triangleDots[1], triangleDots[2], true);
+                DrawLine(triangleDots[2], triangleDots[0], true);
+                
         }
 
-        private void DrawingEquilateralTriangle(double offsetX, double offsetY)
+        private List<Point> DrawingEquilateralTriangle(double offsetX, double offsetY)
         {
-            DrawLine(prev, new Point(prev.X + offsetX, prev.Y - offsetY), true);
-            DrawLine(new Point(prev.X + offsetX, prev.Y - offsetY), new Point(position.X, prev.Y), true);
-            DrawLine(new Point(position.X, prev.Y), prev, true);
+            List<Point> tempDots = new List<Point>();
+            tempDots.Add(prev);
+            tempDots.Add(new Point(prev.X + offsetX, prev.Y - offsetY));
+            tempDots.Add(new Point(position.X, prev.Y));
+
+            return tempDots;
         }
         public void DrawingCircle(object sender, MouseEventArgs e)
         {
@@ -370,8 +380,6 @@ namespace PaintTool
         {
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
-            Point[] prevTemp = new Point[4];
-            Point[] nextTemp = new Point[4];
             double y = Math.Abs(circleStart.Y - position.Y);
             double x = 0;
             double delta = 1 - 2 * y;
@@ -408,8 +416,6 @@ namespace PaintTool
                 else
                     radius = Math.Abs(CenterPolygon.Y - position.Y);
 
-
-                List<Point> polygonDots = new List<Point>();
 
                 double z = Math.Atan(position.X/position.Y)*180/Math.PI;
                 int i = 0;

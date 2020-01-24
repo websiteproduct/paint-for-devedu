@@ -6,9 +6,9 @@ namespace PaintTool.Strategy
 {
     class DrawByDash : DrawStrategy
     {
-        public override void DrawLine()
-        {
+        //public override void DrawLine()
+        //{
 
-        }
+        //}
     }
 }
