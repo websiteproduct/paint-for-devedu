@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
-using System.Windows;
 
 
 namespace PaintTool.Strategy
 {
-    class DrawByLine : DrawStrategy
+    public class DrawByLine : DrawStrategy
     {
-        public override void DrawLine(Point prev, Point positio)
+        public override void DrawLine(Point prev, Point position)
         {
-
+            List<Point> temp = thicknessStrategy.GetPoints(prev);
+            List<Point> temp2 = thicknessStrategy.GetPoints(position);
         }
     }
 }

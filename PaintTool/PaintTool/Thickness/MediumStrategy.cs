@@ -1,10 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
-namespace PaintTool.ThicknessStrategy
+namespace PaintTool.Thickness
 {
-    class MediumStrategy : ThicknessStrategy
+    class MediumStrategy : ThicknessS
     {
+        public List<Point> GetPoints(Point point)
+        {
+            return new List<Point> { 
+                point,
+                new Point(point.X, point.Y + 1),
+                new Point(point.X + 1, point.Y),
+                new Point(point.X + 1, point.Y + 1)
+            };
+        }
     }
 }

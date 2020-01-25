@@ -9,8 +9,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using PaintTool.Creators;
 using PaintTool.figures;
-
+using PaintTool.Strategy;
+using Shape = PaintTool.figures.Shape;
 
 namespace PaintTool
 {
@@ -27,14 +30,12 @@ namespace PaintTool
     {
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
-
-
         // Инициализируем переменную для хранения цвета в формате Bgra32
         byte[] colorData = { 0, 0, 0, 255 };
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
-        Point prev, position, tempBrokenLine, startBrokenLine, circleStart, CenterPolygon;
+        System.Drawing.Point prev, position, tempBrokenLine, startBrokenLine, circleStart, CenterPolygon;
 
         // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
         // хранит состояние битмапа после отмены(redoStack)
@@ -42,15 +43,19 @@ namespace PaintTool
         Stack<WriteableBitmap> redoStack = new Stack<WriteableBitmap>();
         // Переменные, которые являются промежуточными. В них записывается клон битмапа, а потом они записываются в свои стеки.
 
+        ShapeEnum currentShape;
+
         public MainWindow()
         {
             // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
             InitializeComponent();
-            SetGridSize(640, 480);
+            SetGridSize(640,480);
             Paint(255, 255, 255, 255);
             BrushToggleBtn.IsChecked = true;
-        }
 
+            currentShape = ShapeEnum.Line;
+        }
+        
         #region СОЗДАНИЕ НОВОГО ФАЙЛА
         private void NewFile(object sender, RoutedEventArgs e)
         {
@@ -533,6 +538,32 @@ namespace PaintTool
             position.Y = e.GetPosition(PaintField).Y;
             // Метод для рисования при нажатой ЛКМ
 
+            ShapeCreator currentCreator = null;
+            NewImage.CopyInstance();
+
+            switch (currentShape)
+            {
+                case ShapeEnum.Circle:
+                    currentCreator = new CircleCreator(1.111108);
+                    break;
+                default:
+                    currentCreator = new LineCreator();
+                    break;
+            }
+
+            Shape createdShape = currentCreator.CreateShape(prev, position);
+            createdShape.ds = new DrawByLine();
+            createdShape.Draw();
+            PaintField.Source = NewImage.GetInstanceCopy();
+
+
+
+
+            ///////////////////
+
+
+
+
             if (((bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked) && e.LeftButton == MouseButtonState.Pressed)
             {
                 DrawingBrush(sender, e);
@@ -902,17 +933,13 @@ namespace PaintTool
 
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
         {
-            ///////////
-            ///////////  TODO: Add a Menu Button!
-            ///////////
-
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            OpenFileDialog dlg = new OpenFileDialog();
 
 
 
             // Set filter for file extension and default file extension 
-            dlg.DefaultExt = ".bmp";
-            dlg.Filter = "BITMAP Files (*.bmp)|*.bmp";
+            dlg.DefaultExt = ".png";
+            dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg";
 
 
             // Display OpenFileDialog by calling ShowDialog method 
@@ -936,8 +963,8 @@ namespace PaintTool
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
 
             // Set filter for file extension and default file extension 
-            dlg.DefaultExt = ".bmp";
-            dlg.Filter = "BITMAP Files (*.bmp)|*.bmp";
+            dlg.DefaultExt = ".png";
+            dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg";
 
             // Display OpenFileDialog by calling ShowDialog method 
             Nullable<bool> result = dlg.ShowDialog();
@@ -949,8 +976,6 @@ namespace PaintTool
                 string filename = dlg.FileName;
                 SaveDrawing(filename);
             }
-
-
         }
 
 
@@ -965,7 +990,7 @@ namespace PaintTool
             var dv = new DrawingVisual();
             using (DrawingContext dc = dv.RenderOpen())
             {
-                dc.DrawRectangle(new VisualBrush(PaintGrid), null, new Rect(0, 0, width, height));
+                dc.DrawRectangle(new VisualBrush(PaintGrid), null, new System.Windows.Rect(0, 0, width, height));
             }
             rtb.Render(dv);
             
@@ -987,7 +1012,7 @@ namespace PaintTool
             BitmapImage filefoto = new BitmapImage(new Uri(filename));
             var image = new Image { Source = filefoto };
             PaintGrid.Children.Add(image);
-            //
+
             // TODO: Test this after Menu Button is added
 
         }

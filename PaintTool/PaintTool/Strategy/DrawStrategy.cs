@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
-using System.Windows;
+using PaintTool.Thickness;
 
 
 namespace PaintTool.Strategy
 {
-    abstract class DrawStrategy
+    public abstract class DrawStrategy
     {
-        Color currentColor;
+        public Color currentColor;
+        public ThicknessS thicknessStrategy;
 
         public virtual void DrawLine(Point prev, Point position)
         {
-
         }
 
     }

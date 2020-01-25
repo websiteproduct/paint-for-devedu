@@ -27,9 +27,9 @@ namespace PaintTool
 
         private void CreateBitmap(object sender, RoutedEventArgs e)
         {
-            parentWindow.SetGridSize(Convert.ToInt32(ImageWidth.Text), Convert.ToInt32(ImageHeight.Text));
-            parentWindow.Paint(255, 255, 255, 255);
-            this.Close();
+            //parentWindow.SetGridSize(Convert.ToInt32(ImageWidth.Text), Convert.ToInt32(ImageHeight.Text));
+            //parentWindow.Paint(255, 255, 255, 255);
+            //this.Close();
         }
     }
 }

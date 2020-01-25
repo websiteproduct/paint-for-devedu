@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PaintTool
 {
-    class Color
+    public class Color
     {
         //CurrentColor { get; set }
     }

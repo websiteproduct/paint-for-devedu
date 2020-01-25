@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace PaintTool.figures
 {
-    class Circle : Shape
+    public class Circle : Shape
     {
+        public Circle(List<Point> points) : base(points)
+        { }
     }
 }
