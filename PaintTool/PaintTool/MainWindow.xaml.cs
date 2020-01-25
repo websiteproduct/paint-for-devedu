@@ -11,13 +11,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using PaintTool.figures;
 
+
 namespace PaintTool
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    
+    public class FileDialog
+    {
 
+    }
     public partial class MainWindow : Window
+
     {
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
@@ -714,6 +720,7 @@ namespace PaintTool
         //}
 
         int[] p1 = new int[2], p2 = new int[2];
+        private object openFileDialog;
 
         private void DownDown(object sender, MouseEventArgs e)
         {
@@ -891,6 +898,98 @@ namespace PaintTool
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
         {
             if (wb != null) Paint(255, 255, 255, 255);
+        }
+
+        private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ///////////
+            ///////////  TODO: Add a Menu Button!
+            ///////////
+
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+
+
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".bmp";
+            dlg.Filter = "BITMAP Files (*.bmp)|*.bmp";
+
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Load Drawing 
+                string filename = dlg.FileName;
+                LoadDrawing(filename);
+            }
+            
+
+        }
+
+
+        private void SaveImageBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".bmp";
+            dlg.Filter = "BITMAP Files (*.bmp)|*.bmp";
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Get the selected file name and Save
+            if (result == true)
+            {
+                // Save Drawing 
+                string filename = dlg.FileName;
+                SaveDrawing(filename);
+            }
+
+
+        }
+
+
+            private void SaveDrawing(string filename)
+        {
+            //get the height and width of the PanelGrid
+            int width = Convert.ToInt32(PaintGrid.Width);
+            int height = Convert.ToInt32(PaintGrid.Height);
+            
+            //Render a bitmap of the PanelGrid
+            var rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+            var dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawRectangle(new VisualBrush(PaintGrid), null, new Rect(0, 0, width, height));
+            }
+            rtb.Render(dv);
+            
+            //Encode the render into a bitmap
+            BitmapEncoder encoder = new BmpBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            //Save the bitmap using the given name
+            using (var fs = System.IO.File.OpenWrite(filename))
+            {
+                encoder.Save(fs);
+            }
+
+        }
+
+        private void LoadDrawing(string filename)
+        {
+            //Loads the given file image
+            BitmapImage filefoto = new BitmapImage(new Uri(filename));
+            var image = new Image { Source = filefoto };
+            PaintGrid.Children.Add(image);
+            //
+            // TODO: Test this after Menu Button is added
+
         }
 
         #endregion

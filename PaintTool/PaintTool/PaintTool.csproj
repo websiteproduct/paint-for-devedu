@@ -13,6 +13,7 @@
     <None Remove="images\cross.png" />
     <None Remove="images\ellipse.png" />
     <None Remove="images\eraser.png" />
+    <None Remove="images\import.png" />
     <None Remove="images\line.png" />
     <None Remove="images\new.png" />
     <None Remove="images\polygon.png" />
@@ -27,6 +28,15 @@
     <None Remove="redo.png" />
     <None Remove="save.png" />
     <None Remove="undo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <COMReference Include="{215d64d2-031c-33c7-96e3-61794cd1ee61}">
+      <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <WrapperTool>tlbimp</WrapperTool>
+    </COMReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +70,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\redo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\import.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\save.png">

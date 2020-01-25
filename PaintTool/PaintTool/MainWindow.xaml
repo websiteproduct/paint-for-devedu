@@ -83,7 +83,7 @@
                             <ImageBrush ImageSource="images\new.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button Grid.Column="1" BorderThickness="0,0,0,0">
+                    <Button x:Name="SaveImageBtn" Grid.Column="1" BorderThickness="0,0,0,0" Click="SaveImageBtn_Click">
                         <Button.Background>
                             <ImageBrush ImageSource="images\save.png" Stretch="None"/>
                         </Button.Background>
@@ -413,6 +413,11 @@
                     <Button x:Name="ClearImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Margin="5,0,0,0" Click="ClearImageBtn_Click">
                         <Button.Background>
                             <ImageBrush ImageSource="images\close.png" Stretch="None" />
+                        </Button.Background>
+                    </Button>
+                    <Button x:Name="ImportImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Click="ImportImageBtn_Click" HorizontalAlignment="Right" Width="25" Margin="0,4,-23,-4">
+                        <Button.Background>
+                            <ImageBrush ImageSource="images\import.png" Stretch="None" />
                         </Button.Background>
                     </Button>
                 </Grid>
