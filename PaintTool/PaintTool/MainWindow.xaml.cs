@@ -900,48 +900,6 @@ namespace PaintTool
 
 
             // Set filter for file extension and default file extension 
-            dlg.DefaultExt = ".png";
-            dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg";
-
-
-            // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = dlg.ShowDialog();
-
-
-            // Get the selected file name and display in a TextBox 
-            if (result == true)
-            {
-                // Open document 
-                string filename = dlg.FileName;
-                MessageBox.Show(filename);
-            }
-            
-
-        }
-
-
-        private void SaveImageBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-
-
-            //PaintGrid
-
-
-            // Set filter for file extension and default file extension 
             dlg.DefaultExt = ".bmp";
             dlg.Filter = "BITMAP Files (*.bmp)|*.bmp";
 
@@ -955,18 +913,86 @@ namespace PaintTool
             {
                 // Open document 
                 string filename = dlg.FileName;
+                LoadDrawing(filename);
+            }
+            
 
-                int width = Convert.ToInt32(PaintGrid.Width);
-                int height = Convert.ToInt32(PaintGrid.Height);
-                //Bitmap bmp = new Bitmap(width, height);
-                //drawImage.DrawToBitmap(bmp, new Rectangle(0, 0, width, height);
-                //bmp.Save(dialog.FileName, ImageFormat.Jpeg);
+        }
 
-                MessageBox.Show(width + " " + height + " " + filename);
+
+        private void SaveImageBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".bmp";
+            dlg.Filter = "BITMAP Files (*.bmp)|*.bmp";
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Open document 
+                string filename = dlg.FileName;
+
+                SaveDrawing(filename);
+
             }
 
 
         }
+
+
+            private void SaveDrawing(string filename)
+        {
+            //get the height and width of the PanelGrid
+            int width = Convert.ToInt32(PaintGrid.Width);
+            int height = Convert.ToInt32(PaintGrid.Height);
+            
+            //Render a bitmap of the PanelGrid
+            var rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+            var dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawRectangle(new VisualBrush(PaintGrid), null, new Rect(0, 0, width, height));
+            }
+            rtb.Render(dv);
+            
+            //Encode the render into a bitmap
+            BitmapEncoder encoder = new BmpBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            //Save the bitmap using the given name
+            using (var fs = System.IO.File.OpenWrite(filename))
+            {
+                encoder.Save(fs);
+            }
+
+        }
+
+        private void LoadDrawing(string filename)
+        {
+            //Loads the given file image
+            BitmapImage filefoto = new BitmapImage(new Uri(filename));
+            var image = new Image { Source = filefoto };
+            PaintGrid.Children.Add(image);
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+
+
+        }
+
         #endregion
 
         #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
