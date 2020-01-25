@@ -895,7 +895,11 @@ namespace PaintTool
 
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
         {
-           Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            ///////////
+            ///////////  TODO: Add a Menu Button!
+            ///////////
+
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
 
 
@@ -911,7 +915,7 @@ namespace PaintTool
             // Get the selected file name and display in a TextBox 
             if (result == true)
             {
-                // Open document 
+                // Load Drawing 
                 string filename = dlg.FileName;
                 LoadDrawing(filename);
             }
@@ -931,14 +935,12 @@ namespace PaintTool
             // Display OpenFileDialog by calling ShowDialog method 
             Nullable<bool> result = dlg.ShowDialog();
 
-            // Get the selected file name and display in a TextBox 
+            // Get the selected file name and Save
             if (result == true)
             {
-                // Open document 
+                // Save Drawing 
                 string filename = dlg.FileName;
-
                 SaveDrawing(filename);
-
             }
 
 
@@ -979,17 +981,7 @@ namespace PaintTool
             var image = new Image { Source = filefoto };
             PaintGrid.Children.Add(image);
             //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-
+            // TODO: Test this after Menu Button is added
 
         }
 
