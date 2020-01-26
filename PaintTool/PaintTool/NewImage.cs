@@ -33,11 +33,6 @@ namespace PaintTool
             }
         }
 
-        public static void CopyInstance()
-        {
-            instanceCopy = new WriteableBitmap(instance);
-        }
-
         public static WriteableBitmap GetInstanceCopy()
         {
             if(instanceCopy == null)

@@ -1,4 +1,4 @@
-﻿using PaintTool.figures;
+﻿ using PaintTool.figures;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,16 +31,19 @@ namespace PaintTool.Creators
                 
                 if ((delta < 0))
                 {
-                    delta += 2 * ++x + 1;
+                    x++;
+                    delta = delta + 2 * x + 1;
                     continue;
                 }
                 if ((delta > 0))
                 {
-                    delta -= 2 * --y + 1;
+                    y++;
+                    delta =delta - 2 * y + 1;
                     continue;
                 }
-
-                delta += 2 * (++x - y--);
+                x++;
+                delta = delta + 2 * (x - y);
+                y--;
             }
 
             return new Circle(tempDots);

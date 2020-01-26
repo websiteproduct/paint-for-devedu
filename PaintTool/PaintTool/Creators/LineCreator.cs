@@ -10,7 +10,11 @@ namespace PaintTool.Creators
     {
         public Shape CreateShape(Point start, Point end)
         {
-            return new Line();
+            //List<Point> tempDots = new List<Point>();
+            //tempDots.Add(start);
+            //tempDots.Add(end);
+
+            return new Line(List<Point> { start, end });
         }
     }
 }

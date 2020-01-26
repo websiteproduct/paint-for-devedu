@@ -221,12 +221,9 @@ namespace PaintTool
         public void DrawingRectangle(object sender, MouseEventArgs e)
         {
             List<Point> rectangleDots = new List<Point>();
-            position.X = (int)(e.GetPosition(PaintField).X);
-            position.Y = (int)(e.GetPosition(PaintField).Y);
 
             if (isShiftPressed)
             {
-
                 double length = position.X - prev.X;
                 if (position.X > prev.X)
                 {
