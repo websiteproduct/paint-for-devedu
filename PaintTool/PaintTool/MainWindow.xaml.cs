@@ -497,7 +497,7 @@ namespace PaintTool
                 wb = wbCopy;
             }
 
-            if ((bool)BrushToggleBtn.IsChecked) PutInUndoStack();
+            if ((bool)BrushToggleBtn.IsChecked) newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
         }
 
         bool isShiftPressed = false;
@@ -710,18 +710,11 @@ namespace PaintTool
             Rectangle colorRectangle = (Rectangle)currentSelectedComboBoxItemGrid.Children[0];
 
             System.Windows.Media.Color clr = (System.Windows.Media.Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
-
-            SetColor(clr.B, clr.G, clr.R);
+            // Создали новый цвет и добавили в него значение. 
+            PaintColor newColor = new PaintColor();
+            newColor.SetColor(clr.B, clr.G, clr.R);
         }
-        private void SetColor(byte blue, byte green, byte red, byte alpha = 255)
-        {
-            colorData = new byte[] { blue, green, red, alpha };
-        }
-        private byte[] GetColor()
-        {
-            // Метод для возвращения значения цвета в Bgra32
-            return colorData;
-        }
+        
         #endregion
 
         #region СТИРАНИЕ ПИКСЕЛЕЙ
