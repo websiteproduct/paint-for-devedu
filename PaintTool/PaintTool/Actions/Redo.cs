@@ -8,20 +8,20 @@ namespace PaintTool.Actions
     public class Redo
     {
         Stack<WriteableBitmap> redoStack;
+        WriteableBitmap ImageFromRedoStack { get; set; }
 
         public Redo()
         {
             redoStack = new Stack<WriteableBitmap>();
         }
 
-        public void Redomethod()
+        public void RedoMethod()
         {
             if (redoStack.Count > 0)
-            {
-                wb = redoStack.Pop();
-                PaintField.Source = wb;
+            {                
+                ImageFromRedoStack = redoStack.Pop();
             }
-            else if (undoStack.Count == 0)
+            else if (redoStack.Count == 0)
             {
                 return;
             }

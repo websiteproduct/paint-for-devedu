@@ -1063,15 +1063,15 @@ namespace PaintTool
 
         #endregion
 
-        #region Методы для Undo, Redo    
+        #region Кнопки для методов Undo, Redo    
 
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
-            newRedo.Redomethod();
+            newRedo.RedoMethod();
         }
         private void UndoButton_Click(object sender, RoutedEventArgs e)
         {
-            newUndo.Undomethod();
+            newUndo.UndoMethod(NewImage.GetInstanceCopy());
         }
         
 

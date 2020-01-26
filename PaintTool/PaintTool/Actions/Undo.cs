@@ -23,7 +23,7 @@ namespace PaintTool.Actions
             }
         }
 
-        public void Undomethod(WriteableBitmap instanceCopy)
+        public void UndoMethod(WriteableBitmap instanceCopy)
         {
             if (undoStack.Count > 0)
             {
