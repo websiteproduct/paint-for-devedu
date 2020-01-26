@@ -14,6 +14,7 @@ using PaintTool.Creators;
 using PaintTool.figures;
 using PaintTool.Strategy;
 using Shape = PaintTool.figures.Shape;
+using PaintTool.Actions;
 
 namespace PaintTool
 {
@@ -29,7 +30,7 @@ namespace PaintTool
 
     {
         // Инициализируем WriteableBitmap
-        WriteableBitmap wb, copyUndo, copyRedo, wbCopy;
+        WriteableBitmap wb, wbCopy;
         // Инициализируем переменную для хранения цвета в формате Bgra32
         byte[] colorData = { 0, 0, 0, 255 };
         bool drawingBrokenLine = false;
@@ -39,8 +40,9 @@ namespace PaintTool
 
         // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
         // хранит состояние битмапа после отмены(redoStack)
-        Stack<WriteableBitmap> undoStack = new Stack<WriteableBitmap>();
-        Stack<WriteableBitmap> redoStack = new Stack<WriteableBitmap>();
+        Undo newUndo = new Undo();
+        Redo newRedo = new Redo();
+        
         // Переменные, которые являются промежуточными. В них записывается клон битмапа, а потом они записываются в свои стеки.
 
         ShapeEnum currentShape;
@@ -1061,52 +1063,17 @@ namespace PaintTool
 
         #endregion
 
-        #region Методы для Undo, Redo
-
-        private void Undomethod()
-        {
-            if (undoStack.Count > 0)
-            {
-                PutInRedoStack();
-                wb = undoStack.Pop();
-                PaintField.Source = wb;
-            }
-            else if (undoStack.Count == 0)
-            {
-                return;
-            }
-        }
-        private void PutInUndoStack()
-        {
-            copyUndo = wb.Clone();
-            undoStack.Push(copyUndo);
-        }
-        private void PutInRedoStack()
-        {
-            copyRedo = wb.Clone();
-            redoStack.Push(copyRedo);
-        }
+        #region Методы для Undo, Redo    
 
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
-            Redomethod();
+            newRedo.Redomethod();
         }
         private void UndoButton_Click(object sender, RoutedEventArgs e)
         {
-            Undomethod();
+            newUndo.Undomethod();
         }
-        private void Redomethod()
-        {
-            if (redoStack.Count > 0)
-            {
-                wb = redoStack.Pop();
-                PaintField.Source = wb;
-            }
-            else if (undoStack.Count == 0)
-            {
-                return;
-            }
-        }
+        
 
         #endregion
     }
