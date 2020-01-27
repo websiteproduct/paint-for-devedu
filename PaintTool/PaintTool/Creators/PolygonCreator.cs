@@ -5,14 +5,21 @@ using System.Drawing;
 
 namespace PaintTool.Creators
 {
-    class PolygonCreator
+    public class PolygonCreator : ShapeCreator
     {
+        private int numberOfSide;
+
+        public PolygonCreator(int numberOfSide)
+        {
+            this.numberOfSide = numberOfSide;
+        }
+
         public Shape CreateShape(Point start, Point end)
         {
             List<Point> tempDots = new List<Point>();
             if (numberOfSide > 3)
             {
-                CenterPolygon = start;
+                Point CenterPolygon = start;
                 double radius;
                 if (Math.Abs(CenterPolygon.X - end.X) > Math.Abs(end.Y - end.Y))
                     radius = Math.Abs(CenterPolygon.X - end.X);
@@ -26,14 +33,14 @@ namespace PaintTool.Creators
 
                 while (i < numberOfSide)
                 {
-                    tempDots.Add(new Point(CenterPolygon.X + (Math.Cos(z / 180 * Math.PI) * radius),
-                                     CenterPolygon.Y - (Math.Sin(z / 180 * Math.PI) * radius)));
+                    tempDots.Add(new Point(CenterPolygon.X + (int)(Math.Cos(z / 180 * Math.PI) * radius),
+                                     CenterPolygon.Y - (int)(Math.Sin(z / 180 * Math.PI) * radius)));
                     z -= angle;
                     i++;
                 }
+            }
+            return new Polygon(tempDots, numberOfSide);
 
-
-                return new Line(tempDots);
         }
     }
 }

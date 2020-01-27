@@ -6,13 +6,18 @@ using PaintTool.figures;
 
 namespace PaintTool.Creators
 {
-    class RectCreator : ShapeCreator
+    public class RectCreator : ShapeCreator
     {
-        bool isShiftPressed;
-        private byte[] colorData;
-        int size;
-        private Shape line;
+        private bool isShiftPressed;
+        //private byte[] colorData;
+        //int size;
+        //private Shape line;
         //bool isShiftPressed;
+
+        public RectCreator(bool isShiftPressed)
+        {
+            this.isShiftPressed = isShiftPressed;
+        }
 
         public Shape CreateShape(Point start, Point end)
         {
@@ -23,13 +28,13 @@ namespace PaintTool.Creators
                 int length = end.X - start.X;
                 if (end.X > start.X)
                 {
-                    if (end.Y > start.Y) tempDots = DrawingSquare(wb, start, length, length);
-                    else tempDots = DrawingSquare(wb, start, length, -length);
+                    if (end.Y > start.Y) tempDots = DrawingSquare(start, length, length);
+                    else tempDots = DrawingSquare(start, length, -length);
                 }
                 else
                 {
-                    if (end.Y > start.Y) tempDots = DrawingSquare(wb, start, length, -length);
-                    else tempDots = DrawingSquare(wb, start, length, length);
+                    if (end.Y > start.Y) tempDots = DrawingSquare(start, length, -length);
+                    else tempDots = DrawingSquare(start, length, length);
                 }
 
             }
@@ -43,7 +48,7 @@ namespace PaintTool.Creators
 
             return new Line(tempDots);
         }
-        private List<Point> DrawingSquare(WriteableBitmap wb, Point start, int lengthX, int lengthY)
+        private List<Point> DrawingSquare(Point start, int lengthX, int lengthY)
         {
             List<Point> tempDots = new List<Point>();
             tempDots.Add(start);

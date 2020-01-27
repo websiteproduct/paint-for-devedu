@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
+using PaintTool.Creators;
 
 namespace PaintTool.figures
 {
@@ -9,9 +8,9 @@ namespace PaintTool.figures
     {
         public Circle(List<Point> points) : base(points)
         {
-            for (int i = 0; i < points.Count - 4; i += 1)
+            for (int i = 0; i < points.Count - 4; i++)
             {
-                DrawLine(points[i], points[i + 4], true);
+                new LineCreator().CreateShape(points[i], points[i + 4]);
             }
         }
     }

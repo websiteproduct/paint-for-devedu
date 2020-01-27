@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
+using PaintTool.Creators;
 
 namespace PaintTool.figures
 {
     class Polygon : Shape
     {
-        public Polygon(List<Point> points) : base(points)
+        public Polygon(List<Point> points, int numberOfSide) : base(points)
         {
-            for (int j = 0; j < numberOfSide; j++)
+            for (int i = 0; i < numberOfSide; i++)
             {
-                if (j < numberOfSide - 1)
-                    DrawLine(polygonDots[j], polygonDots[j + 1], true);
+                if (i < numberOfSide - 1)
+                    new LineCreator().CreateShape(points[i], points[i + 1]);
                 else
-                    DrawLine(polygonDots[j], polygonDots[0], true);
+                    new LineCreator().CreateShape(points[i], points[0]);
             }
         }
     }

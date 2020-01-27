@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Drawing;
+using PaintTool.Creators;
 
 namespace PaintTool.figures
 {
@@ -17,14 +11,13 @@ namespace PaintTool.figures
         private byte[] colorData;
         int size;
         private Shape line;
-        bool isShiftPressed;
 
-        public Rect(List<Point> points : base(points), byte[] colorData, int size, bool isShiftPressed)
+        public Rect(List<Point> points, byte[] colorData, int size) : base(points)
         {
-            DrawLine(points[0], points[1], true);
-            DrawLine(points[1], points[2], true);
-            DrawLine(points[2], points[3], true);
-            DrawLine(points[3], points[0], true);
+            new LineCreator().CreateShape(points[0], points[1]);
+            new LineCreator().CreateShape(points[1], points[2]);
+            new LineCreator().CreateShape(points[2], points[3]);
+            new LineCreator().CreateShape(points[3], points[0]);
         }
     }
 }

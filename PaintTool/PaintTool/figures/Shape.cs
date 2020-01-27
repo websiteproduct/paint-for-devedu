@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Collections.Generic;
 using PaintTool.Strategy;
 using System.Drawing;
 
@@ -20,7 +11,8 @@ namespace PaintTool.figures
         public virtual void Draw() {
             for (int i = 0; i < FigurePoints.Count; i++)
             {
-                ds.DrawLine();
+                //new ds.DrawLine();
+                ds = new DrawByLine();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿ using PaintTool.figures;
+﻿using PaintTool.figures;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

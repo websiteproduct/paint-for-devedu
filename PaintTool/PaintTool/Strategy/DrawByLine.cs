@@ -8,10 +8,10 @@ namespace PaintTool.Strategy
 {
     public class DrawByLine : DrawStrategy
     {
-        public override void DrawLine(Point prev, Point position)
+        public override void DrawLine(Point start, Point end)
         {
-            List<Point> temp = thicknessStrategy.GetPoints(prev);
-            List<Point> temp2 = thicknessStrategy.GetPoints(position);
+            List<Point> temp = thicknessStrategy.GetPoints(start);
+            List<Point> temp2 = thicknessStrategy.GetPoints(end);
         }
     }
 }

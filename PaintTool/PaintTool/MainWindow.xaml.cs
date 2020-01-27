@@ -15,6 +15,7 @@ using PaintTool.figures;
 using PaintTool.Strategy;
 using Shape = PaintTool.figures.Shape;
 using PaintTool.Actions;
+using System.Drawing;
 
 namespace PaintTool
 {
@@ -29,6 +30,7 @@ namespace PaintTool
     public partial class MainWindow : Window
 
     {
+        PaintColor paintColor = new PaintColor();
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, wbCopy;
         // Инициализируем переменную для хранения цвета в формате Bgra32
@@ -51,6 +53,7 @@ namespace PaintTool
         {
             // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
             InitializeComponent();
+            //wb = new NewImage(640,480);
             SetGridSize(640,480);
             Paint(255, 255, 255, 255);
             BrushToggleBtn.IsChecked = true;
@@ -91,109 +94,10 @@ namespace PaintTool
             return pixels;
         }
         #endregion
-
-        #region РАБОЧАЯ СВЯЗКА МЕТОДОВ ДЛЯ РИСОВАНИЯ ПРЯМОЙ
-        private void DrawLine(Point prev, Point position, bool altBitmap = false)
-        {
-            int wth = Convert.ToInt32(Math.Abs(position.X - prev.X) + 1);
-            int hght = Convert.ToInt32(Math.Abs(position.Y - prev.Y) + 1);
-            if (ShapeList.SelectedItem == RectangleShape || ShapeList.SelectedItem == TriangleShape)
-            {
-                wth--;
-                hght--;
-            }
-
-            int x0 = Convert.ToInt32(prev.X), y0 = Convert.ToInt32(prev.Y);
-            List<Point> LineDots = new List<Point>();
- 
-            double k;
-
-            if (hght >= wth)
-            { 
-                k = wth * 1.0 / hght;
-
-                if (position.X >= prev.X && position.Y >= prev.Y)
-                {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        LineDots.Add(new Point(Convert.ToInt32(k * i + x0), y0 + i));
-                    }
-                }
-                if (position.X <= prev.X && position.Y >= prev.Y)
-                {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        LineDots.Add(new Point(-Convert.ToInt32(k * i - x0), y0 + i));
-                    }
-                }
-
-                if (position.X >= prev.X && position.Y <= prev.Y)
-                {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        LineDots.Add(new Point(Convert.ToInt32(k * i + x0), y0 - i));
-                    }
-                }
-
-                if (position.X <= prev.X && position.Y <= prev.Y)
-                {
-                    for (int i = 0; i < hght; i++)
-                    {
-                        LineDots.Add(new Point(-Convert.ToInt32(k * i - x0), y0 - i));
-                    }
-                }
-
-                for (int i = 0; i < hght; i++)
-                {
-                    SetPixel(LineDots[i], altBitmap);
-                }
-            }
-            else 
-            {
-                k = hght * 1.0 / wth;
-
-                if (position.X >= prev.X && position.Y <= prev.Y)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        LineDots.Add(new Point(x0 + i, - Convert.ToInt32(k * i - y0)));
-                    }
-                }
-
-                if (position.X <= prev.X && position.Y <= prev.Y)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        LineDots.Add(new Point(x0 - i, -Convert.ToInt32(k * i - y0)));
-                    }
-                }
-
-                if (position.X >= prev.X && position.Y >= prev.Y)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        LineDots.Add(new Point(x0 + i, Convert.ToInt32(k * i + y0)));
-                    }
-                }
-
-                if (position.X <= prev.X && position.Y >= prev.Y)
-                {
-                    for (int i = 0; i < wth; i++)
-                    {
-                        LineDots.Add(new Point(x0 - i, Convert.ToInt32(k * i + y0)));
-                    }
-                }
-
-                for (int i = 0; i < wth; i++)
-                {
-                    SetPixel(LineDots[i], altBitmap);
-                }
-            }
-
-        }
+  
 
 
-        public void SetPixel(Point pxl, bool altBitmap)
+        public void SetPixel(System.Drawing.Point pxl, bool altBitmap)
         {
 
             if ((pxl.X < PaintField.Width && pxl.X > 0) && (pxl.Y < PaintField.Height && pxl.Y > 0))
@@ -209,235 +113,41 @@ namespace PaintTool
                     wb.WritePixels(rect, new byte[] { 255, 255, 255, 255 }, 4, 0);
                 }
                 else if (altBitmap)
-                    wbCopy.WritePixels(rect, GetColor(), 4, 0);
+                    wbCopy.WritePixels(rect, paintColor.GetColor(), 4, 0);
                 else
-                    wb.WritePixels(rect, GetColor(), 4, 0);
+                    wb.WritePixels(rect, paintColor.GetColor(), 4, 0);
             }
-        }
-
-        #endregion
-
-        #region Методы Рисования Фигур
-        public void DrawingRectangle(object sender, MouseEventArgs e)
-        {
-            List<Point> rectangleDots = new List<Point>();
-
-            if (isShiftPressed)
-            {
-                double length = position.X - prev.X;
-                if (position.X > prev.X)
-                {
-                    if (position.Y > prev.Y) rectangleDots = DrawingSquare(length, length);
-                    else rectangleDots = DrawingSquare(length, -length);
-                }
-                else
-                {
-                    if (position.Y > prev.Y) rectangleDots = DrawingSquare(length, -length);
-                    else rectangleDots = DrawingSquare(length, length);
-                }
-
-            }
-            else
-            {
-                rectangleDots.Add(prev);
-                rectangleDots.Add(new Point(position.X, prev.Y));
-                rectangleDots.Add(position);
-                rectangleDots.Add(new Point(prev.X, position.Y));
-            }
-
-            DrawLine(rectangleDots[0], rectangleDots[1], true);
-            DrawLine(rectangleDots[1], rectangleDots[2], true);
-            DrawLine(rectangleDots[2], rectangleDots[3], true);
-            DrawLine(rectangleDots[3], rectangleDots[0], true);
-        }
-
-        private List<Point> DrawingSquare(double lengthX, double lengthY)
-        {
-            List<Point> tempDots = new List<Point>();
-            tempDots.Add(prev);
-            tempDots.Add(new Point(prev.X + lengthX, prev.Y));
-            tempDots.Add(new Point(prev.X + lengthX, prev.Y + lengthY));
-            tempDots.Add(new Point(prev.X, prev.Y + lengthY));
-            return tempDots;
-        }
-        public void DrawingLineOnField(object sender, MouseEventArgs e)
-        {
-            position.X = (int)(e.GetPosition(PaintField).X);
-            position.Y = (int)(e.GetPosition(PaintField).Y);
-
-            DrawLine(prev, position);
         }
 
         public void DrawingBrush(object sender, MouseEventArgs e)
         {
-            if (Convert.ToInt32(SizeInput.Text) > 1)
-                SizeDrawer(prev, position);
-            else
-            {
-                DrawLine(prev, position, false);
-            }
+            //if (Convert.ToInt32(SizeInput.Text) > 1)
+            //    SizeDrawer(prev, position);
+            //else
+            //{
+               new LineCreator().CreateShape(prev, position);
+            //}
             prev = position;
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
         }
 
-        public void DrawingTriangle(object sender, MouseEventArgs e)
-        {
-            List<Point> triangleDots = new List<Point>();
-            position.X = (int)(e.GetPosition(PaintField).X);
-            position.Y = (int)(e.GetPosition(PaintField).Y);
-            double rad = Math.Abs((prev.Y - position.Y)) / 2;
-            if (isShiftPressed)
-            {
-                double temp = Math.Abs(position.X - prev.X);
-                double offsetY = Math.Sqrt(3) / 2 * temp;
-                if (position.X > prev.X)
-                {
-                    if (prev.Y > position.Y)
-                        triangleDots = DrawingEquilateralTriangle(temp / 2, offsetY);
-                    else
-                        triangleDots = DrawingEquilateralTriangle(temp / 2, -offsetY);
-                }
-                else
-                {
-                    if (prev.Y > position.Y)
-                        triangleDots = DrawingEquilateralTriangle(-temp / 2, offsetY);
-                    else
-                        triangleDots = DrawingEquilateralTriangle(-temp / 2, -offsetY);
-                }
+        //public void DrawingBrokenLine(object sender, MouseEventArgs e)
+        //{
+        //    position.X = e.GetPosition(PaintField).X;
+        //    position.Y = e.GetPosition(PaintField).Y;
+        //    DrawLine(tempBrokenLine, position, true);
+        //}
 
-            }
-            else
-            {
-                triangleDots.Add(prev);
-                triangleDots.Add(new Point(prev.X + (position.X - prev.X) / 2, position.Y));
-                triangleDots.Add(new Point(position.X, prev.Y));
-            }
+        //private void EndOfBrokenLine(object sender, MouseButtonEventArgs e)
+        //{
+        //    drawingBrokenLine = false;
+        //    if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+        //    {
+        //        DrawLine(tempBrokenLine, startBrokenLine);
+        //    }
 
-                DrawLine(triangleDots[0], triangleDots[1], true);
-                DrawLine(triangleDots[1], triangleDots[2], true);
-                DrawLine(triangleDots[2], triangleDots[0], true);
-                
-        }
-
-        private List<Point> DrawingEquilateralTriangle(double offsetX, double offsetY)
-        {
-            List<Point> tempDots = new List<Point>();
-            tempDots.Add(prev);
-            tempDots.Add(new Point(prev.X + offsetX, prev.Y - offsetY));
-            tempDots.Add(new Point(position.X, prev.Y));
-
-            return tempDots;
-        }
-        public void DrawingCircle(object sender, MouseEventArgs e)
-        {
-            List<Point> circleDots = new List<Point>();
-            double coeff = Math.Abs((circleStart.X - position.X) / (circleStart.Y - position.Y));
-            if (isShiftPressed)
-            {
-                circleDots = DrawingCircleMethod(sender, e);
-            }
-            else
-            {
-                circleDots = DrawingCircleMethod(sender, e, coeff);
-            }
-            for (int i = 0; i < circleDots.Count - 4; i += 1)
-            {
-                DrawLine(circleDots[i], circleDots[i + 4], true);
-            }
-        }
-
-        public List<Point> DrawingCircleMethod(object sender, MouseEventArgs e, double coeff = 1)
-        {
-            List<Point> tempDots = new List<Point>();
-            position.X = (int)(e.GetPosition(PaintField).X);
-            position.Y = (int)(e.GetPosition(PaintField).Y);
-            double y = Math.Abs(circleStart.Y - position.Y);
-            double x = 0;
-            double delta = 1 - 2 * y;
-            double error = 0;
-            while (y >= 0)
-            {
-                tempDots.Add(new Point(circleStart.X + coeff * x, circleStart.Y + y));
-                tempDots.Add(new Point(circleStart.X + coeff * x, circleStart.Y - y));
-                tempDots.Add(new Point(circleStart.X - coeff * x, circleStart.Y + y));
-                tempDots.Add(new Point(circleStart.X - coeff * x, circleStart.Y - y));
-
-                error = 2 * (delta + y) - 1;
-                if ((delta < 0) && (error <= 0))
-                {
-                    delta += 2 * ++x + 1;
-                    continue;
-                }
-                if ((delta > 0) && (error > 0))
-                {
-                    delta -= 2 * --y + 1;
-                    continue;
-                }
-                delta += 2 * (++x - y--);
-            }
-            return tempDots;
-        }
-
-        public void DrawingPolygon(object sender, MouseEventArgs e, int numberOfSide = 7)
-        {
-            List<Point> polygonDots = new List<Point>();
-            if (numberOfSide > 3)
-            {
-                CenterPolygon = prev;
-                double radius;
-                if (Math.Abs(CenterPolygon.X - position.X) > Math.Abs(CenterPolygon.Y - position.Y))
-                    radius = Math.Abs(CenterPolygon.X - position.X);
-                else
-                    radius = Math.Abs(CenterPolygon.Y - position.Y);
-
-
-                double z = Math.Atan(position.X/position.Y)*180/Math.PI;
-                int i = 0;
-                double angle = 360 / numberOfSide;
-
-                //z -= angle ;
-
-
-                while (i < numberOfSide)
-                {
-                    polygonDots.Add(new Point(CenterPolygon.X + (Math.Cos(z / 180 * Math.PI) * radius),
-                                     CenterPolygon.Y - (Math.Sin(z / 180 * Math.PI) * radius)));
-                    z -= angle;
-                    i++;
-                }
-                for (int j = 0; j < numberOfSide; j++)
-                {
-                    if (j < numberOfSide-1) 
-                        DrawLine(polygonDots[j], polygonDots[j+1],true);
-                    else 
-                        DrawLine(polygonDots[j], polygonDots[0], true);
-                }
-                
-            }
-
-        }
-
-        public void DrawingBrokenLine(object sender, MouseEventArgs e)
-        {
-            position.X = e.GetPosition(PaintField).X;
-            position.Y = e.GetPosition(PaintField).Y;
-            DrawLine(tempBrokenLine, position, true);
-        }
-
-        private void EndOfBrokenLine(object sender, MouseButtonEventArgs e)
-        {
-            drawingBrokenLine = false;
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
-            {
-                DrawLine(tempBrokenLine, startBrokenLine);
-            }
-
-        }
-
-        #endregion
-
-        #region КНОПКИ
+        //}
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //запоминаем координаты в момент нажатия ЛКМLineShpe
@@ -459,24 +169,27 @@ namespace PaintTool
                 wbCopy = wb;
             }
 
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
-            {
-                if (drawingBrokenLine)
-                {
-                    wbCopy = new WriteableBitmap(wb);
-                    PaintField.Source = wb;
-                    DrawingBrokenLine(sender, e);
-                    PaintField.Source = wbCopy;
-                }
-            }
+            //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            //{
+            //    if (drawingBrokenLine)
+            //    {
+            //        wbCopy = new WriteableBitmap(wb);
+            //        PaintField.Source = wb;
+            //        DrawingBrokenLine(sender, e);
+            //        PaintField.Source = wbCopy;
+            //    }
+            //}
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
             {
 
-                wbCopy = new WriteableBitmap(wb);
-                PaintField.Source = wb;
-                DrawingPolygon(sender, e);
+                NewImage.GetInstanceCopy();
+                new PolygonCreator(5).CreateShape(prev, position);
                 PaintField.Source = wbCopy;
+
+                //createdShape.ds = new DrawByLine();
+                //createdShape.Draw();
+                PaintField.Source = NewImage.GetInstanceCopy();
 
             }
         }
@@ -511,39 +224,47 @@ namespace PaintTool
             }
         }
 
-        private void SizeDrawer(Point p1, Point p2)
-        {
-            int size = Convert.ToInt32(SizeInput.Text);
-            for (int i = 1; i <= size; i++)
-            {
-                for (int j = 1; j <= size; j++)
-                {
-                    if (size > 2)
-                    {
-                        if ((i != 1 && j != 1) || (i != size && j != 1) || (i != 1 && j != size) || (i != size && j != size))
-                            DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
-                    }
-                    else
-                    {
-                        DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
-                    }
-                }
-            }
-        }
+        //private void SizeDrawer(Point p1, Point p2)
+        //{
+        //    int size = Convert.ToInt32(SizeInput.Text);
+        //    for (int i = 1; i <= size; i++)
+        //    {
+        //        for (int j = 1; j <= size; j++)
+        //        {
+        //            if (size > 2)
+        //            {
+        //                if ((i != 1 && j != 1) || (i != size && j != 1) || (i != 1 && j != size) || (i != size && j != size))
+        //                    DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
+        //            }
+        //            else
+        //            {
+        //                DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
+        //            }
+        //        }
+        //    }
+        //}
 
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
-            position.X = e.GetPosition(PaintField).X;
-            position.Y = e.GetPosition(PaintField).Y;
+            position.X = (int)e.GetPosition(PaintField).X;
+            position.Y = (int)e.GetPosition(PaintField).Y;
             // Метод для рисования при нажатой ЛКМ
 
             ShapeCreator currentCreator = null;
-            NewImage.CopyInstance();
+            NewImage.GetInstanceCopy();
 
             switch (currentShape)
             {
                 case ShapeEnum.Circle:
                     currentCreator = new CircleCreator(1.111108);
+                    break;
+                case ShapeEnum.Line:
+                    break;
+                case ShapeEnum.Rect:
+                    break;
+                case ShapeEnum.Triangle:
+                    break;
+                case ShapeEnum.Polygone:
                     break;
                 default:
                     currentCreator = new LineCreator();
@@ -572,9 +293,9 @@ namespace PaintTool
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
-                    wbCopy = new WriteableBitmap(wb);
+                    NewImage.GetInstanceCopy();
                     PaintField.Source = wb;
-                    DrawingRectangle(sender, e);
+                    new RectCreator(false).CreateShape(prev, position);
                     PaintField.Source = wbCopy;
                 }
             }
@@ -585,7 +306,7 @@ namespace PaintTool
                 {
                     wbCopy = new WriteableBitmap(wb);
                     PaintField.Source = wb;
-                    DrawingTriangle(sender, e);
+                    new TriangleCreator(false).CreateShape(prev, position);
                     PaintField.Source = wbCopy;
                 }
             }
@@ -596,12 +317,12 @@ namespace PaintTool
                 {
                     wbCopy = new WriteableBitmap(wb);
                     PaintField.Source = wb;
-                    if (Convert.ToInt32(SizeInput.Text) > 1)
-                        SizeDrawer(prev, position);
-                    else
-                    {
-                        DrawLine(prev, position, true);
-                    }
+                    //if (Convert.ToInt32(SizeInput.Text) > 1)
+                    //    SizeDrawer(prev, position);
+                    //else
+                    //{
+                        new LineCreator().CreateShape(prev, position);
+                    //}
                     PaintField.Source = wbCopy;
                 }
             }
@@ -613,7 +334,7 @@ namespace PaintTool
 
                     wbCopy = new WriteableBitmap(wb);
                     PaintField.Source = wb;
-                    DrawingCircle(sender, e);
+                    new CircleCreator(1).CreateShape(prev, position); 
                     PaintField.Source = wbCopy;
                 }
                 if (e.LeftButton == MouseButtonState.Released)
@@ -622,21 +343,21 @@ namespace PaintTool
                 }
             }
 
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
-            {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    if (drawingBrokenLine == false)
-                    {
-                        startBrokenLine = tempBrokenLine = prev;
-                    }
-                    drawingBrokenLine = true;
-                    wbCopy = new WriteableBitmap(wb);
-                    PaintField.Source = wb;
-                    DrawingBrokenLine(sender, e);
-                    PaintField.Source = wbCopy;
-                }
-            }
+            //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            //{
+            //    if (e.LeftButton == MouseButtonState.Pressed)
+            //    {
+            //        if (drawingBrokenLine == false)
+            //        {
+            //            startBrokenLine = tempBrokenLine = prev;
+            //        }
+            //        drawingBrokenLine = true;
+            //        wbCopy = new WriteableBitmap(wb);
+            //        PaintField.Source = wb;
+            //        DrawingBrokenLine(sender, e);
+            //        PaintField.Source = wbCopy;
+            //    }
+            //}
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
             {
@@ -644,7 +365,7 @@ namespace PaintTool
                 {
                     wbCopy = new WriteableBitmap(wb);
                     PaintField.Source = wb;
-                    DrawingPolygon(sender, e);
+                    new PolygonCreator(5).CreateShape(prev, position);
                     PaintField.Source = wbCopy;
                 }
             }
@@ -694,9 +415,7 @@ namespace PaintTool
             // Появление значения позиции слайдера в окошке справа от него 
             SizeInput.Text = SizeSlider.Value.ToString();
         }
-        #endregion
 
-        #region ЦВЕТА
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Метод для выбора цвета кисти в комбобоксе
@@ -704,15 +423,14 @@ namespace PaintTool
             // и переделываем его в RGB, а затем передаем в метод SetColor для изменения цвета
             ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem)ColorInput.SelectedItem;
             Grid currentSelectedComboBoxItemGrid = (Grid)currentSelectedComboBoxItem.Content;
-            Rectangle colorRectangle = (Rectangle)currentSelectedComboBoxItemGrid.Children[0];
+            System.Windows.Shapes.Rectangle colorRectangle = (System.Windows.Shapes.Rectangle)currentSelectedComboBoxItemGrid.Children[0];
 
-            System.Windows.Media.Color clr = (System.Windows.Media.Color)ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
+            System.Windows.Media.Color clr = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
             // Создали новый цвет и добавили в него значение. 
             PaintColor newColor = new PaintColor();
             newColor.SetColor(clr.B, clr.G, clr.R);
         }
         
-        #endregion
 
         #region СТИРАНИЕ ПИКСЕЛЕЙ
         private void CleaningField(object sender, RoutedEventArgs e)
@@ -722,7 +440,6 @@ namespace PaintTool
         }
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //При нажатии на правую кнопку мышки - стираем пиксели
             ErasePixel(e);
         }
 
@@ -820,15 +537,14 @@ namespace PaintTool
         private void TestPixel(int x, int y)
         {
             Int32Rect rect = new Int32Rect(x, y, 1, 1);
-
-            wb.WritePixels(rect, GetColor(), 4, 0);
+            wb.WritePixels(rect, paintColor.GetColor(), 4, 0);
         }
 
         // закрашиваем пиксели
 
         private void PixelFill(MouseEventArgs e)
         {
-            Point currentPoint = new Point(e.GetPosition(PaintField).X, e.GetPosition(PaintField).Y);
+            System.Drawing.Point currentPoint = new System.Drawing.Point((int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y);
             int x = (int)e.GetPosition(PaintField).X;
             int y = (int)e.GetPosition(PaintField).Y;
             int xOld = x;
@@ -836,8 +552,8 @@ namespace PaintTool
             byte[] pixels = GetPixelArrayLength();
             wb.CopyPixels(pixels, GetStride(), 0);
             int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (int)currentPoint.Y * GetStride();
-            byte[] firstColor = GetPixel(new Point(e.GetPosition(PaintField).X, e.GetPosition(PaintField).Y));
-            byte[] currentColor = GetPixel(new Point(x, y));
+            byte[] firstColor = GetPixel(new System.Drawing.Point((int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y));
+            byte[] currentColor = GetPixel(new System.Drawing.Point(x, y));
             //Trace.WriteLine($"Current Color: {currentColor[0]}, {currentColor[1]}, {currentColor[2]}, {currentColor[3]}");
             //Trace.WriteLine($"Set Color: {colorData[0]}, {colorData[1]}, {colorData[2]}, {colorData[3]}");
 
@@ -845,20 +561,20 @@ namespace PaintTool
             {
                 while (currentColor.SequenceEqual(firstColor) && x > 0)
                 {
-                    currentColor = GetPixel(new Point(x, i));
-                    SetPixel(new Point(x, i), false);
+                    currentColor = GetPixel(new System.Drawing.Point(x, i));
+                    SetPixel(new System.Drawing.Point(x, i), false);
                     x--;
                 }
             }            
             x = xOld +1;
             y = yOld;
-            currentColor = GetPixel(new Point(x, y));
+            currentColor = GetPixel(new System.Drawing.Point(x, y));
             for (int i = y; y > 0; i--)
             {
                 while (currentColor.SequenceEqual(firstColor) && x < PaintField.Width)
                 {
-                    currentColor = GetPixel(new Point(x, i));
-                    SetPixel(new Point(x, i), false);
+                    currentColor = GetPixel(new System.Drawing.Point(x, i));
+                    SetPixel(new System.Drawing.Point(x, i), false);
                     x++;
                 }
             }
@@ -878,9 +594,9 @@ namespace PaintTool
             //wb.WritePixels(rect, pixels, GetStride(), 0);
         }
 
-        private byte[] GetPixel(Point point)
+        private byte[] GetPixel(System.Drawing.Point point)
         {
-            Point currentPoint = point;
+            System.Drawing.Point currentPoint = point;
             byte[] pixels = GetPixelArrayLength();
             wb.CopyPixels(pixels, GetStride(), 0);
             int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (int)currentPoint.Y * GetStride();
@@ -1063,7 +779,7 @@ namespace PaintTool
         {
             newUndo.UndoMethod(NewImage.GetInstanceCopy());
         }
-        
+
 
         #endregion
     }
