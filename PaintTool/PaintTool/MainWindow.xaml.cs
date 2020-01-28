@@ -172,6 +172,13 @@ namespace PaintTool
             {
             }
 
+            if (((bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked) /*&& e.LeftButton == MouseButtonState.Pressed*/)
+            {
+                Brush newBrush = new Brush();
+                newBrush.DrawingBrush(prev, position);
+                prev = position;
+            }
+
             if ((bool)Filling.IsChecked)
             {
                 PixelFill(e);
@@ -189,15 +196,16 @@ namespace PaintTool
             //        PaintField.Source = wb;
             //        DrawingBrokenLine(sender, e);
             //        PaintField.Source = wbCopy;
+
+                      
+                      //PaintField.Source = NewImage.GetInstanceCopy();
             //    }
             //}
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
             {
-
-                NewImage.GetInstanceCopy();
                 new PolygonCreator(5).CreateShape(prev, position);
-                PaintField.Source = wbCopy;
+                PaintField.Source = NewImage.GetInstanceCopy();
 
                 //createdShape.ds = new DrawByLine();
                 //createdShape.Draw();
@@ -214,7 +222,7 @@ namespace PaintTool
             position.Y = (int)(e.GetPosition(PaintField).Y);
             tempBrokenLine = position;
 
-            if ((bool)BrushToggleBtn.IsChecked) newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
+            //if ((bool)BrushToggleBtn.IsChecked) newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
         }
 
         bool isShiftPressed = false;
@@ -236,6 +244,7 @@ namespace PaintTool
         {
             position.X = (int)e.GetPosition(PaintField).X;
             position.Y = (int)e.GetPosition(PaintField).Y;
+
             // Метод для рисования при нажатой ЛКМ
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -244,16 +253,16 @@ namespace PaintTool
                 switch (currentShape)
                 {
                     case ShapeEnum.Circle:
-                        currentCreator = new CircleCreator(1.111108);
+                        currentCreator = new CircleCreator(isShiftPressed);
                         break;
                     case ShapeEnum.Line:
                         currentCreator = new LineCreator();
                         break;
                     case ShapeEnum.Rect:
-                        currentCreator = new RectCreator(false);
+                        currentCreator = new RectCreator(isShiftPressed);
                         break;
                     case ShapeEnum.Triangle:
-                        currentCreator = new TriangleCreator(false);
+                        currentCreator = new TriangleCreator(isShiftPressed);
                         break;
                     case ShapeEnum.Polygone:
                         currentCreator = new PolygonCreator(5);
@@ -269,26 +278,20 @@ namespace PaintTool
                 //createdShape.ds = new DrawByLine();
                 //createdShape.Draw();
                 PaintField.Source = NewImage.Instance;
-                NewImage.Instance = NewImage.GetInstanceCopy();                
+                NewImage.Instance = NewImage.GetInstanceCopy();
             }
-            
 
             ///////////////////////
             if (((bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked) && e.LeftButton == MouseButtonState.Pressed)
             {
                 Brush newBrush = new Brush();
-                newBrush.DrawingBrush();
+                newBrush.DrawingBrush(prev, position);
+                prev = position;
             }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == RectangleShape)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    NewImage.GetInstanceCopy();
-                    PaintField.Source = wb;
-                    new RectCreator(false).CreateShape(prev, position);
-                    PaintField.Source = wbCopy;
-                }
+                currentShape = ShapeEnum.Rect;
             }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
@@ -299,7 +302,6 @@ namespace PaintTool
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
             {
                 currentShape = ShapeEnum.Line;
-
             }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
@@ -378,8 +380,7 @@ namespace PaintTool
         #region СТИРАНИЕ ПИКСЕЛЕЙ
         private void CleaningField(object sender, RoutedEventArgs e)
         {
-            // Очистка поля, точнее все заливается белым цветом
-            //Paint(255, 255, 255, 255);
+            newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
         }
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -437,7 +438,12 @@ namespace PaintTool
 
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
         {
-           // if (wb != null) Paint(255, 255, 255, 255);
+             if (newImage != null)
+            {
+                newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
+                PaintField.Source = NewImage.GetInstanceCopy();
+            }
+               
         }
 
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)

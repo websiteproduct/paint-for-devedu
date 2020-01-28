@@ -9,12 +9,10 @@ namespace PaintTool
     public class Brush 
     {
         public List<Point> FigurePoints;
-        public void DrawingBrush()
+        public void DrawingBrush(Point prev, Point position)
         {
-            //new LineCreator().CreateShape(prev, position);
-            //prev = position;
-            //position.X = (int)(e.GetPosition(PaintField).X);
-            //position.Y = (int)(e.GetPosition(PaintField).Y);
+            new DotCreator().CreateShape(prev, position);
+            new LineCreator().CreateShape(prev, position);
         }
     }
 }

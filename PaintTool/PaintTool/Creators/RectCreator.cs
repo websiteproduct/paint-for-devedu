@@ -46,7 +46,7 @@ namespace PaintTool.Creators
                 tempDots.Add(new Point(start.X, end.Y));
             }
 
-            return new Line(tempDots);
+            return new Rect(tempDots);
         }
         private List<Point> DrawingSquare(Point start, int lengthX, int lengthY)
         {
