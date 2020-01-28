@@ -8,6 +8,6 @@ namespace PaintTool.figures
         Rect,
         Triangle,
         Polygone,
-        Dot
+        Dot        
     }
 }

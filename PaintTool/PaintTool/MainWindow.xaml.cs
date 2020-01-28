@@ -207,6 +207,7 @@ namespace PaintTool
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            NewImage.Instance = (WriteableBitmap)PaintField.Source;
             //запоминаем координаты в момент отпускания ЛКМ
 
             position.X = (int)(e.GetPosition(PaintField).X);
@@ -238,8 +239,7 @@ namespace PaintTool
             // Метод для рисования при нажатой ЛКМ
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                ShapeCreator currentCreator = null;
-                PaintField.Source = NewImage.Instance;
+                ShapeCreator currentCreator = null;                
 
                 switch (currentShape)
                 {
@@ -260,15 +260,15 @@ namespace PaintTool
                         break;
                     case ShapeEnum.Dot:
                         currentCreator = new DotCreator();
-                        break;
+                        break;                    
                     default:
-                        currentCreator = new LineCreator();
+                        //currentCreator = new LineCreator();
                         break;
                 }
                 Shape createdShape = currentCreator.CreateShape(prev, position);
-                createdShape.ds = new DrawByLine();
-                createdShape.Draw();
-                PaintField.Source = NewImage.GetInstanceCopy();
+                //createdShape.ds = new DrawByLine();
+                //createdShape.Draw();
+                PaintField.Source = NewImage.Instance;
                 NewImage.Instance = NewImage.GetInstanceCopy();                
             }
             
@@ -276,7 +276,8 @@ namespace PaintTool
             ///////////////////////
             if (((bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked) && e.LeftButton == MouseButtonState.Pressed)
             {
-                DrawingBrush(sender, e);
+                Brush newBrush = new Brush();
+                newBrush.DrawingBrush();
             }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == RectangleShape)

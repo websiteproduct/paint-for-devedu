@@ -5,7 +5,7 @@ using System.Windows.Media.Imaging;
 
 namespace PaintTool.figures
 {
-    class Dot : Shape
+    public class Dot : Shape
     {
         
         public Dot(List<System.Drawing.Point> points) : base(points)
