@@ -262,7 +262,7 @@ namespace PaintTool
                         currentCreator = new DotCreator();
                         break;                    
                     default:
-                        //currentCreator = new LineCreator();
+                        currentCreator = new LineCreator();
                         break;
                 }
                 Shape createdShape = currentCreator.CreateShape(prev, position);
