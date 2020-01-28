@@ -13,12 +13,30 @@ namespace PaintTool
     {
         private static WriteableBitmap instance;
         private static WriteableBitmap instanceCopy;
-        
+        public int width, height;
+
         public NewImage(int width, int height)
         {
+            this.width = width;
+            this.height = height;
             instance = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             PaintBitmap(width, height, 255, 255, 255, 255);
 
+        }
+
+        public int Width
+        {
+            get
+            {
+                return width;
+            }
+        }
+        public int Height
+        {
+            get
+            {
+                return height;
+            }
         }
         public static WriteableBitmap Instance
         {

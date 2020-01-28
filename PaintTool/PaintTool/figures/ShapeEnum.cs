@@ -7,6 +7,7 @@ namespace PaintTool.figures
         Circle,
         Rect,
         Triangle,
-        Polygone
+        Polygone,
+        Dot
     }
 }

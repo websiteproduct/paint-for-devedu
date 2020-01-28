@@ -11,15 +11,18 @@ namespace PaintTool.figures
         public Dot(List<System.Drawing.Point> points) : base(points)
         {
             PaintColor paintColor = new PaintColor();
-            WriteableBitmap wb = NewImage.Instance;
-
+            
+            if ((points[0].X < 640 && points[0].X > 0) && (points[0].Y < 480 && points[0].Y > 0)) {
+                
                 Int32Rect rect = new Int32Rect(
                         Convert.ToInt32(points[0].X),
                         Convert.ToInt32(points[0].Y),
                         1,
                         1);
-                wb.WritePixels(rect, paintColor.GetColor(), 4, 0);
+                NewImage.Instance.WritePixels(rect, paintColor.GetColor(), 4, 0);
             }
+        }
+            
 
         //if ((bool) EraserToggleBtn.IsChecked)
         //{

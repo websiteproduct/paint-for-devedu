@@ -10,7 +10,7 @@ namespace PaintTool
         
         public PaintColor()
         {
-            colorData = new byte[] { 255, 255, 255, 255};
+            colorData = new byte[] { 0, 0, 0, 255};
         }
         public void SetColor(byte blue, byte green, byte red, byte alpha = 255)
         {

@@ -30,7 +30,23 @@ namespace PaintTool
     public partial class MainWindow : Window
 
     {
+        NewImage newImage;
         PaintColor paintColor = new PaintColor();
+        int width, height;
+        public int PWidth
+        {
+            get
+            {
+                return width;
+            }
+        }
+        public int PHeight
+        {
+            get
+            {
+                return height;
+            }
+        }
         // Инициализируем WriteableBitmap
         WriteableBitmap wb, wbCopy;
         // Инициализируем переменную для хранения цвета в формате Bgra32
@@ -51,13 +67,15 @@ namespace PaintTool
 
         public MainWindow()
         {
-            // Конструктор, который строит и отрисовывает интерфейс из MainWindow.xaml файла
             InitializeComponent();
-            //wb = new NewImage(640,480);
-            SetGridSize(640,480);
-            Paint(255, 255, 255, 255);
-            BrushToggleBtn.IsChecked = true;
+            width = (int)PaintGrid.Width;
+            height = (int)PaintGrid.Height;
+            newImage = new NewImage(width, height);
+            PaintField.Source = NewImage.Instance;
 
+            BrushToggleBtn.IsChecked = true;
+            
+            
             currentShape = ShapeEnum.Line;
         }
         
@@ -100,7 +118,7 @@ namespace PaintTool
         public void SetPixel(System.Drawing.Point pxl, bool altBitmap)
         {
 
-            if ((pxl.X < PaintField.Width && pxl.X > 0) && (pxl.Y < PaintField.Height && pxl.Y > 0))
+            if ((pxl.X < width && pxl.X > 0) && (pxl.Y < height && pxl.Y > 0))
             {
                 Int32Rect rect = new Int32Rect(
                         Convert.ToInt32(pxl.X),
@@ -121,12 +139,7 @@ namespace PaintTool
 
         public void DrawingBrush(object sender, MouseEventArgs e)
         {
-            //if (Convert.ToInt32(SizeInput.Text) > 1)
-            //    SizeDrawer(prev, position);
-            //else
-            //{
-               new LineCreator().CreateShape(prev, position);
-            //}
+            new LineCreator().CreateShape(prev, position);
             prev = position;
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
@@ -157,17 +170,16 @@ namespace PaintTool
 
             if ((bool)EraserToggleBtn.IsChecked)
             {
-                ErasePixel(e);
             }
 
             if ((bool)Filling.IsChecked)
             {
                 PixelFill(e);
             }
-            if ((bool)Shapes.IsChecked)
-            {
-                wbCopy = wb;
-            }
+            //if ((bool)Shapes.IsChecked)
+            //{
+            //    wbCopy = wb;
+            //}
 
             //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             //{
@@ -201,12 +213,6 @@ namespace PaintTool
             position.Y = (int)(e.GetPosition(PaintField).Y);
             tempBrokenLine = position;
 
-            if ((bool)Shapes.IsChecked)
-            {
-                PaintField.Source = wbCopy;
-                wb = wbCopy;
-            }
-
             if ((bool)BrushToggleBtn.IsChecked) newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
         }
 
@@ -224,66 +230,50 @@ namespace PaintTool
             }
         }
 
-        //private void SizeDrawer(Point p1, Point p2)
-        //{
-        //    int size = Convert.ToInt32(SizeInput.Text);
-        //    for (int i = 1; i <= size; i++)
-        //    {
-        //        for (int j = 1; j <= size; j++)
-        //        {
-        //            if (size > 2)
-        //            {
-        //                if ((i != 1 && j != 1) || (i != size && j != 1) || (i != 1 && j != size) || (i != size && j != size))
-        //                    DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
-        //            }
-        //            else
-        //            {
-        //                DrawLine(new Point(prev.X + i, prev.Y + j), new Point(position.X + i, position.Y + j), true);
-        //            }
-        //        }
-        //    }
-        //}
 
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
             position.X = (int)e.GetPosition(PaintField).X;
             position.Y = (int)e.GetPosition(PaintField).Y;
             // Метод для рисования при нажатой ЛКМ
-
-            ShapeCreator currentCreator = null;
-            NewImage.GetInstanceCopy();
-
-            switch (currentShape)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                case ShapeEnum.Circle:
-                    currentCreator = new CircleCreator(1.111108);
-                    break;
-                case ShapeEnum.Line:
-                    break;
-                case ShapeEnum.Rect:
-                    break;
-                case ShapeEnum.Triangle:
-                    break;
-                case ShapeEnum.Polygone:
-                    break;
-                default:
-                    currentCreator = new LineCreator();
-                    break;
+                ShapeCreator currentCreator = null;
+                PaintField.Source = NewImage.Instance;
+
+                switch (currentShape)
+                {
+                    case ShapeEnum.Circle:
+                        currentCreator = new CircleCreator(1.111108);
+                        break;
+                    case ShapeEnum.Line:
+                        currentCreator = new LineCreator();
+                        break;
+                    case ShapeEnum.Rect:
+                        currentCreator = new RectCreator(false);
+                        break;
+                    case ShapeEnum.Triangle:
+                        currentCreator = new TriangleCreator(false);
+                        break;
+                    case ShapeEnum.Polygone:
+                        currentCreator = new PolygonCreator(5);
+                        break;
+                    case ShapeEnum.Dot:
+                        currentCreator = new DotCreator();
+                        break;
+                    default:
+                        currentCreator = new LineCreator();
+                        break;
+                }
+                Shape createdShape = currentCreator.CreateShape(prev, position);
+                createdShape.ds = new DrawByLine();
+                createdShape.Draw();
+                PaintField.Source = NewImage.GetInstanceCopy();
+                NewImage.Instance = NewImage.GetInstanceCopy();                
             }
+            
 
-            Shape createdShape = currentCreator.CreateShape(prev, position);
-            createdShape.ds = new DrawByLine();
-            createdShape.Draw();
-            PaintField.Source = NewImage.GetInstanceCopy();
-
-
-
-
-            ///////////////////
-
-
-
-
+            ///////////////////////
             if (((bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked) && e.LeftButton == MouseButtonState.Pressed)
             {
                 DrawingBrush(sender, e);
@@ -302,45 +292,22 @@ namespace PaintTool
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    wbCopy = new WriteableBitmap(wb);
-                    PaintField.Source = wb;
-                    new TriangleCreator(false).CreateShape(prev, position);
-                    PaintField.Source = wbCopy;
-                }
+                currentShape = ShapeEnum.Triangle;
             }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    wbCopy = new WriteableBitmap(wb);
-                    PaintField.Source = wb;
-                    //if (Convert.ToInt32(SizeInput.Text) > 1)
-                    //    SizeDrawer(prev, position);
-                    //else
-                    //{
-                        new LineCreator().CreateShape(prev, position);
-                    //}
-                    PaintField.Source = wbCopy;
-                }
+                currentShape = ShapeEnum.Line;
+
             }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-
-                    wbCopy = new WriteableBitmap(wb);
-                    PaintField.Source = wb;
-                    new CircleCreator(1).CreateShape(prev, position); 
-                    PaintField.Source = wbCopy;
-                }
-                if (e.LeftButton == MouseButtonState.Released)
-                {
-                    circleStart = position;
-                }
+                currentShape = ShapeEnum.Circle;
+                //if (e.LeftButton == MouseButtonState.Released)
+                //{
+                //    circleStart = position;
+                //}
             }
 
             //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
@@ -361,35 +328,9 @@ namespace PaintTool
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    wbCopy = new WriteableBitmap(wb);
-                    PaintField.Source = wb;
-                    new PolygonCreator(5).CreateShape(prev, position);
-                    PaintField.Source = wbCopy;
-                }
+                currentShape = ShapeEnum.Polygone;
             }
         }
-        //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
-        //{
-        //    DrawingLineOnField(sender, e);
-        //}
-
-        //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
-        //{
-        //    DrawingCircle(sender, e);
-        //}
-
-        //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
-        //{
-        //    DrawingTriangle(sender, e);
-        //}
-
-        //else if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
-        //{
-
-        //    //DrawingBrokenLine(sender, e);
-        //}
 
         private void AdditionalPanelToggler()
         {
@@ -408,6 +349,7 @@ namespace PaintTool
             }
             else ShapeList.Visibility = Visibility.Collapsed;
             AdditionalPanelToggler();
+            if ((bool)BrushToggleBtn.IsChecked) currentShape = ShapeEnum.Dot;
         }
 
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -436,108 +378,10 @@ namespace PaintTool
         private void CleaningField(object sender, RoutedEventArgs e)
         {
             // Очистка поля, точнее все заливается белым цветом
-            Paint(255, 255, 255, 255);
+            //Paint(255, 255, 255, 255);
         }
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ErasePixel(e);
-        }
-
-        // Метод для рисования пикселей
-        //private void PaintField_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    bool isMouseButtonPressed = false;
-        //    isMouseButtonPressed = Convert.ToBoolean(MouseButtonState.Pressed) ? true : false;
-
-        //    if (e.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DrawPixel(e);
-        //    }
-        //    else if (e.RightButton == MouseButtonState.Pressed)
-        //    {
-        //        ErasePixel(e);
-        //    }
-        //}
-
-        int[] p1 = new int[2], p2 = new int[2];
-        private object openFileDialog;
-
-        private void DownDown(object sender, MouseEventArgs e)
-        {
-            p1[0] = (int)e.GetPosition(PaintField).X;
-            p1[1] = (int)e.GetPosition(PaintField).Y;
-        }
-
-        private void Up(object sender, MouseEventArgs e)
-        {
-            p2[0] = (int)e.GetPosition(PaintField).X;
-            p2[1] = (int)e.GetPosition(PaintField).Y;
-            Trace.WriteLine(p1[0] + "," + p1[1]);
-            Trace.WriteLine(p2[0] + "," + p2[1]);
-            Dr(p1, p2);
-        }
-
-        private double GetC(int[] p1, int[] p2, int w, int h)
-        {
-            double realK = (double)w / (double)h;
-
-            if (p1[0] < p2[0] && p1[1] < p2[1])
-            {
-                return realK;
-            }
-            else if (p1[0] < p2[0] && p1[1] > p2[1])
-            {
-                return realK * -1;
-            }
-            else if (p1[0] > p2[0] && p1[1] > p2[1])
-            {
-                return (double)h / (double)w;
-            }
-            else if (p1[0] > p2[0] && p1[1] < p2[1])
-            {
-                return realK * -1;
-            }
-            else return 1;
-        }
-
-        private void Dr(int[] p1, int[] p2)
-        {
-            double k = 0;
-
-            if (Math.Abs(p2[0] - p1[0]) > Math.Abs(p2[1] - p1[1]))
-            {
-                int h = Math.Abs(p2[0] - p1[0]) + 1;
-                int w = Math.Abs(p2[1] - p1[1]) + 1;
-
-                k = GetC(p1, p2, w, h);
-
-                //k = (double)w / (double)h;
-
-                for (int i = p1[0]; i < p2[0]; i++)
-                {
-                    int y = (int)(k * i + p1[1]);
-                    TestPixel(i, y);
-                }
-            }
-            else
-            {
-                int w = Math.Abs(p2[0] - p1[0]) + 1;
-                int h = Math.Abs(p2[1] - p1[1]) + 1;
-
-                k = (double)w / (double)h;
-
-                for (int i = p1[1]; i < p2[1]; i++)
-                {
-                    int x = (int)(k * i + p1[0]);
-                    TestPixel(x, i);
-                }
-            }
-        }
-
-        private void TestPixel(int x, int y)
-        {
-            Int32Rect rect = new Int32Rect(x, y, 1, 1);
-            wb.WritePixels(rect, paintColor.GetColor(), 4, 0);
         }
 
         // закрашиваем пиксели
@@ -554,8 +398,7 @@ namespace PaintTool
             int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (int)currentPoint.Y * GetStride();
             byte[] firstColor = GetPixel(new System.Drawing.Point((int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y));
             byte[] currentColor = GetPixel(new System.Drawing.Point(x, y));
-            //Trace.WriteLine($"Current Color: {currentColor[0]}, {currentColor[1]}, {currentColor[2]}, {currentColor[3]}");
-            //Trace.WriteLine($"Set Color: {colorData[0]}, {colorData[1]}, {colorData[2]}, {colorData[3]}");
+
 
             for(int i = y; y < PaintField.Height; i++)
             {
@@ -579,19 +422,6 @@ namespace PaintTool
                 }
             }
             
-            //for (int pixel = 0; pixel < pixels.Length; pixel += GetBytesPerPixel())
-            //{
-            //    if (pixels[pixel] == 255 && pixels[pixel + 1] == 255 && pixels[pixel + 2] == 255 && pixels[pixel + 3] == 255)
-            //    {
-            //        pixels[pixel] = colorData[0];
-            //        pixels[pixel + 1] = colorData[1];
-            //        pixels[pixel + 2] = colorData[2];
-            //        pixels[pixel + 3] = colorData[3];
-            //    }
-            //}
-
-            //Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
-            //wb.WritePixels(rect, pixels, GetStride(), 0);
         }
 
         private byte[] GetPixel(System.Drawing.Point point)
@@ -604,55 +434,21 @@ namespace PaintTool
             return color;
         }
 
-        // Удаление пикселей (закрашивание в белый цвет)
-        private void ErasePixel(MouseEventArgs e)
-        {
-            //// Удаление пикселей (закрашивание в белый цвет)
-            //int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8;
-            //int stride = bytesPerPixel;
-            //// умножаем на ширину пикселей
-            ////int stride = bytesPerPixel * 5;
-
-            //byte[] pixels = new byte[stride];
-            //// количество пикселей, которые будем добавлять: умножаем на высота добавляемого участка
-            ////byte[] pixels = new byte[stride * 5];
-
-            //for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
-            //{
-            //    pixels[pixel] = 255;        // blue (depends normally on BitmapPalette)
-            //    pixels[pixel + 1] = 255;  // green (depends normally on BitmapPalette)
-            //    pixels[pixel + 2] = 255;    // red (depends normally on BitmapPalette)
-            //    pixels[pixel + 3] = 255;   // alpha (depends normally on BitmapPalette)
-            //}
-
-            Int32Rect rect = new Int32Rect(
-                    (int)(e.GetPosition(PaintGrid).X),
-                    (int)(e.GetPosition(PaintGrid).Y),
-                    1,
-                    1);
-
-            wb.WritePixels(rect, new byte[] { 255, 255, 255, 255 }, 4, 0);
-            //Trace.WriteLine(stride);
-        }
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (wb != null) Paint(255, 255, 255, 255);
+           // if (wb != null) Paint(255, 255, 255, 255);
         }
 
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
 
-
-
             // Set filter for file extension and default file extension 
             dlg.DefaultExt = ".png";
             dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg";
 
-
             // Display OpenFileDialog by calling ShowDialog method 
             Nullable<bool> result = dlg.ShowDialog();
-
 
             // Get the selected file name and display in a TextBox 
             if (result == true)
@@ -728,38 +524,7 @@ namespace PaintTool
         #endregion
 
         #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
-        public void Paint(int blue, int green, int red, int alpha)
-        {
-            // Функция, которая принимает на вход значение цвета в формате Bgra32
-            // и заливает поле данным цветом
 
-            // Создаем WriteableBitmap поле
-            wb = new WriteableBitmap((int)PaintField.Width, (int)PaintField.Height, 96, 96, PixelFormats.Bgra32, null);
-
-            // Описание координат закрашиваемого прямоугольника
-            Int32Rect rect = new Int32Rect(0, 0, (int)PaintField.Width, (int)PaintField.Height);
-
-            int bytesPerPixel = (wb.Format.BitsPerPixel + 7) / 8; // general formula
-            int stride = bytesPerPixel * (int)PaintField.Width; // general formula valid for all PixelFormats
-
-            //Width * height *  bytes per pixel aka(32/8)
-            byte[] pixels = new byte[stride * (int)PaintField.Height];
-
-            // Закрашиваем наш прямоугольник нужным цветом
-            for (int pixel = 0; pixel < pixels.Length; pixel += bytesPerPixel)
-            {
-                pixels[pixel] = (byte)blue;        // blue (depends normally on BitmapPalette)
-                pixels[pixel + 1] = (byte)green;  // green (depends normally on BitmapPalette)
-                pixels[pixel + 2] = (byte)red;    // red (depends normally on BitmapPalette)
-                pixels[pixel + 3] = (byte)alpha;   // alpha (depends normally on BitmapPalette)
-            }
-
-            //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
-            wb.WritePixels(rect, pixels, stride, 0);
-            //PutInUndoStack();
-            // Отрисовываем созданный WriteableBitmap в поле PaintField
-            PaintField.Source = wb;
-        }
 
         private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
