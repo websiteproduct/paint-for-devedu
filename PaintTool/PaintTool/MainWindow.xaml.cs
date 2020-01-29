@@ -71,7 +71,7 @@ namespace PaintTool
             height = (int)PaintGrid.Height;            
             newImage = new NewImage(width, height);
             PaintField.Source = NewImage.Instance;
-
+            newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
             BrushToggleBtn.IsChecked = true;
             
             
@@ -167,25 +167,10 @@ namespace PaintTool
             prev.X = (int)(e.GetPosition(PaintField).X);
             prev.Y = (int)(e.GetPosition(PaintField).Y);
 
-            if ((bool)EraserToggleBtn.IsChecked)
-            {
-            }
-
-            if (((bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked) /*&& e.LeftButton == MouseButtonState.Pressed*/)
-            {
-                Brush newBrush = new Brush();
-                newBrush.DrawingBrush(prev, position);
-                prev = position;
-            }
-
             if ((bool)Filling.IsChecked)
             {
                 PixelFill(e);
-            }
-            //if ((bool)Shapes.IsChecked)
-            //{
-            //    wbCopy = wb;
-            //}
+            }            
 
             //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             //{
@@ -201,27 +186,19 @@ namespace PaintTool
             //    }
             //}
 
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
-            {
-                new PolygonCreator(5).CreateShape(prev, position);
-                PaintField.Source = NewImage.GetInstanceCopy();
-
-                //createdShape.ds = new DrawByLine();
-                //createdShape.Draw();
-                PaintField.Source = NewImage.GetInstanceCopy();
-
-            }
+      
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
             NewImage.Instance = (WriteableBitmap)PaintField.Source;
             //запоминаем координаты в момент отпускания ЛКМ
+            
 
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
             tempBrokenLine = position;
 
-            //if ((bool)BrushToggleBtn.IsChecked) newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
         }
 
         private void KeyDown_Event(object sender, KeyEventArgs e)
@@ -457,6 +434,7 @@ namespace PaintTool
             {
                 newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
                 PaintField.Source = NewImage.Instance;
+                newUndo.UndoStack.Clear();
             }
                
         }
@@ -548,7 +526,7 @@ namespace PaintTool
         #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
 
 
-        
+
 
 
         #endregion
@@ -557,11 +535,14 @@ namespace PaintTool
 
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
-            newRedo.RedoMethod();
+            //newRedo.RedoMethod();
         }
         private void UndoButton_Click(object sender, RoutedEventArgs e)
         {
             newUndo.UndoMethod(NewImage.GetInstanceCopy());
+            NewImage.Instance = newUndo.ImageFromUndoStack;
+            PaintField.Source = NewImage.Instance;
+
         }
 
 

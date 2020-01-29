@@ -7,38 +7,24 @@ namespace PaintTool.Actions
 {
     public class Undo
     {
-        Stack<WriteableBitmap> undoStack;
-        WriteableBitmap ImageFromUndoStack { get; set; }
-        Redo newRedo = new Redo();
+        public Stack<WriteableBitmap> UndoStack { get; set; }
+        public WriteableBitmap ImageFromUndoStack { get; set; }        
         public Undo()
         {
-            undoStack = new Stack<WriteableBitmap>();
+            UndoStack = new Stack<WriteableBitmap>();
         }
-
-        public Stack<WriteableBitmap> UndoStack
-        {
-            get
-            {
-                return undoStack;
-            }
-        }
-
+        
         public void UndoMethod(WriteableBitmap instanceCopy)
         {
-            if (undoStack.Count > 0)
-            {
-                newRedo.PutInRedoStack(instanceCopy);                
-                ImageFromUndoStack = undoStack.Pop();
-            }
-            else if (undoStack.Count == 0)
-            {
-                return;
-            }
+            if (UndoStack.Count > 0)            {
+                //Redo.PutInRedoStack(instanceCopy);                
+                ImageFromUndoStack = UndoStack.Pop();                
+            }            
         }
 
         public void PutInUndoStack(WriteableBitmap instanceCopy)
         {            
-            undoStack.Push(instanceCopy);
+            UndoStack.Push(instanceCopy);
         }
     }
 }
