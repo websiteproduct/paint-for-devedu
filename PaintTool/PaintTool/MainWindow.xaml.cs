@@ -136,30 +136,15 @@ namespace PaintTool
             }
         }
 
-        //public void DrawingBrush(object sender, MouseEventArgs e)
-        //{
-        //    new LineCreator().CreateShape(prev, position);
-        //    prev = position;
-        //    position.X = (int)(e.GetPosition(PaintField).X);
-        //    position.Y = (int)(e.GetPosition(PaintField).Y);
-        //}
 
-        //public void DrawingBrokenLine(object sender, MouseEventArgs e)
-        //{
-        //    position.X = e.GetPosition(PaintField).X;
-        //    position.Y = e.GetPosition(PaintField).Y;
-        //    DrawLine(tempBrokenLine, position, true);
-        //}
-
-        //private void EndOfBrokenLine(object sender, MouseButtonEventArgs e)
-        //{
-        //    drawingBrokenLine = false;
-        //    if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
-        //    {
-        //        DrawLine(tempBrokenLine, startBrokenLine);
-        //    }
-
-        //}
+        private void EndOfBrokenLine(object sender, MouseButtonEventArgs e)
+        {
+            drawingBrokenLine = false;
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+                new LineCreator().CreateShape(tempBrokenLine, startBrokenLine);
+            }
+        }
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //запоминаем координаты в момент нажатия ЛКМLineShpe
@@ -170,36 +155,26 @@ namespace PaintTool
             if ((bool)Filling.IsChecked)
             {
                 PixelFill(e);
-            }            
+            }
 
-            //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
-            //{
-            //    if (drawingBrokenLine)
-            //    {
-            //        wbCopy = new WriteableBitmap(wb);
-            //        PaintField.Source = wb;
-            //        DrawingBrokenLine(sender, e);
-            //        PaintField.Source = wbCopy;
 
-                      
-                      //PaintField.Source = NewImage.GetInstanceCopy();
-            //    }
-            //}
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+                new LineCreator().CreateShape(tempBrokenLine, position);
+                PaintField.Source = NewImage.Instance;
+                NewImage.Instance = NewImage.GetInstanceCopy();
+            }
 
-      
+
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             newUndo.PutInUndoStack(NewImage.GetInstanceCopy());      //две строчки для динамической отрисовки
             NewImage.Instance = (WriteableBitmap)PaintField.Source;  //две строчки для динамической отрисовки
 
-            //запоминаем координаты в момент отпускания ЛКМ
-            
-
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
             tempBrokenLine = position;
-
         }
 
         private void KeyDown_Event(object sender, KeyEventArgs e)
@@ -257,54 +232,54 @@ namespace PaintTool
                     PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
                     NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
                 }
+                }
+                    prev = position;
+                   
+                if ((bool)EraserToggleBtn.IsChecked)
+                    Brush newBrush = new Brush();
+                {
+                    paintColor.SetColor(255, 255, 255, 255);
+                    newBrush.DrawingBrush(prev, position);
+                    prev = position;
+                }
+                    newBrush.DrawingBrush(prev, position);
+                    Brush newBrush = new Brush();
+                {
+                if ((bool)BrushToggleBtn.IsChecked)
+                }
+                    NewImage.Instance = NewImage.GetInstanceCopy();
+                    PaintField.Source = NewImage.Instance;
+                    createdShape.ds = new DrawByLine();
+                    Shape createdShape = currentCreator.CreateShape(prev, position);
+                    createdShape.Draw();
+                {
+                if (currentCreator != new DotCreator())
 
-                    if ((bool)BrushToggleBtn.IsChecked)
-                    {
-                    
-                        Brush newBrush = new Brush();
-                        newBrush.DrawingBrush(prev, position);
-                        prev = position;
-                    }
 
-                    if ((bool)EraserToggleBtn.IsChecked)
-                    {                    
-                        paintColor.SetColor(255, 255, 255, 255);
-                        Brush newBrush = new Brush();
-                        newBrush.DrawingBrush(prev, position);
-                        prev = position;
-                    }
+            }
 
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+                if (drawingBrokenLine)
+                {
+                    new LineCreator().CreateShape(tempBrokenLine, position);
+                    PaintField.Source = NewImage.Instance;
+                    NewImage.Instance = NewImage.GetInstanceCopy();
+                }
 
-            }           
-                        
+                if (drawingBrokenLine == false)
+                {
+                    startBrokenLine = tempBrokenLine = position;
+                }
 
-            //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
-            //{
-            //    currentShape = ShapeEnum.Circle;
-            //    //if (e.LeftButton == MouseButtonState.Released)
-            //    //{
-            //    //    circleStart = position;
-            //    //}
-            //}
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    drawingBrokenLine = true;
+                }
 
-            //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
-            //{
-            //    if (e.LeftButton == MouseButtonState.Pressed)
-            //    {
-            //        if (drawingBrokenLine == false)
-            //        {
-            //            startBrokenLine = tempBrokenLine = prev;
-            //        }
-            //        drawingBrokenLine = true;
-            //        wbCopy = new WriteableBitmap(wb);
-            //        PaintField.Source = wb;
-            //        DrawingBrokenLine(sender, e);
-            //        PaintField.Source = wbCopy;
-            //    }
-            //}
-
-            
+            }
         }
+
         private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if ((bool)Shapes.IsChecked)
