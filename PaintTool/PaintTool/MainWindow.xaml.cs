@@ -33,6 +33,7 @@ namespace PaintTool
         NewImage newImage;
         PaintColor paintColor = new PaintColor();
         int width, height;
+        bool isShiftPressed = false;
         public int PWidth
         {
             get
@@ -48,9 +49,7 @@ namespace PaintTool
             }
         }
         // Инициализируем WriteableBitmap
-        WriteableBitmap wb, wbCopy;
-        // Инициализируем переменную для хранения цвета в формате Bgra32
-        byte[] colorData = { 0, 0, 0, 255 };
+        WriteableBitmap wb, wbCopy;             
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
@@ -69,7 +68,7 @@ namespace PaintTool
         {
             InitializeComponent();
             width = (int)PaintGrid.Width;
-            height = (int)PaintGrid.Height;
+            height = (int)PaintGrid.Height;            
             newImage = new NewImage(width, height);
             PaintField.Source = NewImage.Instance;
 
@@ -112,7 +111,7 @@ namespace PaintTool
             return pixels;
         }
         #endregion
-  
+
 
 
         public void SetPixel(System.Drawing.Point pxl, bool altBitmap)
@@ -131,19 +130,19 @@ namespace PaintTool
                     wb.WritePixels(rect, new byte[] { 255, 255, 255, 255 }, 4, 0);
                 }
                 else if (altBitmap)
-                    wbCopy.WritePixels(rect, paintColor.GetColor(), 4, 0);
+                    wbCopy.WritePixels(rect, PaintColor.ColorData, 4, 0);
                 else
-                    wb.WritePixels(rect, paintColor.GetColor(), 4, 0);
+                    wb.WritePixels(rect, PaintColor.ColorData, 4, 0);
             }
         }
 
-        public void DrawingBrush(object sender, MouseEventArgs e)
-        {
-            new LineCreator().CreateShape(prev, position);
-            prev = position;
-            position.X = (int)(e.GetPosition(PaintField).X);
-            position.Y = (int)(e.GetPosition(PaintField).Y);
-        }
+        //public void DrawingBrush(object sender, MouseEventArgs e)
+        //{
+        //    new LineCreator().CreateShape(prev, position);
+        //    prev = position;
+        //    position.X = (int)(e.GetPosition(PaintField).X);
+        //    position.Y = (int)(e.GetPosition(PaintField).Y);
+        //}
 
         //public void DrawingBrokenLine(object sender, MouseEventArgs e)
         //{
@@ -225,8 +224,6 @@ namespace PaintTool
             //if ((bool)BrushToggleBtn.IsChecked) newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
         }
 
-        bool isShiftPressed = false;
-
         private void KeyDown_Event(object sender, KeyEventArgs e)
         {
             isShiftPressed = e.Key == Key.LeftShift ? true : false;
@@ -269,49 +266,44 @@ namespace PaintTool
                         break;
                     case ShapeEnum.Dot:
                         currentCreator = new DotCreator();
-                        break;                    
-                    default:
-                        currentCreator = new LineCreator();
+                        break;
+                    case ShapeEnum.BrokenLine:
+                        currentCreator = new DotCreator();
                         break;
                 }
                 Shape createdShape = currentCreator.CreateShape(prev, position);
                 //createdShape.ds = new DrawByLine();
                 //createdShape.Draw();
                 PaintField.Source = NewImage.Instance;
-                NewImage.Instance = NewImage.GetInstanceCopy();
-            }
+                //NewImage.Instance = NewImage.GetInstanceCopy();
+                if ((bool)BrushToggleBtn.IsChecked)
+                {
+                    
+                    Brush newBrush = new Brush();
+                    newBrush.DrawingBrush(prev, position);
+                    prev = position;
+                }
 
-            ///////////////////////
-            if (((bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked) && e.LeftButton == MouseButtonState.Pressed)
-            {
-                Brush newBrush = new Brush();
-                newBrush.DrawingBrush(prev, position);
-                prev = position;
-            }
+                if ((bool)EraserToggleBtn.IsChecked)
+                {                    
+                    paintColor.SetColor(255, 255, 255, 255);
+                    Brush newBrush = new Brush();
+                    newBrush.DrawingBrush(prev, position);
+                    prev = position;
+                }
 
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == RectangleShape)
-            {
-                currentShape = ShapeEnum.Rect;
-            }
 
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == TriangleShape)
-            {
-                currentShape = ShapeEnum.Triangle;
-            }
+            }           
+                        
 
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape)
-            {
-                currentShape = ShapeEnum.Line;
-            }
-
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
-            {
-                currentShape = ShapeEnum.Circle;
-                //if (e.LeftButton == MouseButtonState.Released)
-                //{
-                //    circleStart = position;
-                //}
-            }
+            //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == EllipseShape)
+            //{
+            //    currentShape = ShapeEnum.Circle;
+            //    //if (e.LeftButton == MouseButtonState.Released)
+            //    //{
+            //    //    circleStart = position;
+            //    //}
+            //}
 
             //if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             //{
@@ -329,16 +321,39 @@ namespace PaintTool
             //    }
             //}
 
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == PolygonalShape)
+            
+        }
+        private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((bool)Shapes.IsChecked)
             {
-                currentShape = ShapeEnum.Polygone;
+                switch (ShapeList.SelectedIndex)
+                {
+                    case 0:
+                        currentShape = ShapeEnum.Line;
+                        break;
+                    case 1:
+                        currentShape = ShapeEnum.Rect;
+                        break;
+                    case 2:
+                        currentShape = ShapeEnum.Circle;
+                        break;
+                    case 3:
+                        currentShape = ShapeEnum.Triangle;
+                        break;
+                    case 4:
+                        currentShape = ShapeEnum.Polygone;
+                        break;
+                    case 5:
+                        currentShape = ShapeEnum.BrokenLine;
+                        break;
+                }
             }
         }
-
         private void AdditionalPanelToggler()
         {
             // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
-            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+            ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
             SizePanel.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -361,7 +376,7 @@ namespace PaintTool
             SizeInput.Text = SizeSlider.Value.ToString();
         }
 
-        private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Метод для выбора цвета кисти в комбобоксе
             // Смотрим текстовое значение цвета в поле Fill у выбранного цвета в комбобоксе 
@@ -372,8 +387,8 @@ namespace PaintTool
 
             System.Windows.Media.Color clr = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
             // Создали новый цвет и добавили в него значение. 
-            PaintColor newColor = new PaintColor();
-            newColor.SetColor(clr.B, clr.G, clr.R);
+            
+            paintColor.SetColor(clr.B, clr.G, clr.R);
         }
         
 
@@ -441,7 +456,7 @@ namespace PaintTool
              if (newImage != null)
             {
                 newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
-                PaintField.Source = NewImage.GetInstanceCopy();
+                PaintField.Source = NewImage.Instance;
             }
                
         }
@@ -533,10 +548,7 @@ namespace PaintTool
         #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
 
 
-        private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == LineShape) Trace.WriteLine("zhopa");
-        }
+        
 
 
         #endregion

@@ -198,7 +198,7 @@
                             <RowDefinition Height="30" />
                         </Grid.RowDefinitions>
                         <TextBlock Text="Colors: " VerticalAlignment="Center" Margin="0,0,0,0" Grid.Column="0" />
-                        <ComboBox x:Name="ColorInput" Grid.Column="1" Margin="5,0,0,0" Height="30" SelectedIndex="0" SelectionChanged="comboBox2_SelectionChanged">
+                        <ComboBox x:Name="ColorInput" Grid.Column="1" Margin="5,0,0,0" Height="30" SelectedIndex="0" SelectionChanged="ColorBox_SelectionChanged">
                             <ComboBoxItem>
                                 <Grid>
                                     <Grid.ColumnDefinitions>

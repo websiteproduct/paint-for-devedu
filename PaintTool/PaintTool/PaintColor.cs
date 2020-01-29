@@ -6,19 +6,24 @@ namespace PaintTool
 {
     public class PaintColor
     {
-        byte[] colorData;
+        static byte[] colorData;
         
         public PaintColor()
         {
             colorData = new byte[] { 0, 0, 0, 255};
         }
+
+        public static byte[] ColorData
+        {
+            get
+            {
+                return colorData;
+            }
+        }
+
         public void SetColor(byte blue, byte green, byte red, byte alpha = 255)
         {
             colorData = new byte[] { blue, green, red, alpha };
-        }
-        public byte[] GetColor()        
-        {            
-            return colorData;
-        }
+        }        
     }
 }

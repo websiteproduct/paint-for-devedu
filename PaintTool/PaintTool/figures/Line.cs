@@ -5,8 +5,7 @@ using PaintTool.Creators;
 namespace PaintTool.figures
 {
     class Line : Shape
-    {
-        private byte[] colorData;
+    {        
         private int size;
 
         public Line(List<Point> points) : base(points)

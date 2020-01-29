@@ -8,6 +8,8 @@ namespace PaintTool.figures
     {
         public List<Point> FigurePoints;
         public DrawStrategy ds;
+        public byte[] colorData;
+        
         public virtual void Draw() {
             for (int i = 0; i < FigurePoints.Count; i++)
             {
