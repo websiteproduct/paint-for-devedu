@@ -201,7 +201,7 @@ namespace PaintTool
                 if ((bool)Shapes.IsChecked)
                 {
 
-                    ShapeCreator currentCreator = null;                
+                    ShapeCreator currentCreator = null;
 
                     switch (currentShape)
                     {
@@ -227,36 +227,32 @@ namespace PaintTool
                             currentCreator = new DotCreator();
                             break;
                     }
-                    Shape createdShape = currentCreator.CreateShape(prev, position);
-               
-                    PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
-                    NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
-                }
-                }
-                    prev = position;
-                   
-                if ((bool)EraserToggleBtn.IsChecked)
-                    Brush newBrush = new Brush();
-                {
-                    paintColor.SetColor(255, 255, 255, 255);
-                    newBrush.DrawingBrush(prev, position);
-                    prev = position;
-                }
-                    newBrush.DrawingBrush(prev, position);
-                    Brush newBrush = new Brush();
-                {
-                if ((bool)BrushToggleBtn.IsChecked)
-                }
-                    NewImage.Instance = NewImage.GetInstanceCopy();
-                    PaintField.Source = NewImage.Instance;
-                    createdShape.ds = new DrawByLine();
-                    Shape createdShape = currentCreator.CreateShape(prev, position);
-                    createdShape.Draw();
-                {
-                if (currentCreator != new DotCreator())
+                    if (currentCreator != new DotCreator())
+                    {
+                        Shape createdShape = currentCreator.CreateShape(prev, position);
+                        createdShape.ds = new DrawByLine();
+                        createdShape.Draw();
+                        PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
+                        NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
 
+                    }
 
+                    if ((bool)BrushToggleBtn.IsChecked)
+                    {
+                        Brush newBrush = new Brush();
+                        newBrush.DrawingBrush(prev, position);
+                        prev = position;
+                    }
+                    if ((bool)EraserToggleBtn.IsChecked)
+                    {
+                        paintColor.SetColor(255, 255, 255, 255);
+                        Brush newBrush = new Brush();
+                        newBrush.DrawingBrush(prev, position);        
+                        prev = position;
+                    }
+                }
             }
+
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
