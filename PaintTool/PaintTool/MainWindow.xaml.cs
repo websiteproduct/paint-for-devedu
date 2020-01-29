@@ -190,8 +190,9 @@ namespace PaintTool
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
-            NewImage.Instance = (WriteableBitmap)PaintField.Source;
+            newUndo.PutInUndoStack(NewImage.GetInstanceCopy());      //две строчки для динамической отрисовки
+            NewImage.Instance = (WriteableBitmap)PaintField.Source;  //две строчки для динамической отрисовки
+
             //запоминаем координаты в момент отпускания ЛКМ
             
 
@@ -222,52 +223,56 @@ namespace PaintTool
             // Метод для рисования при нажатой ЛКМ
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                ShapeCreator currentCreator = null;                
+                if ((bool)Shapes.IsChecked)
+                {
 
-                switch (currentShape)
-                {
-                    case ShapeEnum.Circle:
-                        currentCreator = new CircleCreator(isShiftPressed);
-                        break;
-                    case ShapeEnum.Line:
-                        currentCreator = new LineCreator();
-                        break;
-                    case ShapeEnum.Rect:
-                        currentCreator = new RectCreator(isShiftPressed);
-                        break;
-                    case ShapeEnum.Triangle:
-                        currentCreator = new TriangleCreator(isShiftPressed);
-                        break;
-                    case ShapeEnum.Polygone:
-                        currentCreator = new PolygonCreator(5);
-                        break;
-                    case ShapeEnum.Dot:
-                        currentCreator = new DotCreator();
-                        break;
-                    case ShapeEnum.BrokenLine:
-                        currentCreator = new DotCreator();
-                        break;
+                    ShapeCreator currentCreator = null;                
+
+                    switch (currentShape)
+                    {
+                        case ShapeEnum.Circle:
+                            currentCreator = new CircleCreator(isShiftPressed);
+                            break;
+                        case ShapeEnum.Line:
+                            currentCreator = new LineCreator();
+                            break;
+                        case ShapeEnum.Rect:
+                            currentCreator = new RectCreator(isShiftPressed);
+                            break;
+                        case ShapeEnum.Triangle:
+                            currentCreator = new TriangleCreator(isShiftPressed);
+                            break;
+                        case ShapeEnum.Polygone:
+                            currentCreator = new PolygonCreator(5);
+                            break;
+                        case ShapeEnum.Dot:
+                            currentCreator = new DotCreator();
+                            break;
+                        case ShapeEnum.BrokenLine:
+                            currentCreator = new DotCreator();
+                            break;
+                    }
+                    Shape createdShape = currentCreator.CreateShape(prev, position);
+               
+                    PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
+                    NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
                 }
-                Shape createdShape = currentCreator.CreateShape(prev, position);
-                //createdShape.ds = new DrawByLine();
-                //createdShape.Draw();
-                PaintField.Source = NewImage.Instance;
-                //NewImage.Instance = NewImage.GetInstanceCopy();
-                if ((bool)BrushToggleBtn.IsChecked)
-                {
+
+                    if ((bool)BrushToggleBtn.IsChecked)
+                    {
                     
-                    Brush newBrush = new Brush();
-                    newBrush.DrawingBrush(prev, position);
-                    prev = position;
-                }
+                        Brush newBrush = new Brush();
+                        newBrush.DrawingBrush(prev, position);
+                        prev = position;
+                    }
 
-                if ((bool)EraserToggleBtn.IsChecked)
-                {                    
-                    paintColor.SetColor(255, 255, 255, 255);
-                    Brush newBrush = new Brush();
-                    newBrush.DrawingBrush(prev, position);
-                    prev = position;
-                }
+                    if ((bool)EraserToggleBtn.IsChecked)
+                    {                    
+                        paintColor.SetColor(255, 255, 255, 255);
+                        Brush newBrush = new Brush();
+                        newBrush.DrawingBrush(prev, position);
+                        prev = position;
+                    }
 
 
             }           
