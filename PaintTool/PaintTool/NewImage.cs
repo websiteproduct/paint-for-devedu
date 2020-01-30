@@ -87,7 +87,7 @@ namespace PaintTool
 
             //int stride = wb.PixelWidth * (wb.Format.BitsPerPixel / 8);
             instance.WritePixels(rect, pixels, stride, 0);
-            //PutInUndoStack();
+            
             // Отрисовываем созданный WriteableBitmap в поле PaintField            
         }
 

@@ -22,7 +22,7 @@ namespace PaintTool
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    
+
     public class FileDialog
     {
 
@@ -49,7 +49,7 @@ namespace PaintTool
             }
         }
         // Инициализируем WriteableBitmap
-        WriteableBitmap wb, wbCopy;             
+        WriteableBitmap wb, wbCopy;
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
@@ -59,7 +59,7 @@ namespace PaintTool
         // хранит состояние битмапа после отмены(redoStack)
         Undo newUndo = new Undo();
         Redo newRedo = new Redo();
-        
+
         // Переменные, которые являются промежуточными. В них записывается клон битмапа, а потом они записываются в свои стеки.
 
         ShapeEnum currentShape;
@@ -68,16 +68,16 @@ namespace PaintTool
         {
             InitializeComponent();
             width = (int)PaintGrid.Width;
-            height = (int)PaintGrid.Height;            
+            height = (int)PaintGrid.Height;
             newImage = new NewImage(width, height);
             PaintField.Source = NewImage.Instance;
             newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
             BrushToggleBtn.IsChecked = true;
-            
-            
+
+
             currentShape = ShapeEnum.Line;
         }
-        
+
         #region СОЗДАНИЕ НОВОГО ФАЙЛА
         private void NewFile(object sender, RoutedEventArgs e)
         {
@@ -247,10 +247,10 @@ namespace PaintTool
                 {
                     paintColor.SetColor(255, 255, 255, 255);
                     Brush newBrush = new Brush();
-                    newBrush.DrawingBrush(prev, position);        
+                    newBrush.DrawingBrush(prev, position);
                     prev = position;
                 }
-                
+
             }
 
 
@@ -340,10 +340,10 @@ namespace PaintTool
 
             System.Windows.Media.Color clr = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
             // Создали новый цвет и добавили в него значение. 
-            
+
             paintColor.SetColor(clr.B, clr.G, clr.R);
         }
-        
+
 
         #region СТИРАНИЕ ПИКСЕЛЕЙ
         private void CleaningField(object sender, RoutedEventArgs e)
@@ -370,7 +370,7 @@ namespace PaintTool
             byte[] currentColor = GetPixel(new System.Drawing.Point(x, y));
 
 
-            for(int i = y; y < PaintField.Height; i++)
+            for (int i = y; y < PaintField.Height; i++)
             {
                 while (currentColor.SequenceEqual(firstColor) && x > 0)
                 {
@@ -378,8 +378,8 @@ namespace PaintTool
                     SetPixel(new System.Drawing.Point(x, i), false);
                     x--;
                 }
-            }            
-            x = xOld +1;
+            }
+            x = xOld + 1;
             y = yOld;
             currentColor = GetPixel(new System.Drawing.Point(x, y));
             for (int i = y; y > 0; i--)
@@ -391,7 +391,7 @@ namespace PaintTool
                     x++;
                 }
             }
-            
+
         }
 
         private byte[] GetPixel(System.Drawing.Point point)
@@ -406,13 +406,14 @@ namespace PaintTool
 
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
         {
-             if (newImage != null)
+            if (newImage != null)
             {
                 newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
                 PaintField.Source = NewImage.Instance;
-                newUndo.UndoStack.Clear();
+                newUndo.ClearStack();
+                newRedo.ClearStack();
             }
-               
+
         }
 
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
@@ -433,7 +434,7 @@ namespace PaintTool
                 string filename = dlg.FileName;
                 LoadDrawing(filename);
             }
-            
+
 
         }
 
@@ -459,12 +460,12 @@ namespace PaintTool
         }
 
 
-            private void SaveDrawing(string filename)
+        private void SaveDrawing(string filename)
         {
             //get the height and width of the PanelGrid
             int width = Convert.ToInt32(PaintGrid.Width);
             int height = Convert.ToInt32(PaintGrid.Height);
-            
+
             //Render a bitmap of the PanelGrid
             var rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
             var dv = new DrawingVisual();
@@ -473,7 +474,7 @@ namespace PaintTool
                 dc.DrawRectangle(new VisualBrush(PaintGrid), null, new System.Windows.Rect(0, 0, width, height));
             }
             rtb.Render(dv);
-            
+
             //Encode the render into a bitmap
             BitmapEncoder encoder = new BmpBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(rtb));
@@ -511,14 +512,18 @@ namespace PaintTool
 
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
-            //newRedo.RedoMethod();
+            newRedo.RedoMethod();
+            NewImage.Instance = newRedo.ImageFromRedoStack;
+            PaintField.Source = NewImage.Instance;
+
         }
         private void UndoButton_Click(object sender, RoutedEventArgs e)
         {
-            newUndo.UndoMethod(NewImage.GetInstanceCopy());
+            newRedo.PutInRedoStack(NewImage.GetInstanceCopy());
+            
+            newUndo.UndoMethod();
             NewImage.Instance = newUndo.ImageFromUndoStack;
             PaintField.Source = NewImage.Instance;
-
         }
 
 

@@ -7,29 +7,29 @@ namespace PaintTool.Actions
 {
     public class Redo
     {
-        Stack<WriteableBitmap> redoStack;
-        WriteableBitmap ImageFromRedoStack { get; set; }
+        public Stack<WriteableBitmap> RedoStack { get; set; }
+        public WriteableBitmap ImageFromRedoStack { get; set; }
 
         public Redo()
         {
-            redoStack = new Stack<WriteableBitmap>();
+            RedoStack = new Stack<WriteableBitmap>();
         }
 
         public void RedoMethod()
         {
-            if (redoStack.Count > 0)
+            if (RedoStack.Count > 0)
             {                
-                ImageFromRedoStack = redoStack.Pop();
-            }
-            else if (redoStack.Count == 0)
-            {
-                return;
-            }
+                ImageFromRedoStack = RedoStack.Pop();
+            }           
         }
 
         public void PutInRedoStack(WriteableBitmap instanceCopy)
         {            
-            redoStack.Push(instanceCopy);
+            RedoStack.Push(instanceCopy);
+        }
+        public void ClearStack()
+        {
+            RedoStack.Clear();
         }
     }
 }

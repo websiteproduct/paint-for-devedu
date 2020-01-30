@@ -14,10 +14,10 @@ namespace PaintTool.Actions
             UndoStack = new Stack<WriteableBitmap>();
         }
         
-        public void UndoMethod(WriteableBitmap instanceCopy)
+        public void UndoMethod()
         {
-            if (UndoStack.Count > 0)            {
-                //Redo.PutInRedoStack(instanceCopy);                
+            if (UndoStack.Count > 0)            
+            {                              
                 ImageFromUndoStack = UndoStack.Pop();                
             }            
         }
@@ -25,6 +25,11 @@ namespace PaintTool.Actions
         public void PutInUndoStack(WriteableBitmap instanceCopy)
         {            
             UndoStack.Push(instanceCopy);
+        }
+
+        public void ClearStack()
+        {
+            UndoStack.Clear();
         }
     }
 }
