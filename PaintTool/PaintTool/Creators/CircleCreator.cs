@@ -47,7 +47,6 @@ namespace PaintTool.Creators
                 tempDots.Add(new Point(Convert.ToInt32(start.X - coeff * x), start.Y + (int)y));
                 tempDots.Add(new Point(Convert.ToInt32(start.X - coeff * x), start.Y - (int)y));
 
-
                 if ((delta < 0))
                 {
                     x++;

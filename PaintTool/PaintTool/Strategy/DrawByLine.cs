@@ -31,11 +31,6 @@ namespace PaintTool.Strategy
             {
             int wth = Convert.ToInt32(Math.Abs(end.X - start.X));
             int hght = Convert.ToInt32(Math.Abs(end.Y - start.Y));
-            //if ()
-            //{
-            //wth--;
-            //hght--;
-            //}
 
             int x0 = Convert.ToInt32(start.X), y0 = Convert.ToInt32(start.Y);
             List<Point> LineDots = new List<Point>();

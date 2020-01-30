@@ -33,6 +33,8 @@ namespace PaintTool
     {
         NewImage newImage;
         PaintColor paintColor = new PaintColor();
+        byte[] tempColor = new byte[] { 0, 0, 0, 255 };
+        int numberOfSize, polygonNumberOfSide = 4;
         int width, height;
         bool isShiftPressed = false;
         public int PWidth
@@ -54,7 +56,7 @@ namespace PaintTool
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
-        System.Drawing.Point prev, position, tempBrokenLine, startBrokenLine, circleStart, CenterPolygon;
+        System.Drawing.Point prev, position, tempBrokenLine, startBrokenLine;
 
         // Создаем два стека. Один хранит состояние битмапа до отмены действия(undoStack), другой
         // хранит состояние битмапа после отмены(redoStack)
@@ -144,7 +146,10 @@ namespace PaintTool
             drawingBrokenLine = false;
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
-                new LineCreator().CreateShape(tempBrokenLine, startBrokenLine);
+                Shape createdShape = new LineCreator().CreateShape(tempBrokenLine, startBrokenLine);
+                createdShape.ds = new DrawByLine();
+                DrawStrategy.thicknessStrategy = currentStrategy;
+                createdShape.Draw();
             }
         }
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -162,7 +167,10 @@ namespace PaintTool
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
-                new LineCreator().CreateShape(tempBrokenLine, position);
+                Shape createdShape = new LineCreator().CreateShape(tempBrokenLine, position);
+                createdShape.ds = new DrawByLine();
+                DrawStrategy.thicknessStrategy = currentStrategy;
+                createdShape.Draw();
                 PaintField.Source = NewImage.Instance;
                 NewImage.Instance = NewImage.GetInstanceCopy();
             }
@@ -202,14 +210,14 @@ namespace PaintTool
             {
                 if ((bool)Shapes.IsChecked)
                 {
-
+                    PickedColor();
                     ShapeCreator currentCreator = null;
 
                     switch (currentShape)
                     {
-                        case ShapeEnum.Circle:
-                            currentCreator = new CircleCreator(isShiftPressed);
-                            break;
+                        //case ShapeEnum.Circle:
+                        //    currentCreator = new CircleCreator(isShiftPressed);
+                        //    break;
                         case ShapeEnum.Line:
                             currentCreator = new LineCreator();
                             break;
@@ -220,14 +228,14 @@ namespace PaintTool
                             currentCreator = new TriangleCreator(isShiftPressed);
                             break;
                         case ShapeEnum.Polygone:
-                            currentCreator = new PolygonCreator(5);
+                            currentCreator = new PolygonCreator(polygonNumberOfSide);
                             break;
                         case ShapeEnum.Dot:
                             currentCreator = new DotCreator();
                             break;
-                            //case ShapeEnum.BrokenLine:
-                            //    currentCreator = new DotCreator();
-                            //    break;
+                        default:
+                            currentCreator = new LineCreator();
+                            break;
                     }
 
                     Shape createdShape = currentCreator.CreateShape(prev, position);
@@ -237,11 +245,11 @@ namespace PaintTool
 
                     PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
                     NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
-
                 }
 
                 if ((bool)BrushToggleBtn.IsChecked)
                 {
+                    PickedColor();
                     Brush newBrush = new Brush();
                     newBrush.DrawingBrush(prev, position, currentStrategy);
                     prev = position;
@@ -259,9 +267,12 @@ namespace PaintTool
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
-                if (drawingBrokenLine)
+                if (drawingBrokenLine && e.LeftButton == MouseButtonState.Pressed)
                 {
-                    new LineCreator().CreateShape(tempBrokenLine, position);
+                    Shape createdShape = new LineCreator().CreateShape(tempBrokenLine, position);
+                    createdShape.ds = new DrawByLine();
+                    DrawStrategy.thicknessStrategy = currentStrategy;
+                    createdShape.Draw();
                     PaintField.Source = NewImage.Instance;
                     NewImage.Instance = NewImage.GetInstanceCopy();
                 }
@@ -276,6 +287,35 @@ namespace PaintTool
                     drawingBrokenLine = true;
                 }
 
+            }
+        }
+
+
+        // Тест
+        private void NumberOfSide_Changed(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            
+            switch (textBox.Text)
+            {
+                case "4":
+                    polygonNumberOfSide = 4;
+                    break;
+                case "5":
+                    polygonNumberOfSide = 5;
+                    break;
+                case "6":
+                    polygonNumberOfSide = 6;
+                    break;
+                case "7":
+                    polygonNumberOfSide = 7;
+                    break;
+                case "8":
+                    polygonNumberOfSide = 8;
+                    break;
+                default:
+                    polygonNumberOfSide = 5;
+                    break;
             }
         }
 
@@ -300,18 +340,12 @@ namespace PaintTool
                     case 4:
                         currentShape = ShapeEnum.Polygone;
                         break;
-                    //case 5:
-                    //    currentShape = ShapeEnum.BrokenLine;
-                    //    break;
                 }
             }
         }
 
-
-
         private void AdditionalPanelToggler()
         {
-            // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
             ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
             SizePanel.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -326,54 +360,40 @@ namespace PaintTool
             }
             else ShapeList.Visibility = Visibility.Collapsed;
             AdditionalPanelToggler();
-            if ((bool)BrushToggleBtn.IsChecked) currentShape = ShapeEnum.Dot;
+            if ((bool)BrushToggleBtn.IsChecked)
+                currentShape = ShapeEnum.Dot;
         }
 
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            SizeInput.Text = SizeSlider.Value.ToString();
+            numberOfSize = Convert.ToInt32(SizeSlider.Value);
             
-            switch (SizeInput.Text)
+            switch (numberOfSize)
             {
-                case "1":
+                case 1:
                     currentStrategy = new DefaultStrategy();
                     break;
-
-                case "2":
+                case 2:
                     currentStrategy = new MediumStrategy();
                     break;
-
-                case "3":
+                case 3:
                     currentStrategy = new BigStrategy();
                     break;
-
-                case "4":
+                case 4:
                     currentStrategy = new VeryBigStrategy();
                     break;
+                default:
+                    currentStrategy = new DefaultStrategy();
+                    break;
             }
-            //switch (SizeInput.Text)
-            //{
-            //    case "1":
-            //        DrawStrategy.thicknessStrategy = new DefaultStrategy();
-            //        break;
-            //    case "2":
-            //        DrawStrategy.thicknessStrategy = new MediumStrategy();
-            //        break;
-            //    case "3":
-            //        DrawStrategy.thicknessStrategy = new BigStrategy();
-            //        break;
-            //    case "4":
-            //        DrawStrategy.thicknessStrategy = new VeryBigStrategy();
-            //        break;
-            //    default:
-            //        DrawStrategy.thicknessStrategy = new VeryBigStrategy();
-            //        break;
-
-            //}
-
         }
 
         private void ColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PickedColor();
+        }
+
+        private void PickedColor()
         {
             // Метод для выбора цвета кисти в комбобоксе
             // Смотрим текстовое значение цвета в поле Fill у выбранного цвета в комбобоксе 
