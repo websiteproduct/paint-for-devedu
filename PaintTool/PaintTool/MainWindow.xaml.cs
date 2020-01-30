@@ -231,8 +231,8 @@ namespace PaintTool
                     }
 
                     Shape createdShape = currentCreator.CreateShape(prev, position);
-                    DrawStrategy.thicknessStrategy = currentStrategy;
                     createdShape.ds = new DrawByLine();
+                    DrawStrategy.thicknessStrategy = currentStrategy;
                     createdShape.Draw();
 
                     PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
