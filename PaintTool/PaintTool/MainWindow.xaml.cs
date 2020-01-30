@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using PaintTool.figures;
+using System.Windows.Threading;
 
 
 namespace PaintTool
@@ -17,7 +18,13 @@ namespace PaintTool
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    
+
+    struct XLine
+    {
+        public int startX;
+        public int endX;
+    }
+
     public class FileDialog
     {
 
@@ -98,11 +105,11 @@ namespace PaintTool
 
             int x0 = Convert.ToInt32(prev.X), y0 = Convert.ToInt32(prev.Y);
             List<Point> LineDots = new List<Point>();
- 
+
             double k;
 
             if (hght >= wth)
-            { 
+            {
                 k = wth * 1.0 / hght;
 
                 if (position.X >= prev.X && position.Y >= prev.Y)
@@ -141,7 +148,7 @@ namespace PaintTool
                     SetPixel(LineDots[i], altBitmap);
                 }
             }
-            else 
+            else
             {
                 k = hght * 1.0 / wth;
 
@@ -149,7 +156,7 @@ namespace PaintTool
                 {
                     for (int i = 0; i < wth; i++)
                     {
-                        LineDots.Add(new Point(x0 + i, - Convert.ToInt32(k * i - y0)));
+                        LineDots.Add(new Point(x0 + i, -Convert.ToInt32(k * i - y0)));
                     }
                 }
 
@@ -188,8 +195,7 @@ namespace PaintTool
 
         public void SetPixel(Point pxl, bool altBitmap)
         {
-
-            if ((pxl.X < PaintField.Width && pxl.X > 0) && (pxl.Y < PaintField.Height && pxl.Y > 0))
+            if ((pxl.X < PaintField.Width && pxl.X >= 0) && (pxl.Y < PaintField.Height && pxl.Y >= 0))
             {
                 Int32Rect rect = new Int32Rect(
                         Convert.ToInt32(pxl.X),
@@ -205,6 +211,51 @@ namespace PaintTool
                     wbCopy.WritePixels(rect, GetColor(), 4, 0);
                 else
                     wb.WritePixels(rect, GetColor(), 4, 0);
+            }
+        }
+
+        public void SetPixelLine(int xStart, int xEnd, int y)
+        {
+            if ((xStart < PaintField.Width && xStart > 0) && (xEnd < PaintField.Width && xEnd > 0) && (y < PaintField.Height && y > 0))
+            {
+                Int32Rect rect = new Int32Rect(
+                        xStart,
+                        y,
+                        xEnd - xStart,
+                        1);
+
+                byte[] ColorData = new byte[4 * (xEnd - xStart)];
+                byte[] nColor = GetColor();
+
+                for (int i = 0; i < 4 * (xEnd - xStart); i += 4)
+                {
+
+                    Array.Copy(nColor, 0, ColorData, i, 4);
+                }
+
+                wb.WritePixels(rect, ColorData, 4 * (xEnd - xStart), 0);
+            }
+        }
+
+        public void SetPixelLineY(int yStart, int yEnd, int x)
+        {
+            if ((yStart < PaintField.Height && yStart > 0) && (yEnd < PaintField.Height && yEnd > 0) && (x < PaintField.Width && x > 0))
+            {
+                Int32Rect rect = new Int32Rect(
+                        x,
+                        yStart,
+                        1,
+                        yEnd - yStart);
+
+                byte[] ColorData = new byte[4 * (yEnd - yStart)];
+                byte[] nColor = GetColor();
+
+                for (int i = 0; i < 4 * (yEnd - yStart); i += 4)
+                {
+                    Array.Copy(nColor, 0, ColorData, i, 4);
+                }
+
+                wb.WritePixels(rect, ColorData, 4, 0);
             }
         }
 
@@ -310,10 +361,10 @@ namespace PaintTool
                 triangleDots.Add(new Point(position.X, prev.Y));
             }
 
-                DrawLine(triangleDots[0], triangleDots[1], true);
-                DrawLine(triangleDots[1], triangleDots[2], true);
-                DrawLine(triangleDots[2], triangleDots[0], true);
-                
+            DrawLine(triangleDots[0], triangleDots[1], true);
+            DrawLine(triangleDots[1], triangleDots[2], true);
+            DrawLine(triangleDots[2], triangleDots[0], true);
+
         }
 
         private List<Point> DrawingEquilateralTriangle(double offsetX, double offsetY)
@@ -388,7 +439,7 @@ namespace PaintTool
                     radius = Math.Abs(CenterPolygon.Y - position.Y);
 
 
-                double z = Math.Atan(position.X/position.Y)*180/Math.PI;
+                double z = Math.Atan(position.X / position.Y) * 180 / Math.PI;
                 int i = 0;
                 double angle = 360 / numberOfSide;
 
@@ -404,12 +455,12 @@ namespace PaintTool
                 }
                 for (int j = 0; j < numberOfSide; j++)
                 {
-                    if (j < numberOfSide-1) 
-                        DrawLine(polygonDots[j], polygonDots[j+1],true);
-                    else 
+                    if (j < numberOfSide - 1)
+                        DrawLine(polygonDots[j], polygonDots[j + 1], true);
+                    else
                         DrawLine(polygonDots[j], polygonDots[0], true);
                 }
-                
+
             }
 
         }
@@ -490,7 +541,8 @@ namespace PaintTool
                 wb = wbCopy;
             }
 
-            if ((bool)BrushToggleBtn.IsChecked) PutInUndoStack();
+            //if ((bool)BrushToggleBtn.IsChecked) PutInUndoStack();
+            PutInUndoStack();
         }
 
         bool isShiftPressed = false;
@@ -801,6 +853,177 @@ namespace PaintTool
             wb.WritePixels(rect, GetColor(), 4, 0);
         }
 
+        private XLine FillLineHorizontal(ref byte[][][] canvasMem, int x, int y, byte[] oldColor)
+        {
+            XLine rs;
+            rs.startX = x;
+            rs.endX = x;
+
+            int lY = y;
+
+            if (!canvasMem[lY][x].SequenceEqual(oldColor))
+                return rs;
+
+            Array.Copy(GetColor(), 0, canvasMem[lY][rs.startX], 0, 4);
+
+            rs.startX = x-1;
+            rs.endX = x+1;
+
+            while (rs.startX > 0 && canvasMem[lY][rs.startX].SequenceEqual(oldColor))
+            {
+                 Array.Copy(GetColor(), 0, canvasMem[lY][rs.startX], 0, 4);
+                 //canvasMem[lY][rs.startX] = oldColor;
+                 rs.startX--;
+            }
+            //rs.startX++;
+
+            while (rs.endX < PaintField.Width-1 && (canvasMem[lY][rs.endX]).SequenceEqual(oldColor))
+            {
+                Array.Copy(GetColor(), 0, canvasMem[lY][rs.endX], 0, 4);
+                //canvasMem[lY][rs.endX] = oldColor;
+                rs.endX++;
+            }
+            //rs.endX--;
+
+            SetPixelLine(++rs.startX, rs.endX, lY);
+
+
+            //System.Threading.Thread.Sleep(5);
+            //Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
+            //                              new Action(delegate { }));
+            return rs;
+        }
+
+        private void RecLineTop(ref byte[][][] canvasMem, XLine rs, int y, byte[] oldColor)
+        {
+            int lY = y - 1;
+            if (lY == -1) return;
+            for (int i = rs.startX; i < rs.endX; i++)
+            {
+                //while (canvasMem[lY][i].SequenceEqual(oldColor))
+                //{
+                    XLine sub = FillLineHorizontal(ref canvasMem, i, lY, oldColor);
+                    i = sub.endX;
+
+                    RecLineTop(ref canvasMem, sub, lY, oldColor);
+
+                    if (sub.endX > rs.endX)
+                    {
+
+                        sub.startX = rs.endX;
+
+                        RecLineBottom(ref canvasMem, sub, lY, oldColor);
+
+
+                    }
+                    if (sub.startX < rs.startX)
+                    {
+                        sub.endX = rs.startX;
+                        //Trace.WriteLine("BOTTOM: " + sub.startX + " " + sub.endX + " Y: " + lY);
+                        RecLineBottom(ref canvasMem, sub, lY, oldColor);
+                    }
+               // }
+            }
+        }
+
+        private void RecLineBottom(ref byte[][][] canvasMem, XLine rs, int y, byte[] oldColor)
+        {
+
+            int lY = y + 1;
+            if (lY == (int)PaintField.Height-1) return;
+
+            for (int i = rs.startX; i < rs.endX; i++)
+            {
+                //while (canvasMem[lY][i].SequenceEqual(oldColor))
+                //{
+                    XLine sub = FillLineHorizontal(ref canvasMem, i, lY, oldColor);
+                    i = sub.endX;
+
+                    RecLineBottom(ref canvasMem, sub, lY, oldColor);
+
+
+                    if (sub.endX > rs.endX)
+                    {
+
+                        sub.startX = rs.endX;
+
+                        RecLineTop(ref canvasMem, sub, lY, oldColor);
+
+
+                    }
+
+                    if (sub.startX < rs.startX)
+                    {
+                        sub.endX = rs.startX;
+                        //Trace.WriteLine("BOTTOM: " + sub.startX + " " + sub.endX + " Y: " + lY);
+                        RecLineTop(ref canvasMem, sub, lY, oldColor);
+                    }
+                //}
+            }
+        }
+
+
+        private void Fill(int x, int y, byte[] oldColor, int recursionDepth = 0)
+        {
+            byte[] oldColor1 = new byte[4];//= oldColor;
+            Array.Copy(oldColor, 0, oldColor1, 0, 4);
+
+            if (recursionDepth > 1) return;
+            //recursionDepth++;
+            byte[] pixels = GetPixelArrayLength();
+            wb.CopyPixels(pixels, GetStride(), 0);
+
+            
+            byte[][][] canvasMem = new byte[(int)PaintField.Height][][];
+            //[(int)PaintField.Height][4];
+
+            int m = 0;
+
+            for (int i = 0; i < PaintField.Height; i++)
+            {
+                canvasMem[i] = new byte[(int)PaintField.Width][];
+
+                for (int j = 0; j < PaintField.Width; j++)
+                {
+                    canvasMem[i][j] = new byte[4];
+
+                    for (int k = 0; k < 4; k++)
+                    {
+                        canvasMem[i][j][k] = pixels[m + k];
+                    }
+                    m += 4;
+                }
+            }
+
+            XLine rs = FillLineHorizontal(ref canvasMem, x, y, oldColor1);
+
+            RecLineTop(ref canvasMem, rs, y, oldColor1);
+
+            RecLineBottom(ref canvasMem, rs, y, oldColor1);
+
+
+        }
+
+        // не трогать
+
+        //    int currentPixel = x * GetBytesPerPixel() + y * GetStride();
+        //        if (visited[currentPixel] == 1) return;
+        //        //visited[currentPixel] = 1;
+        //        //visited[currentPixel + 1] = 1;
+        //        //visited[currentPixel + 2] = 1;
+        //        //visited[currentPixel + 3] = 1;
+
+        //        if (GetPixel(new Point(x, y)).SequenceEqual(oldColor))
+        //        {
+        //            SetPixel(new Point(x, y), false);
+        //            visited[currentPixel] = 1;
+        //            Fill(x + 1, y, visited, oldColor);
+        //    Fill(x, y + 1, visited, oldColor);
+        //    Fill(x - 1, y, visited, oldColor);
+        //    Fill(x, y - 1, visited, oldColor);
+        //}
+        //        else return;
+
         // закрашиваем пиксели
 
         private void PixelFill(MouseEventArgs e)
@@ -811,35 +1034,27 @@ namespace PaintTool
             int xOld = x;
             int yOld = y;
             byte[] pixels = GetPixelArrayLength();
-            wb.CopyPixels(pixels, GetStride(), 0);
+            //wb.CopyPixels(pixels, GetStride(), 0);
             int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (int)currentPoint.Y * GetStride();
             byte[] firstColor = GetPixel(new Point(e.GetPosition(PaintField).X, e.GetPosition(PaintField).Y));
             byte[] currentColor = GetPixel(new Point(x, y));
             //Trace.WriteLine($"Current Color: {currentColor[0]}, {currentColor[1]}, {currentColor[2]}, {currentColor[3]}");
             //Trace.WriteLine($"Set Color: {colorData[0]}, {colorData[1]}, {colorData[2]}, {colorData[3]}");
 
-            for(int i = y; y < PaintField.Height; i++)
-            {
-                while (currentColor.SequenceEqual(firstColor) && x > 0)
-                {
-                    currentColor = GetPixel(new Point(x, i));
-                    SetPixel(new Point(x, i), false);
-                    x--;
-                }
-            }            
-            x = xOld +1;
-            y = yOld;
-            currentColor = GetPixel(new Point(x, y));
-            for (int i = y; y > 0; i--)
-            {
-                while (currentColor.SequenceEqual(firstColor) && x < PaintField.Width)
-                {
-                    currentColor = GetPixel(new Point(x, i));
-                    SetPixel(new Point(x, i), false);
-                    x++;
-                }
-            }
-            
+            Fill(x, y, currentColor);
+            //x = xOld +1;
+            //y = yOld;
+            //currentColor = GetPixel(new Point(x, y));
+            //for (int i = y; y > 0; i--)
+            //{
+            //    while (currentColor.SequenceEqual(firstColor) && x < PaintField.Width)
+            //    {
+            //        currentColor = GetPixel(new Point(x, i));
+            //        SetPixel(new Point(x, i), false);
+            //        x++;
+            //    }
+            //}
+
             //for (int pixel = 0; pixel < pixels.Length; pixel += GetBytesPerPixel())
             //{
             //    if (pixels[pixel] == 255 && pixels[pixel + 1] == 255 && pixels[pixel + 2] == 255 && pixels[pixel + 3] == 255)
@@ -926,7 +1141,7 @@ namespace PaintTool
                 string filename = dlg.FileName;
                 LoadDrawing(filename);
             }
-            
+
 
         }
 
@@ -954,21 +1169,21 @@ namespace PaintTool
         }
 
 
-            private void SaveDrawing(string filename)
+        private void SaveDrawing(string filename)
         {
             //get the height and width of the PanelGrid
             int width = Convert.ToInt32(PaintGrid.Width);
             int height = Convert.ToInt32(PaintGrid.Height);
-            
+
             //Render a bitmap of the PanelGrid
             var rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
             var dv = new DrawingVisual();
             using (DrawingContext dc = dv.RenderOpen())
             {
-                dc.DrawRectangle(new VisualBrush(PaintGrid), null, new Rect(0, 0, width, height));
+                dc.DrawRectangle(new VisualBrush(PaintGrid), null, new System.Windows.Rect(0, 0, width, height));
             }
             rtb.Render(dv);
-            
+
             //Encode the render into a bitmap
             BitmapEncoder encoder = new BmpBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(rtb));
@@ -985,8 +1200,14 @@ namespace PaintTool
         {
             //Loads the given file image
             BitmapImage filefoto = new BitmapImage(new Uri(filename));
-            var image = new Image { Source = filefoto };
-            PaintGrid.Children.Add(image);
+            byte[] buffer = new byte[(int)filefoto.Width * 4 * (int)filefoto.Height];
+            filefoto.CopyPixels(buffer, (int)filefoto.Width * 4, 0);
+            wb.WritePixels(new Int32Rect(0, 0, (int)filefoto.Width, (int)filefoto.Height), buffer, 4, 0);
+
+            //PaintField.Source = filefoto;
+
+            //var image = new Image { Source = filefoto };
+            //PaintGrid.Children.Add(image);
             //
             // TODO: Test this after Menu Button is added
 
