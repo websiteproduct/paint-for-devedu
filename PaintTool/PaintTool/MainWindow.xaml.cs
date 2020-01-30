@@ -236,21 +236,21 @@ namespace PaintTool
                         NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
 
                     }
-
-                    if ((bool)BrushToggleBtn.IsChecked)
-                    {
-                        Brush newBrush = new Brush();
-                        newBrush.DrawingBrush(prev, position);
-                        prev = position;
-                    }
-                    if ((bool)EraserToggleBtn.IsChecked)
-                    {
-                        paintColor.SetColor(255, 255, 255, 255);
-                        Brush newBrush = new Brush();
-                        newBrush.DrawingBrush(prev, position);        
-                        prev = position;
-                    }
                 }
+                if ((bool)BrushToggleBtn.IsChecked)
+                {
+                    Brush newBrush = new Brush();
+                    newBrush.DrawingBrush(prev, position);
+                    prev = position;
+                }
+                if ((bool)EraserToggleBtn.IsChecked)
+                {
+                    paintColor.SetColor(255, 255, 255, 255);
+                    Brush newBrush = new Brush();
+                    newBrush.DrawingBrush(prev, position);        
+                    prev = position;
+                }
+                
             }
 
 
