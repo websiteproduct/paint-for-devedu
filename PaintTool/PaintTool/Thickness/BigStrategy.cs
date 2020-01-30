@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PaintTool.Thickness
 {
-    class BigStrategy
+    public class BigStrategy : ThicknessS
     {
         public List<Point> GetPoints(Point point)
         {

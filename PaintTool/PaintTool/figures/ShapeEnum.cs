@@ -8,7 +8,7 @@ namespace PaintTool.figures
         Rect,
         Triangle,
         Polygone,
-        BrokenLine,
+        //BrokenLine,
         Dot        
     }
 }

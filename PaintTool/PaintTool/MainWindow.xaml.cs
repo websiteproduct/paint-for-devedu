@@ -16,6 +16,7 @@ using PaintTool.Strategy;
 using Shape = PaintTool.figures.Shape;
 using PaintTool.Actions;
 using System.Drawing;
+using PaintTool.Thickness;
 
 namespace PaintTool
 {
@@ -63,6 +64,7 @@ namespace PaintTool
         // Переменные, которые являются промежуточными. В них записывается клон битмапа, а потом они записываются в свои стеки.
 
         ShapeEnum currentShape;
+        ThicknessS currentStrategy = new DefaultStrategy();
 
         public MainWindow()
         {
@@ -223,20 +225,21 @@ namespace PaintTool
                         case ShapeEnum.Dot:
                             currentCreator = new DotCreator();
                             break;
-                        case ShapeEnum.BrokenLine:
-                            currentCreator = new DotCreator();
-                            break;
+                            //case ShapeEnum.BrokenLine:
+                            //    currentCreator = new DotCreator();
+                            //    break;
                     }
-                    if (currentCreator != new DotCreator())
-                    {
-                        Shape createdShape = currentCreator.CreateShape(prev, position);
-                        createdShape.ds = new DrawByLine();
-                        createdShape.Draw();
-                        PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
-                        NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
 
-                    }
+                    Shape createdShape = currentCreator.CreateShape(prev, position);
+                    DrawStrategy.thicknessStrategy = currentStrategy;
+                    createdShape.ds = new DrawByLine();
+                    createdShape.Draw();
+
+                    PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
+                    NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
+
                 }
+
                 if ((bool)BrushToggleBtn.IsChecked)
                 {
                     Brush newBrush = new Brush();
@@ -247,10 +250,10 @@ namespace PaintTool
                 {
                     paintColor.SetColor(255, 255, 255, 255);
                     Brush newBrush = new Brush();
-                    newBrush.DrawingBrush(prev, position);
+                    newBrush.DrawingBrush(prev, position);        
                     prev = position;
                 }
-
+                
             }
 
 
@@ -297,12 +300,15 @@ namespace PaintTool
                     case 4:
                         currentShape = ShapeEnum.Polygone;
                         break;
-                    case 5:
-                        currentShape = ShapeEnum.BrokenLine;
-                        break;
+                    //case 5:
+                    //    currentShape = ShapeEnum.BrokenLine;
+                    //    break;
                 }
             }
         }
+
+
+
         private void AdditionalPanelToggler()
         {
             // При нажатии на кнопку BrushToggleBtn появление/скрытие панели с выбором цвета
@@ -325,8 +331,46 @@ namespace PaintTool
 
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            // Появление значения позиции слайдера в окошке справа от него 
             SizeInput.Text = SizeSlider.Value.ToString();
+            
+            switch (SizeInput.Text)
+            {
+                case "1":
+                    currentStrategy = new DefaultStrategy();
+                    break;
+
+                case "2":
+                    currentStrategy = new MediumStrategy();
+                    break;
+
+                case "3":
+                    currentStrategy = new BigStrategy();
+                    break;
+
+                case "4":
+                    currentStrategy = new VeryBigStrategy();
+                    break;
+            }
+            //switch (SizeInput.Text)
+            //{
+            //    case "1":
+            //        DrawStrategy.thicknessStrategy = new DefaultStrategy();
+            //        break;
+            //    case "2":
+            //        DrawStrategy.thicknessStrategy = new MediumStrategy();
+            //        break;
+            //    case "3":
+            //        DrawStrategy.thicknessStrategy = new BigStrategy();
+            //        break;
+            //    case "4":
+            //        DrawStrategy.thicknessStrategy = new VeryBigStrategy();
+            //        break;
+            //    default:
+            //        DrawStrategy.thicknessStrategy = new VeryBigStrategy();
+            //        break;
+
+            //}
+
         }
 
         private void ColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

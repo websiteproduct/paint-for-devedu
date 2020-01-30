@@ -1,4 +1,7 @@
 ﻿using PaintTool.Creators;
+using PaintTool.figures;
+using PaintTool.Strategy;
+using PaintTool.Thickness;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,7 +15,10 @@ namespace PaintTool
         public void DrawingBrush(Point prev, Point position)
         {
             new DotCreator().CreateShape(prev, position);
-            new LineCreator().CreateShape(prev, position);
+            Shape createdShape = new LineCreator().CreateShape(prev, position);
+            createdShape.ds = new DrawByLine();
+            createdShape.Draw();
+
         }
     }
 }
