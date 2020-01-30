@@ -12,7 +12,7 @@ namespace PaintTool.Strategy
     {
         public DrawByLine()
         {
-            currentColor = new PaintColor();
+            currentColor = PaintColor.ColorData;
             thicknessStrategy = new DefaultStrategy();
         }
         public override void Draw(Point start, Point end)

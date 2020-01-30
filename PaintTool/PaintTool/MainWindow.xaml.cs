@@ -243,14 +243,14 @@ namespace PaintTool
                 if ((bool)BrushToggleBtn.IsChecked)
                 {
                     Brush newBrush = new Brush();
-                    newBrush.DrawingBrush(prev, position);
+                    newBrush.DrawingBrush(prev, position, currentStrategy);
                     prev = position;
                 }
                 if ((bool)EraserToggleBtn.IsChecked)
                 {
-                    paintColor.SetColor(255, 255, 255, 255);
+                    PaintColor.ColorData = new byte[] { 255, 255, 255, 255 };
                     Brush newBrush = new Brush();
-                    newBrush.DrawingBrush(prev, position);        
+                    newBrush.DrawingBrush(prev, position, currentStrategy);        
                     prev = position;
                 }
                 
@@ -385,7 +385,7 @@ namespace PaintTool
             System.Windows.Media.Color clr = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
             // Создали новый цвет и добавили в него значение. 
 
-            paintColor.SetColor(clr.B, clr.G, clr.R);
+            PaintColor.ColorData = new byte[] { clr.B, clr.G, clr.R, 255 };
         }
 
 

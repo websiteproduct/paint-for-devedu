@@ -9,7 +9,7 @@ namespace PaintTool.Strategy
 {
     public abstract class DrawStrategy
     {
-        public PaintColor currentColor;
+        public byte[] currentColor;
         public static ThicknessS thicknessStrategy { get; set; }
 
         public virtual void Draw(Point prev, Point position)
