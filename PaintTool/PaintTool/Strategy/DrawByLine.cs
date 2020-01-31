@@ -24,6 +24,7 @@ namespace PaintTool.Strategy
             {
                 DrawLine(temp[i], temp2[i]);
             }
+
         }
 
 

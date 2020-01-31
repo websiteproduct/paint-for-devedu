@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
 using Shape = PaintTool.figures.Shape;
 using System.Drawing;
 using PaintTool.Creators;
@@ -32,7 +33,7 @@ namespace PaintTool
         NewImage newImage;
         PaintColor paintColor = new PaintColor();
         byte[] tempColor = new byte[] { 0, 0, 0, 255 };
-        int numberOfSize, polygonNumberOfSide = 4;
+        int numberOfSize, polygonNumberOfSide = 5;
         int width, height;
         bool isShiftPressed = false;
         public int PWidth
@@ -175,9 +176,9 @@ namespace PaintTool
 
                     switch (currentShape)
                     {
-                        //case ShapeEnum.Circle:
-                        //    currentCreator = new CircleCreator(isShiftPressed);
-                        //    break;
+                        case ShapeEnum.Circle:
+                            currentCreator = new CircleCreator(isShiftPressed);
+                            break;
                         case ShapeEnum.Line:
                             currentCreator = new LineCreator();
                             break;
@@ -249,32 +250,22 @@ namespace PaintTool
             }
         }
 
+        private void NumberOfSideInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
         private void NumberOfSide_Changed(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
-            
-            switch (textBox.Text)
-            {
-                case "4":
-                    polygonNumberOfSide = 4;
-                    break;
-                case "5":
+            polygonNumberOfSide = Convert.ToInt32(textBox.Text.ToString());
+            if (polygonNumberOfSide < 5)
                     polygonNumberOfSide = 5;
-                    break;
-                case "6":
-                    polygonNumberOfSide = 6;
-                    break;
-                case "7":
-                    polygonNumberOfSide = 7;
-                    break;
-                case "8":
-                    polygonNumberOfSide = 8;
-                    break;
-                default:
-                    polygonNumberOfSide = 5;
-                    break;
-            }
+            else if (polygonNumberOfSide > 20)
+                polygonNumberOfSide = 20;
         }
+
         private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)//фигуры
         {
             if ((bool)Shapes.IsChecked)
@@ -311,8 +302,20 @@ namespace PaintTool
             if ((bool)Shapes.IsChecked)
             {
                 ShapeList.Visibility = Visibility.Visible;
+                NumbersSide.Visibility = Visibility.Visible;
+                //if (ShapeList.SelectedIndex == 2)
+                //if (currentShape == ShapeEnum.Polygone)
+                //{
+                //    MessageBox.Show("Hello, world!");
+                //}
+                //else NumbersSide.Visibility = Visibility.Collapsed; 
             }
-            else ShapeList.Visibility = Visibility.Collapsed;
+
+            else
+            {
+                ShapeList.Visibility = Visibility.Collapsed;
+                NumbersSide.Visibility = Visibility.Collapsed;
+            }
             AdditionalPanelToggler();
             if ((bool)BrushToggleBtn.IsChecked)
                 currentShape = ShapeEnum.Dot;
@@ -345,6 +348,7 @@ namespace PaintTool
         {
             PickedColor();
         }
+
 
         private void PickedColor()
         {

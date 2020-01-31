@@ -71,6 +71,7 @@
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="30" />
@@ -177,20 +178,20 @@
                             </Grid>
                         </ComboBoxItem>
                     </ComboBox>
-                    <Grid x:Name="SizePanel" Grid.Column="11" Margin="10,0,0,0" Visibility="Collapsed">
+                    <TextBox x:Name="NumbersSide" Grid.Column="11" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" MaxLength="2"  Text ="5" TextChanged="NumberOfSide_Changed" ToolTipService.ToolTip ="Число сторон" PreviewTextInput="NumberOfSideInput" Visibility="Collapsed"/>
+                    <Grid x:Name="SizePanel" Grid.Column="12" Margin="5,0,0,0" Visibility="Collapsed">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30"></ColumnDefinition>
+                            <ColumnDefinition Width="25"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="30"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <Slider x:Name="SizeSlider" Minimum="1" Maximum="4" Value ="1" Grid.Column ="1" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SizeSlider_ValueChanged" Foreground="White"/>
                         <!--<TextBox x:Name="SizeInput" Height="20" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="5,0,0,0" Width="20"  MaxLength="1" />-->
                     </Grid>
-                    <Grid x:Name="ColorsGrid" Grid.Column="12" Height="30" VerticalAlignment="Center" Visibility="Collapsed">
+                    <Grid x:Name="ColorsGrid" Grid.Column="13" Margin =" 5,0,0,0" Height="30" VerticalAlignment="Center" Visibility="Collapsed">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -409,19 +410,17 @@
                                 </Grid>
                             </ComboBoxItem>
                         </ComboBox>
-
                     </Grid>
-                    <Button x:Name="ClearImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Margin="5,0,0,0" Click="ClearImageBtn_Click" ToolTipService.ToolTip ="Очистить">
+                    <Button x:Name="ClearImageBtn" Grid.Column="14" BorderThickness="0,0,0,0" Margin="5,0,0,0" Click="ClearImageBtn_Click" ToolTipService.ToolTip ="Очистить">
                         <Button.Background>
                             <ImageBrush ImageSource="images\close.png" Stretch="None" />
                         </Button.Background>
                     </Button>
-                    <Button x:Name="ImportImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Click="ImportImageBtn_Click" HorizontalAlignment="Right" Width="25" Margin="0,4,-23,-4" ToolTipService.ToolTip ="Вставить файл">
+                    <Button x:Name="ImportImageBtn" Grid.Column="14" BorderThickness="0,0,0,0" Click="ImportImageBtn_Click" HorizontalAlignment="Right" Width="25" Margin="0,4,-23,-4" ToolTipService.ToolTip ="Вставить файл">
                         <Button.Background>
                             <ImageBrush ImageSource="images\import.png" Stretch="None" />
                         </Button.Background>
                     </Button>
-                    <TextBox x:Name="NumbersSide" Grid.Column="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" MaxLength="2"  TextChanged="NumberOfSide_Changed" ToolTipService.ToolTip ="Число сторон"/>
                 </Grid>
             </Border>
             <Grid x:Name="PaintGrid" VerticalAlignment="Top" Height="480" Margin="6,35,0,0" HorizontalAlignment="Left" Width="640">
