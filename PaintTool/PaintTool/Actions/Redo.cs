@@ -7,7 +7,7 @@ namespace PaintTool.Actions
 {
     public class Redo
     {
-        public Stack<WriteableBitmap> RedoStack { get; set; }
+        public static Stack<WriteableBitmap> RedoStack { get; set; }
         public WriteableBitmap ImageFromRedoStack { get; set; }
 
         public Redo()
@@ -22,7 +22,6 @@ namespace PaintTool.Actions
                 ImageFromRedoStack = RedoStack.Pop();
             }           
         }
-
         public void PutInRedoStack(WriteableBitmap instanceCopy)
         {            
             RedoStack.Push(instanceCopy);

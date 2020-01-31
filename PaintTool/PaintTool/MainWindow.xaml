@@ -79,22 +79,22 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
                     </Grid.RowDefinitions>
-                    <Button x:Name="NewFileBtn" Grid.Column="0" BorderThickness="0,0,0,0" Click="NewFile">
+                    <Button x:Name="NewFileBtn" Grid.Column="0" BorderThickness="0,0,0,0" Click="NewFile" ToolTipService.ToolTip ="Новый файл">
                         <Button.Background>
                             <ImageBrush ImageSource="images\new.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="SaveImageBtn" Grid.Column="1" BorderThickness="0,0,0,0" Click="SaveImageBtn_Click">
+                    <Button x:Name="SaveImageBtn" Grid.Column="1" BorderThickness="0,0,0,0" Click="SaveImageBtn_Click" ToolTipService.ToolTip ="Сохранить">
                         <Button.Background>
                             <ImageBrush ImageSource="images\save.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="Undo" Grid.Column="2" BorderThickness="0,0,0,0" Click="UndoButton_Click">
+                    <Button x:Name="Undo" Grid.Column="2" BorderThickness="0,0,0,0" Click="UndoButton_Click" ToolTipService.ToolTip ="Отменить">
                         <Button.Background>
                             <ImageBrush ImageSource="images\undo.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0" Click="RedoButton_Click">
+                    <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0" Click="RedoButton_Click" ToolTipService.ToolTip ="Вернуть">
                         <Button.Background>
                             <ImageBrush ImageSource="images\redo.png" Stretch="None"/>
                         </Button.Background>
@@ -102,21 +102,21 @@
                     <Rectangle Grid.Column="4" Stroke="Gray" />
                     <TextBlock Text="Tools:" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" Height="16" Width="30"></TextBlock>
                     <RadioButton Grid.Column="6" x:Name="BrushToggleBtn" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged"
-    Unchecked="CurrentToggleBtn_IsCheckedChanged">
+    Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Кисть">
                         <ContentControl Content="{StaticResource BrushImg}"/>
                     </RadioButton>
-                    <RadioButton Grid.Column="7" x:Name="EraserToggleBtn" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged">
+                    <RadioButton Grid.Column="7" x:Name="EraserToggleBtn" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Ластик">
                         <ContentControl Content="{StaticResource EraserImg}"/>
                     </RadioButton>
-                    <RadioButton Grid.Column="8" x:Name="Filling" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged">
+                    <RadioButton Grid.Column="8" x:Name="Filling" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Заливка">
                         <ContentControl Content="{StaticResource BucketImg}"/>
                     </RadioButton>
-                    <RadioButton Grid.Column="9" x:Name="Shapes" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged">
+                    <RadioButton Grid.Column="9" x:Name="Shapes" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Фигуры">
                         <ContentControl Content="{StaticResource ShapeImg}"/>
                     </RadioButton>
                     <ComboBox x:Name="ShapeList" Grid.Column="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Visibility="Collapsed" SelectionChanged="ShapeList_SelectionChanged">
                         <!--<ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>-->
-                        <ComboBoxItem x:Name="LineShape">
+                        <ComboBoxItem x:Name="LineShape" ToolTipService.ToolTip ="Линия">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -126,7 +126,7 @@
                                 <TextBlock Text="Line" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="RectangleShape">
+                        <ComboBoxItem x:Name="RectangleShape" ToolTipService.ToolTip ="Прямоугольник">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -136,7 +136,7 @@
                                 <TextBlock Text="Rectangle" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="EllipseShape">
+                        <ComboBoxItem x:Name="EllipseShape" ToolTipService.ToolTip ="Овал">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -146,7 +146,7 @@
                                 <TextBlock Text="Ellipse" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="TriangleShape">
+                        <ComboBoxItem x:Name="TriangleShape" ToolTipService.ToolTip ="Треугольник">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -156,7 +156,7 @@
                                 <TextBlock Text="Triangle" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="PolygonalShape">
+                        <ComboBoxItem x:Name="PolygonalShape" ToolTipService.ToolTip ="Многоугольник">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -166,7 +166,7 @@
                                 <TextBlock Text="Polygonal Tool" Grid.Column="1"></TextBlock>
                             </Grid>
                         </ComboBoxItem>
-                        <ComboBoxItem x:Name="BrokenLineShape">
+                        <ComboBoxItem x:Name="BrokenLineShape" ToolTipService.ToolTip ="Ломаная линия">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
@@ -411,17 +411,17 @@
                         </ComboBox>
 
                     </Grid>
-                    <Button x:Name="ClearImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Margin="5,0,0,0" Click="ClearImageBtn_Click">
+                    <Button x:Name="ClearImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Margin="5,0,0,0" Click="ClearImageBtn_Click" ToolTipService.ToolTip ="Очистить">
                         <Button.Background>
                             <ImageBrush ImageSource="images\close.png" Stretch="None" />
                         </Button.Background>
                     </Button>
-                    <Button x:Name="ImportImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Click="ImportImageBtn_Click" HorizontalAlignment="Right" Width="25" Margin="0,4,-23,-4">
+                    <Button x:Name="ImportImageBtn" Grid.Column="13" BorderThickness="0,0,0,0" Click="ImportImageBtn_Click" HorizontalAlignment="Right" Width="25" Margin="0,4,-23,-4" ToolTipService.ToolTip ="Вставить файл">
                         <Button.Background>
                             <ImageBrush ImageSource="images\import.png" Stretch="None" />
                         </Button.Background>
                     </Button>
-                    <TextBox x:Name="NumbersSide" Grid.Column="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" MaxLength="2"  TextChanged="NumberOfSide_Changed"/>
+                    <TextBox x:Name="NumbersSide" Grid.Column="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" MaxLength="2"  TextChanged="NumberOfSide_Changed" ToolTipService.ToolTip ="Число сторон"/>
                 </Grid>
             </Border>
             <Grid x:Name="PaintGrid" VerticalAlignment="Top" Height="480" Margin="6,35,0,0" HorizontalAlignment="Left" Width="640">

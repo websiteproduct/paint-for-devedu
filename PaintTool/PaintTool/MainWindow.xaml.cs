@@ -179,8 +179,8 @@ namespace PaintTool
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            newUndo.PutInUndoStack(NewImage.GetInstanceCopy());      //две строчки для динамической отрисовки
-            NewImage.Instance = (WriteableBitmap)PaintField.Source;  //две строчки для динамической отрисовки
+            newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
+            NewImage.Instance = (WriteableBitmap)PaintField.Source;  
 
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
@@ -473,11 +473,8 @@ namespace PaintTool
             if (newImage != null)
             {
                 newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
-                PaintField.Source = NewImage.Instance;
-                newUndo.ClearStack();
-                newRedo.ClearStack();
-            }
-
+                PaintField.Source = NewImage.Instance;                
+            }  
         }
 
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
@@ -572,7 +569,7 @@ namespace PaintTool
 
         #endregion
 
-        #region Кнопки для методов Undo, Redo    
+        #region Методы Undo, Redo    
 
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
@@ -583,8 +580,6 @@ namespace PaintTool
         }
         private void UndoButton_Click(object sender, RoutedEventArgs e)
         {
-            newRedo.PutInRedoStack(NewImage.GetInstanceCopy());
-            
             newUndo.UndoMethod();
             NewImage.Instance = newUndo.ImageFromUndoStack;
             PaintField.Source = NewImage.Instance;
