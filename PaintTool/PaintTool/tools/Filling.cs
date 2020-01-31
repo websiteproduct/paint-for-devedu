@@ -7,8 +7,10 @@ using System.Windows.Threading;
 
 namespace PaintTool.tools
 {
-	class Filling
+	public class Filling
 	{
+		//public int x { get; set; }
+		//public int y { get; set; }
 		struct XLine
 		{
 			public int startX;
@@ -168,7 +170,7 @@ namespace PaintTool.tools
 
 		}
 
-		private void PixelFill(MouseEventArgs e)
+		public void PixelFill(int x, int y)
 		{
 			byte[] currentColor = GetPixel(new Point(x, y));
 			Fill(x, y, currentColor);

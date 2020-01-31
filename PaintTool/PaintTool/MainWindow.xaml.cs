@@ -25,10 +25,7 @@ namespace PaintTool
     /// Interaction logic for MainWindow.xaml
     /// </summary>
 
-    public class FileDialog
-    {
-
-    }
+   
     public partial class MainWindow : Window
 
     {
@@ -78,8 +75,6 @@ namespace PaintTool
             PaintField.Source = NewImage.Instance;
             newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
             BrushToggleBtn.IsChecked = true;
-
-
             currentShape = ShapeEnum.Line;
         }
 
@@ -117,31 +112,6 @@ namespace PaintTool
         }
         #endregion
 
-
-
-        public void SetPixel(System.Drawing.Point pxl, bool altBitmap)
-        {
-
-            if ((pxl.X < width && pxl.X > 0) && (pxl.Y < height && pxl.Y > 0))
-            {
-                Int32Rect rect = new Int32Rect(
-                        Convert.ToInt32(pxl.X),
-                        Convert.ToInt32(pxl.Y),
-                        1,
-                        1);
-
-                if ((bool)EraserToggleBtn.IsChecked)
-                {
-                    wb.WritePixels(rect, new byte[] { 255, 255, 255, 255 }, 4, 0);
-                }
-                else if (altBitmap)
-                    wbCopy.WritePixels(rect, PaintColor.ColorData, 4, 0);
-                else
-                    wb.WritePixels(rect, PaintColor.ColorData, 4, 0);
-            }
-        }
-
-
         private void EndOfBrokenLine(object sender, MouseButtonEventArgs e)
         {
             drawingBrokenLine = false;
@@ -153,6 +123,7 @@ namespace PaintTool
                 createdShape.Draw();
             }
         }
+
         private void PaintField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //запоминаем координаты в момент нажатия ЛКМLineShpe
@@ -189,20 +160,6 @@ namespace PaintTool
             position.Y = (int)(e.GetPosition(PaintField).Y);
             tempBrokenLine = position;
         }
-
-        private void KeyDown_Event(object sender, KeyEventArgs e)
-        {
-            isShiftPressed = e.Key == Key.LeftShift ? true : false;
-        }
-        private void KeyUp_Event(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.LeftShift)
-            {
-                isShiftPressed = false;
-            }
-        }
-
-
         private void PaintField_MouseMove(object sender, MouseEventArgs e)
         {
             position.X = (int)e.GetPosition(PaintField).X;
@@ -267,7 +224,6 @@ namespace PaintTool
                 
             }
 
-
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
                 if (drawingBrokenLine && e.LeftButton == MouseButtonState.Pressed)
@@ -293,8 +249,6 @@ namespace PaintTool
             }
         }
 
-
-        // Тест
         private void NumberOfSide_Changed(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
@@ -321,8 +275,7 @@ namespace PaintTool
                     break;
             }
         }
-
-        private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)//фигуры
         {
             if ((bool)Shapes.IsChecked)
             {
@@ -346,13 +299,11 @@ namespace PaintTool
                 }
             }
         }
-
         private void AdditionalPanelToggler()
         {
             ColorsGrid.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)Filling.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
             SizePanel.Visibility = (bool)BrushToggleBtn.IsChecked || (bool)EraserToggleBtn.IsChecked || (bool)Shapes.IsChecked ? Visibility.Visible : Visibility.Collapsed;
         }
-
         private void CurrentToggleBtn_IsCheckedChanged(object sender, RoutedEventArgs e)
         {
             ToggleButton currentToggleBtn = (ToggleButton)sender;
@@ -366,7 +317,6 @@ namespace PaintTool
             if ((bool)BrushToggleBtn.IsChecked)
                 currentShape = ShapeEnum.Dot;
         }
-
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numberOfSize = Convert.ToInt32(SizeSlider.Value);
@@ -390,7 +340,7 @@ namespace PaintTool
                     break;
             }
         }
-
+        #region Цвета
         private void ColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PickedColor();
@@ -410,8 +360,20 @@ namespace PaintTool
 
             PaintColor.ColorData = new byte[] { clr.B, clr.G, clr.R, 255 };
         }
-
-
+        #endregion
+        #region Обраотчики кнопки LeftShift
+        private void KeyDown_Event(object sender, KeyEventArgs e)
+        {
+            isShiftPressed = e.Key == Key.LeftShift ? true : false;
+        }
+        private void KeyUp_Event(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftShift)
+            {
+                isShiftPressed = false;
+            }
+        }
+        #endregion
         #region СТИРАНИЕ ПИКСЕЛЕЙ
         private void CleaningField(object sender, RoutedEventArgs e)
         {
@@ -419,56 +381,6 @@ namespace PaintTool
         }
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-        }
-
-        // закрашиваем пиксели
-
-        private void PixelFill(MouseEventArgs e)
-        {
-            System.Drawing.Point currentPoint = new System.Drawing.Point((int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y);
-            int x = (int)e.GetPosition(PaintField).X;
-            int y = (int)e.GetPosition(PaintField).Y;
-            int xOld = x;
-            int yOld = y;
-            byte[] pixels = GetPixelArrayLength();
-            wb.CopyPixels(pixels, GetStride(), 0);
-            int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (int)currentPoint.Y * GetStride();
-            byte[] firstColor = GetPixel(new System.Drawing.Point((int)e.GetPosition(PaintField).X, (int)e.GetPosition(PaintField).Y));
-            byte[] currentColor = GetPixel(new System.Drawing.Point(x, y));
-
-
-            for (int i = y; y < PaintField.Height; i++)
-            {
-                while (currentColor.SequenceEqual(firstColor) && x > 0)
-                {
-                    currentColor = GetPixel(new System.Drawing.Point(x, i));
-                    SetPixel(new System.Drawing.Point(x, i), false);
-                    x--;
-                }
-            }
-            x = xOld + 1;
-            y = yOld;
-            currentColor = GetPixel(new System.Drawing.Point(x, y));
-            for (int i = y; y > 0; i--)
-            {
-                while (currentColor.SequenceEqual(firstColor) && x < PaintField.Width)
-                {
-                    currentColor = GetPixel(new System.Drawing.Point(x, i));
-                    SetPixel(new System.Drawing.Point(x, i), false);
-                    x++;
-                }
-            }
-
-        }
-
-        private byte[] GetPixel(System.Drawing.Point point)
-        {
-            System.Drawing.Point currentPoint = point;
-            byte[] pixels = GetPixelArrayLength();
-            wb.CopyPixels(pixels, GetStride(), 0);
-            int currentPixel = (int)currentPoint.X * GetBytesPerPixel() + (int)currentPoint.Y * GetStride();
-            byte[] color = new byte[] { pixels[currentPixel], pixels[currentPixel + 1], pixels[currentPixel + 2], 255 };
-            return color;
         }
 
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
@@ -479,7 +391,8 @@ namespace PaintTool
                 PaintField.Source = NewImage.Instance;                
             }  
         }
-
+        #endregion
+        #region Импорт\экспорт
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
@@ -563,15 +476,6 @@ namespace PaintTool
         }
 
         #endregion
-
-        #region ЭКСПЕРИМЕНТАЛЬНЫЕ, ВРЕМЕННЫЕ МЕТОДЫ И ПРОЧЕЕ
-
-
-
-
-
-        #endregion
-
         #region Методы Undo, Redo    
 
         private void RedoButton_Click(object sender, RoutedEventArgs e)
