@@ -10,13 +10,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Shape = PaintTool.figures.Shape;
+using System.Drawing;
 using PaintTool.Creators;
 using PaintTool.figures;
 using PaintTool.Strategy;
-using Shape = PaintTool.figures.Shape;
-using PaintTool.Actions;
-using System.Drawing;
 using PaintTool.Thickness;
+using PaintTool.Actions;
+using PaintTool.tools;
 
 namespace PaintTool
 {
@@ -158,10 +159,12 @@ namespace PaintTool
 
             prev.X = (int)(e.GetPosition(PaintField).X);
             prev.Y = (int)(e.GetPosition(PaintField).Y);
-
+            
             if ((bool)Filling.IsChecked)
             {
-                PixelFill(e);
+
+                tools.Filling filling = new Filling();
+                    filling.PixelFill(prev.X, prev.Y);
             }
 
 

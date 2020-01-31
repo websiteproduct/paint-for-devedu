@@ -10,7 +10,7 @@ namespace PaintTool.figures
         
         public Dot(List<System.Drawing.Point> points) : base(points)
         {  
-            if ((points[0].X < 640 && points[0].X > 0) && (points[0].Y < 480 && points[0].Y > 0)) {
+            if ((points[0].X < 640 && points[0].X >= 0) && (points[0].Y < 480 && points[0].Y >= 0)) {
                 
                 colorData = PaintColor.ColorData;
                 Int32Rect rect = new Int32Rect(

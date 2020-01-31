@@ -109,7 +109,7 @@
                         <ContentControl Content="{StaticResource EraserImg}"/>
                     </RadioButton>
                     <RadioButton Grid.Column="8" x:Name="Filling" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Заливка">
-                        <ContentControl Content="{StaticResource BucketImg}"/>
+                        <ContentControl Content="{StaticResource BucketImg}" Height="30" VerticalAlignment="Top"/>
                     </RadioButton>
                     <RadioButton Grid.Column="9" x:Name="Shapes" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Фигуры">
                         <ContentControl Content="{StaticResource ShapeImg}"/>
