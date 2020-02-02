@@ -5,6 +5,7 @@ using System.Text;
 using PaintTool.Thickness;
 using PaintTool.Creators;
 using PaintTool.figures;
+using System.Diagnostics;
 
 namespace PaintTool.Strategy
 {
@@ -24,7 +25,6 @@ namespace PaintTool.Strategy
             {
                 DrawLine(temp[i], temp2[i]);
             }
-
         }
 
 

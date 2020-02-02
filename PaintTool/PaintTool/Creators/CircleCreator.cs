@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+//using System.Windows;
+//using System.Windows.Threading;
 
 namespace PaintTool.Creators
 {
@@ -15,9 +17,9 @@ namespace PaintTool.Creators
             this.isShiftPressed = isShiftPressed;
         }
 
-        public Shape CreateShape(Point start, Point end)
+        public Shape CreateShape(System.Drawing.Point start, System.Drawing.Point end)
         {
-            List<Point> tempDots = new List<Point>();
+            List<System.Drawing.Point> tempDots = new List<System.Drawing.Point>();
             double y = Math.Abs(start.Y - end.Y);
             double x = 0;
             double delta = 1 - 2 * y;
@@ -43,10 +45,8 @@ namespace PaintTool.Creators
 
             while (y >= 0)
             {
-                tempDots.Add(new Point(Convert.ToInt32(start.X + coeff * x), start.Y + (int)y));
-                tempDots.Add(new Point(Convert.ToInt32(start.X + coeff * x), start.Y - (int)y));
-                tempDots.Add(new Point(Convert.ToInt32(start.X - coeff * x), start.Y + (int)y));
-                tempDots.Add(new Point(Convert.ToInt32(start.X - coeff * x), start.Y - (int)y));
+                double tempX = start.X + coeff * x;
+                tempDots.Add(new Point(Convert.ToInt32(tempX), start.Y + (int)y));
 
                 if ((delta < 0))
                 {
@@ -66,74 +66,18 @@ namespace PaintTool.Creators
             }
             countOfDots = tempDots.Count;
 
-            for (int i = 0; i < countOfDots; i++)
+            for (int i = countOfDots-1; i > 0; i--) 
             {
-                for (int j = 2; j > 5; j++)
-                {
-                    if ((i+2)%j==0)
-                    {
-                        tempDots.Add(tempDots[i]);
-                        tempDots.Remove(tempDots[i]);
-                    }
-                  
-                } 
-
+                tempDots.Add(new Point(tempDots[i].X, 2 * start.Y - tempDots[i].Y));
             }
-
-
-            //int radius = (int)Math.Sqrt((Math.Pow((end.X - start.X), 2)) + Math.Sqrt(Math.Pow((end.Y - start.Y), 2)));
-            //double a = Math.Sqrt(2) / 2;
-
-            //for (int i = 0; i <= (int)(a*radius); i++)
-            //{
-            //    int newY1 = (int)(start.Y - Math.Sqrt(radius * radius - i * i));
-            //    tempDots.Add(new Point(start.X + i, newY1));
-            //}
-
-            //for (int i = (int)(a * radius); i > 0; i--)
-            //{
-            //    int newX2 = (int)(start.X + Math.Sqrt(radius * radius - i * i));
-            //    tempDots.Add(new Point(newX2, start.Y - i));
-            //}
-
-            //for (int i = 0; i <= (int)(a * radius); i++)
-            //{
-            //    int newX2 = (int)(start.X + Math.Sqrt(radius * radius - i * i));
-            //    tempDots.Add(new Point(newX2, start.Y + i));
-            //}
-
-            //for (int i = (int)(a * radius); i > 0; i--)
-            //{
-            //    int newY2 = (int)(start.Y + Math.Sqrt(radius * radius - i * i));
-            //    tempDots.Add(new Point(start.X + i, newY2));
-            //}
-
-            //for (int i = 0; i < (int)(a * radius); i++)
-            //{
-            //    int newY2 = (int)(start.Y + Math.Sqrt(radius * radius - i * i));
-            //    tempDots.Add(new Point(start.X - i, newY2));
-            //}
-
-            //for (int i = (int)(a * radius); i > 0; i--)
-            //{
-            //    int newX1 = (int)(start.X + Math.Sqrt(radius * radius - i * i));
-            //    tempDots.Add(new Point(newX1, start.Y + i));
-            //}
-
-            //for (int i = 0; i < (int)(a * radius); i++)
-            //{
-            //    int newX1 = (int)(start.X + Math.Sqrt(radius * radius - i * i));
-            //    tempDots.Add(new Point(newX1, start.Y - i));
-            //}
-
-            //for (int i = (int)(a * radius); i > 0; i--)
-            //{
-            //    int newY1 = (int)(start.Y - Math.Sqrt(radius * radius - i * i));
-            //    tempDots.Add(new Point(start.X - i, newY1));
-            //}
-
-
-
+            for (int i = 0; i < countOfDots; i++) 
+            {
+                tempDots.Add(new Point(2 * start.X - tempDots[i].X, 2 * start.Y - tempDots[i].Y));
+            }
+            for (int i = countOfDots - 1; i > 0; i--) 
+            {
+                tempDots.Add(new Point(2 * start.X - tempDots[i].X, tempDots[i].Y));
+            }
 
             return new Circle(tempDots);
         }

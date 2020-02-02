@@ -19,6 +19,7 @@ using PaintTool.Strategy;
 using PaintTool.Thickness;
 using PaintTool.Actions;
 using PaintTool.tools;
+using PaintTool.FillStrategy;
 
 namespace PaintTool
 {
@@ -166,12 +167,12 @@ namespace PaintTool
             position.X = (int)e.GetPosition(PaintField).X;
             position.Y = (int)e.GetPosition(PaintField).Y;
 
-            // Метод для рисования при нажатой ЛКМ
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 if ((bool)Shapes.IsChecked)
                 {
                     PickedColor();
+                    ShapeListSelection();
                     ShapeCreator currentCreator = null;
 
                     switch (currentShape)
@@ -201,9 +202,9 @@ namespace PaintTool
 
                     Shape createdShape = currentCreator.CreateShape(prev, position);
                     createdShape.ds = new DrawByLine();
-                    DrawStrategy.thicknessStrategy = currentStrategy;
+                    createdShape.fs = new NoFillStrategy();
+                    DrawStrategy.thicknessStrategy = currentStrategy;          
                     createdShape.Draw();
-
                     PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
                     NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
                 }
@@ -259,7 +260,11 @@ namespace PaintTool
         private void NumberOfSide_Changed(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
-            polygonNumberOfSide = Convert.ToInt32(textBox.Text.ToString());
+            if (Int32.TryParse(textBox.Text, out int number))
+            {
+                polygonNumberOfSide = Convert.ToInt32(textBox.Text.ToString());
+            }
+            
             if (polygonNumberOfSide < 5)
                     polygonNumberOfSide = 5;
             else if (polygonNumberOfSide > 20)
@@ -267,6 +272,11 @@ namespace PaintTool
         }
 
         private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)//фигуры
+        {
+            ShapeListSelection();
+        }
+
+        private void ShapeListSelection()
         {
             if ((bool)Shapes.IsChecked)
             {
@@ -303,12 +313,6 @@ namespace PaintTool
             {
                 ShapeList.Visibility = Visibility.Visible;
                 NumbersSide.Visibility = Visibility.Visible;
-                //if (ShapeList.SelectedIndex == 2)
-                //if (currentShape == ShapeEnum.Polygone)
-                //{
-                //    MessageBox.Show("Hello, world!");
-                //}
-                //else NumbersSide.Visibility = Visibility.Collapsed; 
             }
 
             else
@@ -381,6 +385,7 @@ namespace PaintTool
         #region СТИРАНИЕ ПИКСЕЛЕЙ
         private void CleaningField(object sender, RoutedEventArgs e)
         {
+
             newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
         }
         private void PaintField_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -390,9 +395,9 @@ namespace PaintTool
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
         {
             if (newImage != null)
-            {
+            {        
                 newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
-                PaintField.Source = NewImage.Instance;                
+                NewImage.Instance = NewImage.Instance;
             }  
         }
         #endregion

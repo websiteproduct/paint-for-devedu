@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using PaintTool.FillStrategy;
 
 namespace PaintTool
 {
@@ -17,6 +18,7 @@ namespace PaintTool
             new DotCreator().CreateShape(prev, position);
             Shape createdShape = new LineCreator().CreateShape(prev, position);
             createdShape.ds = new DrawByLine();
+            createdShape.fs = new NoFillStrategy();
             DrawStrategy.thicknessStrategy = currentStrategy;
             createdShape.Draw();
 
