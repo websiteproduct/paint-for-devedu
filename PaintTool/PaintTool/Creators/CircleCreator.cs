@@ -30,11 +30,11 @@ namespace PaintTool.Creators
 
             if (start.Y - end.Y != 0)
             {
-                coeff = Math.Abs((start.X - end.X) / (start.Y - end.Y));
+                coeff = Math.Abs((start.X - end.X) / ((double)start.Y - end.Y));
             }
             else
             {
-                coeff = Math.Abs(start.X - end.X);
+                coeff = Math.Abs((double)start.X - end.X);
             }
 
 
