@@ -17,9 +17,9 @@ namespace PaintTool.Creators
             this.isShiftPressed = isShiftPressed;
         }
 
-        public Shape CreateShape(System.Drawing.Point start, System.Drawing.Point end)
+        public Shape CreateShape(Point start, Point end)
         {
-            List<System.Drawing.Point> tempDots = new List<System.Drawing.Point>();
+            List<Point> tempDots = new List<Point>();
             double y = Math.Abs(start.Y - end.Y);
             double x = 0;
             double delta = 1 - 2 * y;

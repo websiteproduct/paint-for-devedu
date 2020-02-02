@@ -4,22 +4,16 @@ using System.Drawing;
 using System.Text;
 using PaintTool.Thickness;
 using PaintTool.Creators;
-using PaintTool.figures;
-using System.Diagnostics;
+using PaintTool.Surface;
 
 namespace PaintTool.Strategy
 {
     public class DrawByLine : DrawStrategy
     {
-        public DrawByLine()
-        {
-            currentColor = PaintColor.ColorData;
-            thicknessStrategy = new DefaultStrategy();
-        }
         public override void Draw(Point start, Point end)
         {
-            List<Point> temp = thicknessStrategy.GetPoints(start);
-            List<Point> temp2 = thicknessStrategy.GetPoints(end);
+            List<Point> temp = SurfaceStrategy.thicknessStrategy.GetPoints(start);
+            List<Point> temp2 = SurfaceStrategy.thicknessStrategy.GetPoints(end);
 
             for (int i = 0; i < temp.Count; i++)
             {
@@ -113,7 +107,8 @@ namespace PaintTool.Strategy
             }
             for (int i = 0; i < LineDots.Count; i++)
             {
-                new DotCreator().CreateShape(LineDots[i], LineDots[i]);
+                DrawOnBitmap draw = new DrawOnBitmap();
+                draw.DrawLine(LineDots[i], LineDots[i]);
             }
 
         }

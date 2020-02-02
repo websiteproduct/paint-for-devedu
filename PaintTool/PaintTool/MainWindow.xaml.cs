@@ -20,6 +20,7 @@ using PaintTool.Thickness;
 using PaintTool.Actions;
 using PaintTool.tools;
 using PaintTool.FillStrategy;
+using PaintTool.Surface;
 
 namespace PaintTool
 {
@@ -33,7 +34,6 @@ namespace PaintTool
     {
         NewImage newImage;
         PaintColor paintColor = new PaintColor();
-        byte[] tempColor = new byte[] { 0, 0, 0, 255 };
         int numberOfSize, polygonNumberOfSide = 5;
         int width, height;
         bool isShiftPressed = false;
@@ -121,7 +121,8 @@ namespace PaintTool
             {
                 Shape createdShape = new LineCreator().CreateShape(tempBrokenLine, startBrokenLine);
                 createdShape.ds = new DrawByLine();
-                DrawStrategy.thicknessStrategy = currentStrategy;
+                createdShape.fs = new NoFillStrategy();
+                SurfaceStrategy.thicknessStrategy = currentStrategy;
                 createdShape.Draw();
             }
         }
@@ -145,7 +146,8 @@ namespace PaintTool
             {
                 Shape createdShape = new LineCreator().CreateShape(tempBrokenLine, position);
                 createdShape.ds = new DrawByLine();
-                DrawStrategy.thicknessStrategy = currentStrategy;
+                createdShape.fs = new NoFillStrategy();
+                SurfaceStrategy.thicknessStrategy = currentStrategy;
                 createdShape.Draw();
                 PaintField.Source = NewImage.Instance;
                 NewImage.Instance = NewImage.GetInstanceCopy();
@@ -203,7 +205,7 @@ namespace PaintTool
                     Shape createdShape = currentCreator.CreateShape(prev, position);
                     createdShape.ds = new DrawByLine();
                     createdShape.fs = new NoFillStrategy();
-                    DrawStrategy.thicknessStrategy = currentStrategy;          
+                    SurfaceStrategy.thicknessStrategy = currentStrategy;          
                     createdShape.Draw();
                     PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
                     NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
@@ -232,7 +234,8 @@ namespace PaintTool
                 {
                     Shape createdShape = new LineCreator().CreateShape(tempBrokenLine, position);
                     createdShape.ds = new DrawByLine();
-                    DrawStrategy.thicknessStrategy = currentStrategy;
+                    createdShape.fs = new NoFillStrategy();
+                    SurfaceStrategy.thicknessStrategy = currentStrategy;
                     createdShape.Draw();
                     PaintField.Source = NewImage.Instance;
                     NewImage.Instance = NewImage.GetInstanceCopy();
