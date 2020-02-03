@@ -403,7 +403,13 @@ namespace PaintTool
                 NewImage.Instance = NewImage.Instance;
             }  
         }
+
+        private void ExitContextBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
         #endregion
+
         #region Импорт\экспорт
         private void ImportImageBtn_Click(object sender, RoutedEventArgs e)
         {
