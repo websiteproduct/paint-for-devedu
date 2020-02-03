@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PaintTool"
         mc:Ignorable="d"
-        Title="PaintTool by Beer Coding Team" Height="450" Width="800" MinWidth="640" MinHeight="480">
+        Title="PaintTool by Beer Coding Team" Height="550" Width="960" MinWidth="640" MinHeight="480">
     <Window.Resources>
         <Image x:Key="BrushImg" Source="images\brush.png" Width="16" Height="16"/>
         <Image x:Key="EraserImg" Source="images\eraser.png" Width="16" Height="16"/>
         <Image x:Key="BucketImg" Source="images\bucket.png" Width="16" Height="16"/>
         <Image x:Key="ShapeImg" Source="images\shape.png" Width="16" Height="16"/>
-        <Style TargetType="Button">
+        <Image x:Key="FolderImg" Source="images\folder.png" Width="16" Height="16"/>
+    <Style TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -82,7 +83,6 @@
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="1" />
-                        <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="30" />
@@ -96,46 +96,46 @@
                         <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60" />
                     </Grid.RowDefinitions>
-                    <Button x:Name="NewFileBtn" Grid.Column="0" BorderThickness="0,0,0,0" Click="NewFile" ToolTipService.ToolTip ="Новый файл">
+                    <Button x:Name="NewFileBtn" Height="30" Grid.Column="0" BorderThickness="0,0,0,0" Click="NewFile" ToolTipService.ToolTip ="Новый файл">
                         <Button.Background>
                             <ImageBrush ImageSource="images\new.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="SaveImageBtn" Grid.Column="1" BorderThickness="0,0,0,0" Click="SaveImageBtn_Click" ToolTipService.ToolTip ="Сохранить">
+                    <Button x:Name="SaveImageBtn" Height="30" Grid.Column="1" BorderThickness="0,0,0,0" Click="SaveImageBtn_Click" ToolTipService.ToolTip ="Сохранить">
                         <Button.Background>
                             <ImageBrush ImageSource="images\save.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="Undo" Grid.Column="2" BorderThickness="0,0,0,0" Click="UndoButton_Click" ToolTipService.ToolTip ="Отменить">
+                    <Button x:Name="Undo" Height="30" Grid.Column="2" BorderThickness="0,0,0,0" Click="UndoButton_Click" ToolTipService.ToolTip ="Отменить">
                         <Button.Background>
                             <ImageBrush ImageSource="images\undo.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="Redo" Grid.Column="3" BorderThickness="0,0,0,0" Click="RedoButton_Click" ToolTipService.ToolTip ="Вернуть">
+                    <Button x:Name="Redo" Height="30" Grid.Column="3" BorderThickness="0,0,0,0" Click="RedoButton_Click" ToolTipService.ToolTip ="Вернуть">
                         <Button.Background>
                             <ImageBrush ImageSource="images\redo.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
                     <Rectangle Grid.Column="4" Stroke="Gray" />
-                    <TextBlock Text="Tools:" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" Height="16" Width="30"></TextBlock>
-                    <RadioButton Grid.Column="6" x:Name="BrushToggleBtn" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged"
+                    <RadioButton Grid.Column="5" Height="30" x:Name="BrushToggleBtn" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged"
     Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Кисть">
                         <ContentControl Content="{StaticResource BrushImg}"/>
                     </RadioButton>
-                    <RadioButton Grid.Column="7" x:Name="EraserToggleBtn" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Ластик">
+                    <RadioButton Grid.Column="6"  Height="30" x:Name="EraserToggleBtn" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Ластик">
                         <ContentControl Content="{StaticResource EraserImg}"/>
                     </RadioButton>
-                    <RadioButton Grid.Column="8" x:Name="Filling" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Заливка">
+                    <RadioButton Grid.Column="7" Height="30" x:Name="Filling" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" PreviewMouseDoubleClick ="CleaningField" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Заливка">
                         <ContentControl Content="{StaticResource BucketImg}" Height="30" VerticalAlignment="Top"/>
                     </RadioButton>
-                    <RadioButton Grid.Column="9" x:Name="Shapes" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Фигуры">
+                    <RadioButton Grid.Column="8" Height="30" x:Name="Shapes" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent" Checked="CurrentToggleBtn_IsCheckedChanged" Unchecked="CurrentToggleBtn_IsCheckedChanged" ToolTipService.ToolTip ="Фигуры">
                         <ContentControl Content="{StaticResource ShapeImg}"/>
                     </RadioButton>
-                    <ComboBox x:Name="ShapeList" Grid.Column="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Visibility="Collapsed" SelectionChanged="ShapeList_SelectionChanged">
+                    <ComboBox x:Name="ShapeList" Grid.Column="9" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="30" VerticalContentAlignment="Center" SelectedIndex="0" Margin="5,0,5,0" SelectionChanged="ShapeList_SelectionChanged">
                         <!--<ComboBoxItem x:Name="DefaultShape" Content="Shape"></ComboBoxItem>-->
                         <ComboBoxItem x:Name="LineShape" ToolTipService.ToolTip ="Линия">
                             <Grid>
@@ -198,20 +198,20 @@
                             </Grid>
                         </ComboBoxItem>
                     </ComboBox>
-                    <TextBox x:Name="NumbersSide" Grid.Column="11" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" MaxLength="2"  Text ="5" TextChanged="NumberOfSide_Changed" ToolTipService.ToolTip ="Число сторон" PreviewTextInput="NumberOfSideInput" Visibility="Collapsed"/>
-                    <Grid x:Name="SizePanel" Grid.Column="12" Margin="5,0,0,0" Visibility="Collapsed">
+                    <TextBox x:Name="NumbersSide" Grid.Column="10" VerticalContentAlignment="Center" Height="30"  HorizontalContentAlignment="Center" MaxLength="2" Text ="5" TextChanged="NumberOfSide_Changed" ToolTipService.ToolTip ="Число сторон" PreviewTextInput="NumberOfSideInput" />
+                    <Grid x:Name="SizePanel" Grid.Column="11" Margin="5,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="25"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition Height="60"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Column="0" Text="Size" FontWeight="Normal" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" Height="25" Text="Size" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,5,0" />
                         <Slider x:Name="SizeSlider" Minimum="1" Maximum="4" Value ="1" Grid.Column ="1" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SizeSlider_ValueChanged" Foreground="White"/>
                         <!--<TextBox x:Name="SizeInput" Height="20" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="5,0,0,0" Width="20"  MaxLength="1" />-->
                     </Grid>
-                    <Grid x:Name="ColorsGrid" Grid.Column="13" Visibility="Hidden" Margin =" 5,0,0,0" Height="30" VerticalAlignment="Center">
+                    <Grid x:Name="ColorsGrid" Grid.Column="12" Margin ="5,0,0,0" Height="30" VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -431,43 +431,39 @@
                             </ComboBoxItem>
                         </ComboBox>
                     </Grid>
-                    <Button x:Name="ClearImageBtn" Grid.Column="14" BorderThickness="0,0,0,0" Click="ClearImageBtn_Click" ToolTipService.ToolTip ="Очистить">
+                    <Button x:Name="ClearImageBtn" Height="30" Grid.Column="13" BorderThickness="0,0,0,0" Click="ClearImageBtn_Click" ToolTipService.ToolTip ="Очистить">
                         <Button.Background>
                             <ImageBrush ImageSource="images\close.png" Stretch="None" />
                         </Button.Background>
                     </Button>
-                    <Button x:Name="ImportImageBtn" Grid.Column="15" BorderThickness="0,0,0,0" Click="ImportImageBtn_Click"  Width="25" ToolTipService.ToolTip="Вставить файл">
+                    <Button x:Name="ImportImageBtn" Height="30" Grid.Column="14" BorderThickness="0,0,0,0" Click="ImportImageBtn_Click"  Width="25" ToolTipService.ToolTip="Вставить файл">
                         <Button.Background>
-                            <ImageBrush ImageSource="images\import.png" Stretch="None" />
+                            <ImageBrush ImageSource="images\folder.png" Stretch="None"/>
                         </Button.Background>
                     </Button>
-                    <Grid Grid.Column="16" VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <RadioButton Grid.Row="0" x:Name="ColorPrimary" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent">
-                            <Rectangle Width="20" Height="20" Fill="Black" />
+                    <Border Grid.Column="15" Width="50" Height="50" Background="White" BorderBrush="LightBlue" x:Name="ColorPrimaryBorder" BorderThickness="1,1,1,1">
+                        <RadioButton Style="{StaticResource {x:Type ToggleButton}}" x:Name="ColorPrimary" Checked="ShapeColorTypeChange" GroupName="ShapeColorType" VerticalAlignment="center" Margin="0, 2, 0, 0" Background="Transparent">
+                            <StackPanel Orientation="Vertical">
+                                <Border Background="LightGray" Width="20" Height="20" Margin="0,0,0,5">
+                                    <Rectangle Width="18" Height="18" Fill="Black" x:Name="ColorPrimaryRect" />
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontWeight="Medium" Text="Color 1" TextWrapping="Wrap" />
+                            </StackPanel>
                         </RadioButton>
-                        <TextBlock Grid.Row="1" HorizontalAlignment="Center" TextAlignment="Center" Text="Color 1" TextWrapping="Wrap" />
-                    </Grid>
-                    <Grid Grid.Column="17" VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <RadioButton Grid.Row="0" x:Name="ColorSecondary" Style="{StaticResource {x:Type ToggleButton}}" Background="Transparent">
-                            <Rectangle Width="20" Height="20" Fill="Black" />
+                    </Border>
+
+                    <Border Grid.Column="16" Width="50" Height="50" Background="Transparent" x:Name="ColorSecondaryBorder" BorderBrush="Transparent" BorderThickness="1,1,1,1">
+                        <RadioButton Style="{StaticResource {x:Type ToggleButton}}" x:Name="ColorSecondary" GroupName="ShapeColorType" Checked="ShapeColorTypeChange" VerticalAlignment="center" Margin="0, 2, 0, 0" Background="Transparent">
+                            <StackPanel Orientation="Vertical">
+                                <Border Background="LightGray" Width="20" Height="20" Margin="0,0,0,5">
+                                    <Rectangle Width="18" Height="18" Fill="White" x:Name="ColorSecondaryRect" />
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontWeight="Medium" Text="Color 1" TextWrapping="Wrap" />
+                            </StackPanel>
                         </RadioButton>
-                        <TextBlock Grid.Row="1" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Text="Color 2" />
-                    </Grid>
-                    <Grid Grid.Column="18" VerticalAlignment="Center">
+                    </Border>
+                    
+                    <Grid Grid.Column="17" VerticalAlignment="Center" x:Name="ColorPalette" PreviewMouseDown="SelectColor" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="30" />
                             <ColumnDefinition Width="30" />
@@ -530,6 +526,17 @@
                         <Border Grid.Row="1" Grid.Column="7" Width="25" Height="25" Background="LightGray" BorderThickness="1,1,1,1">
                             <Rectangle Width="20" Height="20" Fill="Pink" />
                         </Border>
+                    </Grid>
+                    <Grid Grid.Column="18">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
+                        <RadioButton Grid.Row="0">Fill Shape</RadioButton>
+                        <RadioButton Grid.Row="1">No Shape</RadioButton>
                     </Grid>
                 </Grid>
             </Border>

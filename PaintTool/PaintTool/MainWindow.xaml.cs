@@ -28,7 +28,7 @@ namespace PaintTool
     /// Interaction logic for MainWindow.xaml
     /// </summary>
 
-   
+
     public partial class MainWindow : Window
 
     {
@@ -77,6 +77,29 @@ namespace PaintTool
             PaintField.Source = NewImage.Instance;
             newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
             BrushToggleBtn.IsChecked = true;
+            ColorPrimary.IsChecked = true;
+
+            if ((bool)ColorPrimary.IsChecked)
+            {
+                ColorPrimaryBorder.Background = Brushes.White;
+                ColorPrimaryBorder.BorderBrush = Brushes.LightBlue;
+            }
+            else
+            {
+                ColorPrimaryBorder.Background = Brushes.Transparent;
+                ColorPrimaryBorder.BorderBrush = Brushes.Transparent;
+            }
+
+            if ((bool)ColorSecondary.IsChecked)
+            {
+                ColorSecondaryBorder.Background = Brushes.White;
+                ColorSecondaryBorder.BorderBrush = Brushes.LightBlue;
+            }
+            else
+            {
+                ColorSecondaryBorder.Background = Brushes.Transparent;
+                ColorSecondaryBorder.BorderBrush = Brushes.Transparent;
+            }
             currentShape = ShapeEnum.Line;
         }
 
@@ -133,12 +156,12 @@ namespace PaintTool
 
             prev.X = (int)(e.GetPosition(PaintField).X);
             prev.Y = (int)(e.GetPosition(PaintField).Y);
-            
+
             if ((bool)Filling.IsChecked)
             {
 
                 tools.Filling filling = new Filling();
-                    filling.PixelFill(prev.X, prev.Y);
+                filling.PixelFill(prev.X, prev.Y);
             }
 
 
@@ -158,7 +181,7 @@ namespace PaintTool
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
-            NewImage.Instance = (WriteableBitmap)PaintField.Source;  
+            NewImage.Instance = (WriteableBitmap)PaintField.Source;
 
             position.X = (int)(e.GetPosition(PaintField).X);
             position.Y = (int)(e.GetPosition(PaintField).Y);
@@ -173,7 +196,9 @@ namespace PaintTool
             {
                 if ((bool)Shapes.IsChecked)
                 {
-                    PickedColor();
+                    System.Windows.Shapes.Rectangle defaultColor = new System.Windows.Shapes.Rectangle();
+                    defaultColor.Fill = Brushes.Black;
+                    PickedColor(defaultColor);
                     ShapeListSelection();
                     ShapeCreator currentCreator = null;
 
@@ -205,7 +230,7 @@ namespace PaintTool
                     Shape createdShape = currentCreator.CreateShape(prev, position);
                     createdShape.ds = new DrawByLine();
                     createdShape.fs = new NoFillStrategy();
-                    SurfaceStrategy.thicknessStrategy = currentStrategy;          
+                    SurfaceStrategy.thicknessStrategy = currentStrategy;
                     createdShape.Draw();
                     PaintField.Source = NewImage.Instance;           //две строчки для динамической отрисовки
                     NewImage.Instance = NewImage.GetInstanceCopy();  //две строчки для динамической отрисовки
@@ -213,7 +238,9 @@ namespace PaintTool
 
                 if ((bool)BrushToggleBtn.IsChecked)
                 {
-                    PickedColor();
+                    //System.Windows.Shapes.Rectangle defaultColor = new System.Windows.Shapes.Rectangle();
+                    //defaultColor.Fill = Brushes.Black;
+                    //PickedColor(defaultColor);
                     Brush newBrush = new Brush();
                     newBrush.DrawingBrush(prev, position, currentStrategy);
                     prev = position;
@@ -222,10 +249,10 @@ namespace PaintTool
                 {
                     PaintColor.ColorData = new byte[] { 255, 255, 255, 255 };
                     Brush newBrush = new Brush();
-                    newBrush.DrawingBrush(prev, position, currentStrategy);        
+                    newBrush.DrawingBrush(prev, position, currentStrategy);
                     prev = position;
                 }
-                
+
             }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
@@ -267,9 +294,9 @@ namespace PaintTool
             {
                 polygonNumberOfSide = Convert.ToInt32(textBox.Text.ToString());
             }
-            
+
             if (polygonNumberOfSide < 5)
-                    polygonNumberOfSide = 5;
+                polygonNumberOfSide = 5;
             else if (polygonNumberOfSide > 20)
                 polygonNumberOfSide = 20;
         }
@@ -330,7 +357,7 @@ namespace PaintTool
         private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numberOfSize = Convert.ToInt32(SizeSlider.Value);
-            
+
             switch (numberOfSize)
             {
                 case 1:
@@ -353,20 +380,21 @@ namespace PaintTool
         #region Цвета
         private void ColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PickedColor();
+            //PickedColor();
         }
 
 
-        private void PickedColor()
+        private void PickedColor(System.Windows.Shapes.Rectangle rectColor)
         {
             // Метод для выбора цвета кисти в комбобоксе
             // Смотрим текстовое значение цвета в поле Fill у выбранного цвета в комбобоксе 
             // и переделываем его в RGB, а затем передаем в метод SetColor для изменения цвета
-            ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem)ColorInput.SelectedItem;
-            Grid currentSelectedComboBoxItemGrid = (Grid)currentSelectedComboBoxItem.Content;
-            System.Windows.Shapes.Rectangle colorRectangle = (System.Windows.Shapes.Rectangle)currentSelectedComboBoxItemGrid.Children[0];
+            //ComboBoxItem currentSelectedComboBoxItem = (ComboBoxItem)ColorInput.SelectedItem;
+            //Grid currentSelectedComboBoxItemGrid = (Grid)currentSelectedComboBoxItem.Content;
+            //System.Windows.Shapes.Rectangle colorRectangle = (System.Windows.Shapes.Rectangle)currentSelectedComboBoxItemGrid.Children[0];
 
-            System.Windows.Media.Color clr = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
+            //System.Windows.Media.Color clr = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorRectangle.Fill.ToString());
+            System.Windows.Media.Color clr = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(rectColor.Fill.ToString());
             // Создали новый цвет и добавили в него значение. 
 
             PaintColor.ColorData = new byte[] { clr.B, clr.G, clr.R, 255 };
@@ -398,16 +426,62 @@ namespace PaintTool
         private void ClearImageBtn_Click(object sender, RoutedEventArgs e)
         {
             if (newImage != null)
-            {        
+            {
                 newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
                 NewImage.Instance = NewImage.Instance;
-            }  
+            }
         }
 
         private void ExitContextBtn_Click(object sender, RoutedEventArgs e)
         {
             Environment.Exit(0);
         }
+
+        private void ShapeColorTypeChange(object sender, RoutedEventArgs e)
+        {
+            RadioButton chosenShapeColorType = (RadioButton)e.Source;
+
+            if ((bool)ColorPrimary.IsChecked)
+            {
+                ColorPrimaryBorder.Background = Brushes.White;
+                ColorPrimaryBorder.BorderBrush = Brushes.LightBlue;
+            }
+            else
+            {
+                ColorPrimaryBorder.Background = Brushes.Transparent;
+                ColorPrimaryBorder.BorderBrush = Brushes.Transparent;
+            }
+
+            if ((bool)ColorSecondary.IsChecked)
+            {
+                ColorSecondaryBorder.Background = Brushes.White;
+                ColorSecondaryBorder.BorderBrush = Brushes.LightBlue;
+            }
+            else
+            {
+                ColorSecondaryBorder.Background = Brushes.Transparent;
+                ColorSecondaryBorder.BorderBrush = Brushes.Transparent;
+            }
+        }
+
+        private void SelectColor(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Source.GetType() != typeof(System.Windows.Shapes.Rectangle))
+            {
+                return;
+            }
+            else
+            {
+                System.Windows.Shapes.Rectangle rect = (System.Windows.Shapes.Rectangle)e.Source;
+                if ((bool)ColorPrimary.IsChecked)
+                {
+                    ColorPrimaryRect.Fill = rect.Fill;
+                    PickedColor(rect);
+                }
+                else ColorSecondaryRect.Fill = rect.Fill;                
+            }
+        }
+
         #endregion
 
         #region Импорт\экспорт

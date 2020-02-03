@@ -8,7 +8,6 @@ namespace PaintToolTests
     [TestFixture]
     public class Tests
     {
-
         public Point GetPointByName(string name)
         {
             switch (name)
