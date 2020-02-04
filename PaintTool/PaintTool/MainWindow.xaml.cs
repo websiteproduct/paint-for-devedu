@@ -186,7 +186,10 @@ namespace PaintTool
                 NewImage.Instance = NewImage.GetInstanceCopy();
             }
 
-
+            if ((bool)BrushToggleBtn.IsChecked)
+            {
+                PickedColor(ColorPrimaryRect);
+            }
         }
         private void PaintField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
