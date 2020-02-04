@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -25,11 +26,33 @@ namespace PaintTool
             parentWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
         }
 
-        private void CreateBitmap(object sender, RoutedEventArgs e)
+        private void CreateBitmapOrCanvas(object sender, RoutedEventArgs e)
         {
-            //parentWindow.SetGridSize(Convert.ToInt32(ImageWidth.Text), Convert.ToInt32(ImageHeight.Text));
-            //parentWindow.Paint(255, 255, 255, 255);
-            //this.Close();
+            if ((bool)VectorBtn.IsChecked)
+            {
+                parentWindow.newCanvas.Visibility = Visibility.Visible;
+                parentWindow.SetGridSize(Convert.ToInt32(ImageWidth.Text), Convert.ToInt32(ImageHeight.Text));
+                parentWindow.newCanvas.Background = Brushes.Black;
+                parentWindow.PaintField.Visibility = Visibility.Collapsed;
+                this.Close();
+            }
+            if ((bool)RasterBtn.IsChecked)
+            {
+                parentWindow.PaintField.Visibility = Visibility.Visible;
+                parentWindow.SetGridSize(Convert.ToInt32(ImageWidth.Text), Convert.ToInt32(ImageHeight.Text));
+                NewImage.Instance = new WriteableBitmap((int)parentWindow.PaintGrid.Width, (int)parentWindow.PaintGrid.Height, 96, 96, PixelFormats.Bgra32, null);
+
+                parentWindow.PaintField.Source = NewImage.Instance;
+                parentWindow.newCanvas.Visibility = Visibility.Collapsed;
+
+                this.Close();
+            }
+        }
+
+        private void Btn_Checked_Changed(object sender, RoutedEventArgs e)
+        {
+            ToggleButton currentToggleBtn = (ToggleButton)sender;
+            currentToggleBtn.Background = (bool)currentToggleBtn.IsChecked ? Brushes.LightGray : Brushes.Transparent;
         }
     }
 }

@@ -35,20 +35,28 @@ namespace PaintTool
         NewImage newImage;
         PaintColor paintColor = new PaintColor();
         int numberOfSize, polygonNumberOfSide = 5;
-        int width, height;
+        static int width, height;
         bool isShiftPressed = false;
-        public int PWidth
+        public static int PWidth
         {
             get
             {
                 return width;
             }
+            set
+            {
+                width = value;
+            }
         }
-        public int PHeight
+        public static int PHeight
         {
             get
             {
                 return height;
+            }
+            set
+            {
+                height = value;
             }
         }
         // Инициализируем WriteableBitmap
@@ -116,6 +124,8 @@ namespace PaintTool
             PaintGrid.Height = height;
             PaintField.Width = width;
             PaintField.Height = height;
+            newCanvas.Width = width;
+            newCanvas.Height = height;
             PaintGrid.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
         }
 

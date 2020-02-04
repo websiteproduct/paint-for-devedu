@@ -10,7 +10,7 @@ namespace PaintTool
     {
         public void DotDrawing(System.Drawing.Point start)
         {
-            if ((start.X < 640 && start.X >= 0) && (start.Y < 480 && start.Y >= 0))
+            if ((start.X < MainWindow.PWidth && start.X >= 0) && (start.Y < MainWindow.PHeight && start.Y >= 0))
             {
                 byte[] colorData = PaintColor.ColorData;
                 Int32Rect rect = new Int32Rect(
