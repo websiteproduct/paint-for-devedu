@@ -169,6 +169,10 @@ namespace PaintTool
                 filling.PixelFill(prev.X, prev.Y);
             }
 
+            if ((bool)Shapes.IsChecked)
+            {
+                PickedColor(ColorPrimaryRect);
+            }
 
             if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
             {
@@ -204,9 +208,6 @@ namespace PaintTool
             {
                 if ((bool)Shapes.IsChecked)
                 {
-                    System.Windows.Shapes.Rectangle defaultColor = new System.Windows.Shapes.Rectangle();
-                    defaultColor.Fill = Brushes.Black;
-                    PickedColor(defaultColor);
                     ShapeListSelection();
                     ShapeCreator currentCreator = null;
 
@@ -483,7 +484,7 @@ namespace PaintTool
                     ColorPrimaryRect.Fill = rect.Fill;
                     PickedColor(rect);
                 }
-                else ColorSecondaryRect.Fill = rect.Fill;                
+                else ColorSecondaryRect.Fill = rect.Fill;
             }
         }
 
