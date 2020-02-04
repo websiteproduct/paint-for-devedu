@@ -8,6 +8,120 @@ namespace PaintToolTests
     [TestFixture]
     public class Tests
     {
+
+        // ¬¿ƒ–¿“
+        [TestCase("point1", "point2", "pointList1")]
+        [TestCase("point3", "point4", "pointList2")]
+        [TestCase("pointStartSquer1", "pointFinishSquer1", "pointListSquer1")]
+        public void CreateSquereTest(string pStartName, string pFinishName, string expectedPointsListName)
+        {
+            RectCreator rect = new RectCreator(true);
+            Point pStart = GetPointByName(pStartName);
+            Point pFinish = GetPointByName(pFinishName);
+            List<Point> expected = GetPointsListByName(expectedPointsListName);
+
+            List<Point> actual = rect.CreateShape(pStart, pFinish).FigurePoints;
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        //œ–ﬂÃŒ”√ŒÀ‹Õ» 
+        [TestCase("point5", "point6", "pointList3")]
+        [TestCase("point7", "point8", "pointList4")]
+        [TestCase("point9", "point10", "pointList5")]
+        [TestCase("point11", "point12", "pointList6")]
+        public void CreateIsoscaleRectangleTest(string pStartName, string pFinishName, string expectedPointsListName)
+        {
+            RectCreator rect = new RectCreator(false);
+            Point pStart = GetPointByName(pStartName);
+            Point pFinish = GetPointByName(pFinishName);
+            List<Point> expected = GetPointsListByName(expectedPointsListName);
+
+            List<Point> actual = rect.CreateShape(pStart, pFinish).FigurePoints;
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        //–¿¬ÕŒ¡≈ƒ–≈ÕÕ€… “–≈”√ŒÀ‹Õ» 
+        [TestCase("pointStartIsoscaleTriangle1", "pointFinishIsoscaleTriangle1", "pointListIsoscaleTriangle1")]
+        [TestCase("pointStartIsoscaleTriangle2", "pointFinishIsoscaleTriangle2", "pointListIsoscaleTriangle2")]
+        //[TestCase("point9", "point10", "pointList5")]
+        //[TestCase("point11", "point12", "pointList6")]
+        public void CreateIsoscaleTriangleTest(string pStartName, string pFinishName, string expectedPointsListName)
+        {
+            TriangleCreator tr = new TriangleCreator(false);
+            Point pStart = GetPointByName(pStartName);
+            Point pFinish = GetPointByName(pFinishName);
+            List<Point> expected = GetPointsListByName(expectedPointsListName);
+
+            List<Point> actual = tr.CreateShape(pStart, pFinish).FigurePoints;
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        //œ–ﬂÃŒ”√ŒÀ‹Õ€… “–≈”√ŒÀ‹Õ» 
+        [TestCase("pointStartRectangularTriangle1", "pointFinishRectangularTriangle1", "pointListRectangularTriangle1")]
+        [TestCase("pointStartRectangularTriangle3", "pointFinishRectangularTriangle4", "pointListRectangularTriangle2")]
+        [TestCase("pointStartRectangularTriangle5", "pointFinishRectangularTriangle6", "pointListRectangularTriangle3")]
+        [TestCase("pointStartRectangularTriangle7", "pointFinishRectangularTriangle8", "pointListRectangularTriangle4")]
+        [TestCase("pointStartRectangularTriangle9", "pointFinishRectangularTriangle10", "pointListRectangularTriangle5")]
+        [TestCase("pointStartRectangularTriangle11", "pointFinishRectangularTriangle12", "pointListRectangularTriangle6")]
+        public void CreateRectangularTriangleTest(string pStartName, string pFinishName, string expectedPointsListName)
+        {
+            TriangleCreator tr = new TriangleCreator(true);
+            Point pStart = GetPointByName(pStartName);
+            Point pFinish = GetPointByName(pFinishName);
+            List<Point> expected = GetPointsListByName(expectedPointsListName);
+
+            List<Point> actual = tr.CreateShape(pStart, pFinish).FigurePoints;
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+
+        // ÃÕŒ√Œ”√ŒÀ‹Õ» 
+        [TestCase("pointStartPolugon1", "pointFinishPolygon1", 3, "pointListPolygon1")]
+        [TestCase("pointStartPolugon2", "pointFinishPolygon2", 5, "pointListPolygon2")]
+        [TestCase("pointStartPolugon3", "pointFinishPolygon3", 8, "pointListPolygon3")]
+        public void CreatePolygonTriangleTest(string pStartName, string pFinishName, int sides, string expectedPointsListName)
+        {
+            PolygonCreator polygon = new PolygonCreator(sides);
+            Point pStart = GetPointByName(pStartName);
+            Point pFinish = GetPointByName(pFinishName);
+            List<Point> expected = GetPointsListByName(expectedPointsListName);
+
+            List<Point> actual = polygon.CreateShape(pStart, pFinish).FigurePoints;
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        // –”√
+        [TestCase("pointStartCircle1", "pointFinishCircle1", "pointListCircle1")]
+        public void CreateCircleTest(string pStartName, string pFinishName, string expectedPointsListName)
+        {
+            CircleCreator rect = new CircleCreator(true);
+            Point pStart = GetPointByName(pStartName);
+            Point pFinish = GetPointByName(pFinishName);
+            List<Point> expected = GetPointsListByName(expectedPointsListName);
+
+            List<Point> actual = rect.CreateShape(pStart, pFinish).FigurePoints;
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        //›ÀÀ»œ—
+        [TestCase("pointStartEllipce1", "pointFinishEllipce1", "pointListEllipce1")]
+        public void CreateEllipseTest(string pStartName, string pFinishName, string expectedPointsListName)
+        {
+            CircleCreator rect = new CircleCreator(false);
+            Point pStart = GetPointByName(pStartName);
+            Point pFinish = GetPointByName(pFinishName);
+            List<Point> expected = GetPointsListByName(expectedPointsListName);
+
+            List<Point> actual = rect.CreateShape(pStart, pFinish).FigurePoints;
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
         public Point GetPointByName(string name)
         {
             switch (name)
@@ -326,120 +440,6 @@ namespace PaintToolTests
                 default:
                     return new List<Point>();
             }
-        }
-
-        // ¬¿ƒ–¿“
-        [TestCase("point1", "point2", "pointList1")]
-        [TestCase("point3", "point4", "pointList2")]
-        [TestCase("pointStartSquer1", "pointFinishSquer1", "pointListSquer1")]
-        public void CreateSquereTest(string pStartName, string pFinishName, string expectedPointsListName)
-        {
-            RectCreator rect = new RectCreator(true);
-            Point pStart = GetPointByName(pStartName);
-            Point pFinish = GetPointByName(pFinishName);
-            List<Point> expected = GetPointsListByName(expectedPointsListName);
-
-            List<Point> actual = rect.CreateShape(pStart, pFinish).FigurePoints;
-
-            CollectionAssert.AreEqual(expected, actual);
-        }
-
-        //œ–ﬂÃŒ”√ŒÀ‹Õ» 
-        [TestCase("point5", "point6", "pointList3")]
-        [TestCase("point7", "point8", "pointList4")]
-        [TestCase("point9", "point10", "pointList5")]
-        [TestCase("point11", "point12", "pointList6")]
-        public void CreateIsoscaleRectangleTest(string pStartName, string pFinishName, string expectedPointsListName)
-        {
-            RectCreator rect = new RectCreator(false);
-            Point pStart = GetPointByName(pStartName);
-            Point pFinish = GetPointByName(pFinishName);
-            List<Point> expected = GetPointsListByName(expectedPointsListName);
-
-            List<Point> actual = rect.CreateShape(pStart, pFinish).FigurePoints;
-
-            CollectionAssert.AreEqual(expected, actual);
-        }
-
-        //–¿¬ÕŒ¡≈ƒ–≈ÕÕ€… “–≈”√ŒÀ‹Õ» 
-        [TestCase("pointStartIsoscaleTriangle1", "pointFinishIsoscaleTriangle1", "pointListIsoscaleTriangle1")]
-        [TestCase("pointStartIsoscaleTriangle2", "pointFinishIsoscaleTriangle2", "pointListIsoscaleTriangle2")]
-        //[TestCase("point9", "point10", "pointList5")]
-        //[TestCase("point11", "point12", "pointList6")]
-        public void CreateIsoscaleTriangleTest(string pStartName, string pFinishName, string expectedPointsListName)
-        {
-            TriangleCreator tr = new TriangleCreator(false);
-            Point pStart = GetPointByName(pStartName);
-            Point pFinish = GetPointByName(pFinishName);
-            List<Point> expected = GetPointsListByName(expectedPointsListName);
-
-            List<Point> actual = tr.CreateShape(pStart, pFinish).FigurePoints;
-
-            CollectionAssert.AreEqual(expected, actual);
-        }
-
-        //œ–ﬂÃŒ”√ŒÀ‹Õ€… “–≈”√ŒÀ‹Õ» 
-        [TestCase("pointStartRectangularTriangle1", "pointFinishRectangularTriangle1", "pointListRectangularTriangle1")]
-        [TestCase("pointStartRectangularTriangle3", "pointFinishRectangularTriangle4", "pointListRectangularTriangle2")]
-        [TestCase("pointStartRectangularTriangle5", "pointFinishRectangularTriangle6", "pointListRectangularTriangle3")]
-        [TestCase("pointStartRectangularTriangle7", "pointFinishRectangularTriangle8", "pointListRectangularTriangle4")]
-        [TestCase("pointStartRectangularTriangle9", "pointFinishRectangularTriangle10", "pointListRectangularTriangle5")]
-        [TestCase("pointStartRectangularTriangle11", "pointFinishRectangularTriangle12", "pointListRectangularTriangle6")]
-        public void CreateRectangularTriangleTest(string pStartName, string pFinishName, string expectedPointsListName)
-        {
-            TriangleCreator tr = new TriangleCreator(true);
-            Point pStart = GetPointByName(pStartName);
-            Point pFinish = GetPointByName(pFinishName);
-            List<Point> expected = GetPointsListByName(expectedPointsListName);
-
-            List<Point> actual = tr.CreateShape(pStart, pFinish).FigurePoints;
-
-            CollectionAssert.AreEqual(expected, actual);
-        }
-
-
-        // ÃÕŒ√Œ”√ŒÀ‹Õ» 
-        [TestCase("pointStartPolugon1", "pointFinishPolygon1", 3, "pointListPolygon1")]
-        [TestCase("pointStartPolugon2", "pointFinishPolygon2", 5, "pointListPolygon2")]
-        [TestCase("pointStartPolugon3", "pointFinishPolygon3", 8, "pointListPolygon3")]
-        public void CreatePolygonTriangleTest(string pStartName, string pFinishName, int sides, string expectedPointsListName)
-        {
-            PolygonCreator polygon = new PolygonCreator(sides);
-            Point pStart = GetPointByName(pStartName);
-            Point pFinish = GetPointByName(pFinishName);
-            List<Point> expected = GetPointsListByName(expectedPointsListName);
-
-            List<Point> actual = polygon.CreateShape(pStart, pFinish).FigurePoints;
-
-            CollectionAssert.AreEqual(expected, actual);
-        }
-
-        // –”√
-        [TestCase("pointStartCircle1", "pointFinishCircle1", "pointListCircle1")]
-        public void CreateCircleTest(string pStartName, string pFinishName, string expectedPointsListName)
-        {
-            CircleCreator rect = new CircleCreator(true);
-            Point pStart = GetPointByName(pStartName);
-            Point pFinish = GetPointByName(pFinishName);
-            List<Point> expected = GetPointsListByName(expectedPointsListName);
-
-            List<Point> actual = rect.CreateShape(pStart, pFinish).FigurePoints;
-
-            CollectionAssert.AreEqual(expected, actual);
-        }
-
-        //›ÀÀ»œ—
-        [TestCase("pointStartEllipce1", "pointFinishEllipce1", "pointListEllipce1")]
-        public void CreateEllipseTest(string pStartName, string pFinishName, string expectedPointsListName)
-        {
-            CircleCreator rect = new CircleCreator(false);
-            Point pStart = GetPointByName(pStartName);
-            Point pFinish = GetPointByName(pFinishName);
-            List<Point> expected = GetPointsListByName(expectedPointsListName);
-
-            List<Point> actual = rect.CreateShape(pStart, pFinish).FigurePoints;
-
-            CollectionAssert.AreEqual(expected, actual);
         }
     }
 }
