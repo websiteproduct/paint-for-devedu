@@ -6,4 +6,91 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="images\brush.png" />
+    <None Remove="images\bucket.png" />
+    <None Remove="images\close.png" />
+    <None Remove="images\cross.png" />
+    <None Remove="images\ellipse.png" />
+    <None Remove="images\eraser.png" />
+    <None Remove="images\folder.png" />
+    <None Remove="images\import.png" />
+    <None Remove="images\line.png" />
+    <None Remove="images\new.png" />
+    <None Remove="images\polygon.png" />
+    <None Remove="images\polygonal-chain.png" />
+    <None Remove="images\rectangle.png" />
+    <None Remove="images\redo.png" />
+    <None Remove="images\save.png" />
+    <None Remove="images\shape.png" />
+    <None Remove="images\triangle.png" />
+    <None Remove="images\undo.png" />
+    <None Remove="new.png" />
+    <None Remove="redo.png" />
+    <None Remove="save.png" />
+    <None Remove="undo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <COMReference Include="{215d64d2-031c-33c7-96e3-61794cd1ee61}">
+      <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <WrapperTool>tlbimp</WrapperTool>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\brush.png" />
+    <Resource Include="images\bucket.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\close.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\cross.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\ellipse.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\eraser.png" />
+    <Resource Include="images\folder.png" />
+    <Resource Include="images\line.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\new.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\polygon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\polygonal-chain.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\rectangle.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\redo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\import.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\shape.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\triangle.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\undo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
 </Project>

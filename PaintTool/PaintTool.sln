@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaintTool", "PaintTool\PaintTool.csproj", "{D70C1CE0-F0CE-4326-BEC5-3444DEDF381B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaintTool", "PaintTool\PaintTool.csproj", "{D70C1CE0-F0CE-4326-BEC5-3444DEDF381B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaintToolTests", "PaintToolTests\PaintToolTests.csproj", "{5D00E56C-C205-431D-91A7-8EC61FA023A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D70C1CE0-F0CE-4326-BEC5-3444DEDF381B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D70C1CE0-F0CE-4326-BEC5-3444DEDF381B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D70C1CE0-F0CE-4326-BEC5-3444DEDF381B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D00E56C-C205-431D-91A7-8EC61FA023A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D00E56C-C205-431D-91A7-8EC61FA023A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D00E56C-C205-431D-91A7-8EC61FA023A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D00E56C-C205-431D-91A7-8EC61FA023A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
