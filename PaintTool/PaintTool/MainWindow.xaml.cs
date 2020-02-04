@@ -24,11 +24,6 @@ using PaintTool.Surface;
 
 namespace PaintTool
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-
-
     public partial class MainWindow : Window
 
     {
@@ -60,7 +55,7 @@ namespace PaintTool
             }
         }
         // Инициализируем WriteableBitmap
-        WriteableBitmap wb, wbCopy;
+        WriteableBitmap wb;
         bool drawingBrokenLine = false;
 
         //Структуры для хранения кооординат
@@ -251,9 +246,6 @@ namespace PaintTool
 
                 if ((bool)BrushToggleBtn.IsChecked)
                 {
-                    //System.Windows.Shapes.Rectangle defaultColor = new System.Windows.Shapes.Rectangle();
-                    //defaultColor.Fill = Brushes.Black;
-                    //PickedColor(defaultColor);
                     Brush newBrush = new Brush();
                     newBrush.DrawingBrush(prev, position, currentStrategy);
                     prev = position;
@@ -596,8 +588,6 @@ namespace PaintTool
             NewImage.Instance = newUndo.ImageFromUndoStack;
             PaintField.Source = NewImage.Instance;
         }
-
-
         #endregion
     }
 }
