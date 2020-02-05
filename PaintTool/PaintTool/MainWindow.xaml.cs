@@ -493,10 +493,8 @@ namespace PaintTool
                 if ((bool)ColorSecondary.IsChecked)
                 {
                     ColorSecondaryRect.Fill = rectFill.Fill;
-                    
                     FillPickedColor(rectFill);
                 }
-                //else ColorSecondaryRect.Fill = rectBorder.Fill;
             }
         }
 
