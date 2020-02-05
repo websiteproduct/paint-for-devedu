@@ -172,6 +172,7 @@ namespace PaintTool.tools
 
 		public void PixelFill(int x, int y)
 		{
+			//byte[] currentColor = GetPixel(new Point(x, y));
 			byte[] currentColor = GetPixel(new Point(x, y));
 			Fill(x, y, currentColor);
 
@@ -215,7 +216,8 @@ namespace PaintTool.tools
 						1);
 
 				byte[] ColorData = new byte[4 * (xEnd - xStart)];
-				byte[] nColor = PaintColor.ColorData;
+				byte[] nColor = FillColor.ColorData;
+				//byte[] nColor = { 0,0,0,255};
 
 				for (int i = 0; i < 4 * (xEnd - xStart); i += 4)
 				{

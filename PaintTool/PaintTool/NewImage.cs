@@ -21,7 +21,6 @@ namespace PaintTool
             this.height = height;
             instance = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             PaintBitmap(width, height, 255, 255, 255, 255);
-
         }
 
         public int Width

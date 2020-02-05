@@ -14,6 +14,7 @@ namespace PaintTool.FillStrategy
 	{
 		public override void ShapeFill(List<System.Drawing.Point> points)
 		{
+			
 			double everageX = 0;
 			double everageY = 0;
 			int totalX = 0;
@@ -27,7 +28,7 @@ namespace PaintTool.FillStrategy
 			everageX = totalX / points.Count;
 			everageY = totalY / points.Count;
 
-			tools.Filling filling = new Filling();
+			Filling filling = new Filling();
 			filling.PixelFill((int)everageX, (int)everageY);
 
 		}
