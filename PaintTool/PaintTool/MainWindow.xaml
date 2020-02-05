@@ -539,8 +539,8 @@
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
                         </Grid.RowDefinitions>
-                        <RadioButton Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">Fill Shape</RadioButton>
-                        <RadioButton Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">No Shape</RadioButton>
+                        <RadioButton x:Name ="Fill" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,7,0,0">Fill Shape</RadioButton>
+                        <RadioButton x:Name ="NoFill" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">No Shape</RadioButton>
                     </Grid>
                 </Grid>
             </Border>

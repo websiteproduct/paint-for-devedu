@@ -213,17 +213,75 @@ namespace PaintTool.tools
                         1,
                         yEnd - yStart);
 
-                byte[] ColorData = new byte[4 * (yEnd - yStart)];
-                byte[] nColor = PaintColor.ColorData;
+		public void PixelFill(int x, int y)
+		{
+			//byte[] currentColor = GetPixel(new Point(x, y));
+			byte[] currentColor = GetPixel(new Point(x, y));
+			Fill(x, y, currentColor);
 
                 for (int i = 0; i < 4 * (yEnd - yStart); i += 4)
                 {
                     Array.Copy(nColor, 0, ColorData, i, 4);
                 }
 
-                NewImage.Instance.WritePixels(rect, ColorData, 4, 0);
-            }
-        }
+		private int GetStride()
+		{
+			return GetBytesPerPixel() * (int)Width;
+		}
+
+		private byte[] GetPixelArrayLength()
+		{
+			int stride = GetStride();
+			byte[] pixels = new byte[stride * (int)Height];
+			return pixels;
+		}
+		#endregion
+		#region SetPixelLine для X и Y
+		public void SetPixelLine(int xStart, int xEnd, int y)
+		{
+			if ((xStart < Width && xStart > 0) && (xEnd < Width && xEnd > 0) && (y < Height && y > 0))
+			{
+				Int32Rect rect = new Int32Rect(
+						xStart,
+						y,
+						xEnd - xStart,
+						1);
+
+				byte[] ColorData = new byte[4 * (xEnd - xStart)];
+				byte[] nColor = FillColor.ColorData;
+				//byte[] nColor = { 0,0,0,255};
+
+				for (int i = 0; i < 4 * (xEnd - xStart); i += 4)
+				{
+
+					Array.Copy(nColor, 0, ColorData, i, 4);
+				}
+
+				NewImage.Instance.WritePixels(rect, ColorData, 4 * (xEnd - xStart), 0);
+			}
+		}
+
+		public void SetPixelLineY(int yStart, int yEnd, int x)
+		{
+			if ((yStart < Height && yStart > 0) && (yEnd < Height && yEnd > 0) && (x < Width && x > 0))
+			{
+				Int32Rect rect = new Int32Rect(
+						x,
+						yStart,
+						1,
+						yEnd - yStart);
+
+				byte[] ColorData = new byte[4 * (yEnd - yStart)];
+				byte[] nColor = PaintColor.ColorData;
+
+				for (int i = 0; i < 4 * (yEnd - yStart); i += 4)
+				{
+					Array.Copy(nColor, 0, ColorData, i, 4);
+				}
+
+				NewImage.Instance.WritePixels(rect, ColorData, 4, 0);
+			}
+		}
         #endregion
     }
 }
