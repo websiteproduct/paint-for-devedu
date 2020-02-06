@@ -71,7 +71,7 @@ namespace PaintTool
         ShapeEnum currentShape;
         ThicknessS currentStrategy = new DefaultStrategy();
 
-        System.Windows.Shapes.Line test1;
+        System.Windows.Shapes.Line exampleVectorLine;
         System.Windows.Shapes.Rectangle fMoveBox = new System.Windows.Shapes.Rectangle();
         System.Windows.Shapes.Rectangle lMoveBox = new System.Windows.Shapes.Rectangle();
 
@@ -528,16 +528,16 @@ namespace PaintTool
         {
             if (vectorShapeChosen && e.LeftButton == MouseButtonState.Pressed)
             {
-                test1.X1 += (int)e.GetPosition(newCanvas).X - startVectorPoint.X;
-                test1.X2 += (int)e.GetPosition(newCanvas).X - startVectorPoint.X;
-                test1.Y1 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
-                test1.Y2 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
+                exampleVectorLine.X1 += (int)e.GetPosition(newCanvas).X - startVectorPoint.X;
+                exampleVectorLine.X2 += (int)e.GetPosition(newCanvas).X - startVectorPoint.X;
+                exampleVectorLine.Y1 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
+                exampleVectorLine.Y2 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
                 startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
                 startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
-                Canvas.SetLeft(fMoveBox, test1.X1 - fMoveBox.Width / 2);
-                Canvas.SetTop(fMoveBox, test1.Y1 - fMoveBox.Width / 2);
-                Canvas.SetLeft(lMoveBox, test1.X2 - lMoveBox.Width / 2);
-                Canvas.SetTop(lMoveBox, test1.Y2 - lMoveBox.Width / 2);
+                Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
+                Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
+                Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
+                Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
             }
         }
 
@@ -553,22 +553,22 @@ namespace PaintTool
 
         private void VectorLineMouseUp(object sender, MouseButtonEventArgs e)
         {
-            test1 = (System.Windows.Shapes.Line)sender;
+            exampleVectorLine = (System.Windows.Shapes.Line)sender;
             fMoveBox.Fill = Brushes.Transparent;
             fMoveBox.Stroke = Brushes.Red;
             fMoveBox.StrokeThickness = 1;
             fMoveBox.Width = 7;
             fMoveBox.Height = 7;
-            Canvas.SetLeft(fMoveBox, test1.X1 - fMoveBox.Width / 2);
-            Canvas.SetTop(fMoveBox, test1.Y1 - fMoveBox.Width / 2);
+            Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
+            Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
             lMoveBox.Fill = Brushes.Transparent;
             lMoveBox.Stroke = Brushes.Red;
             lMoveBox.StrokeThickness = 1;
             lMoveBox.Width = 7;
             lMoveBox.Height = 7;
-            Canvas.SetLeft(lMoveBox, test1.X2 - lMoveBox.Width / 2);
-            Canvas.SetTop(lMoveBox, test1.Y2 - lMoveBox.Width / 2);
-            test1.Cursor = Cursors.SizeAll;
+            Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
+            Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
+            exampleVectorLine.Cursor = Cursors.SizeAll;
             vectorShapeChosen = true;
             fMoveBox.Visibility = Visibility.Visible;
             lMoveBox.Visibility = Visibility.Visible;
