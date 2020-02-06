@@ -33,15 +33,15 @@ namespace PaintTool
                 parentWindow.newCanvas.Visibility = Visibility.Visible;
                 parentWindow.SetGridSize(Convert.ToInt32(ImageWidth.Text), Convert.ToInt32(ImageHeight.Text));
                 parentWindow.PaintField.Visibility = Visibility.Collapsed;
-                Line test = new Line();
-                test.Fill = Brushes.Black;
-                test.StrokeThickness = 2;
-                test.Stroke = Brushes.Black;
-                test.X1 = 10;
-                test.X2 = 100;
-                test.Y1 = 5;
-                test.Y2 = 5;
-                parentWindow.newCanvas.Children.Add(test);
+                //Line test = new Line();
+                //test.Fill = Brushes.Black;
+                //test.StrokeThickness = 2;
+                //test.Stroke = Brushes.Black;
+                //test.X1 = 10;
+                //test.X2 = 100;
+                //test.Y1 = 5;
+                //test.Y2 = 5;
+                //parentWindow.newCanvas.Children.Add(test);
                 this.Close();
             }
             if ((bool)RasterBtn.IsChecked)

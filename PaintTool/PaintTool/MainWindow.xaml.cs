@@ -71,16 +71,24 @@ namespace PaintTool
         ShapeEnum currentShape;
         ThicknessS currentStrategy = new DefaultStrategy();
 
+        System.Windows.Shapes.Line test1;
+        System.Windows.Shapes.Rectangle fMoveBox = new System.Windows.Shapes.Rectangle();
+        System.Windows.Shapes.Rectangle lMoveBox = new System.Windows.Shapes.Rectangle();
+
         public MainWindow()
         {
             InitializeComponent();
             width = (int)PaintGrid.Width;
             height = (int)PaintGrid.Height;
-            newImage = new NewImage(width, height);
-            PaintField.Source = NewImage.Instance;
-            newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
+            //newImage = new NewImage(width, height);
+            //PaintField.Source = NewImage.Instance;
+            newCanvas.Width = width;
+            newCanvas.Height = height;
+            //newUndo.PutInUndoStack(NewImage.GetInstanceCopy());
             BrushToggleBtn.IsChecked = true;
             ColorPrimary.IsChecked = true;
+            newCanvas.Children.Add(fMoveBox);
+            newCanvas.Children.Add(lMoveBox);
 
             if ((bool)ColorPrimary.IsChecked)
             {
@@ -513,10 +521,67 @@ namespace PaintTool
 
         }
 
-        private void zhopa(object sender, MouseButtonEventArgs e)
+        System.Drawing.Point startVectorPoint;
+        bool vectorShapeChosen = false; 
+
+        private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
-            System.Windows.Shapes.Line zhopec = (System.Windows.Shapes.Line)newCanvas.Children[0];
-            zhopec.Stroke = Brushes.Blue;
+            if (vectorShapeChosen && e.LeftButton == MouseButtonState.Pressed)
+            {
+                test1.X1 += (int)e.GetPosition(newCanvas).X - startVectorPoint.X;
+                test1.X2 += (int)e.GetPosition(newCanvas).X - startVectorPoint.X;
+                test1.Y1 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
+                test1.Y2 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
+                startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
+                startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
+                Canvas.SetLeft(fMoveBox, test1.X1 - fMoveBox.Width / 2);
+                Canvas.SetTop(fMoveBox, test1.Y1 - fMoveBox.Width / 2);
+                Canvas.SetLeft(lMoveBox, test1.X2 - lMoveBox.Width / 2);
+                Canvas.SetTop(lMoveBox, test1.Y2 - lMoveBox.Width / 2);
+            }
+        }
+
+        private void VectorLineMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //System.Windows.Shapes.Line startVectorPoint = (System.Windows.Shapes.Line)newCanvas.Children[0];
+            //startVectorPoint.Stroke = Brushes.Blue;
+            System.Windows.Shapes.Line test = (System.Windows.Shapes.Line)sender;
+            startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
+            startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
+            //Trace.WriteLine($"X: {(int)e.GetPosition(newCanvas).X}, Y: {(int)e.GetPosition(newCanvas).Y}");
+        }
+
+        private void VectorLineMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            test1 = (System.Windows.Shapes.Line)sender;
+            fMoveBox.Fill = Brushes.Transparent;
+            fMoveBox.Stroke = Brushes.Red;
+            fMoveBox.StrokeThickness = 1;
+            fMoveBox.Width = 7;
+            fMoveBox.Height = 7;
+            Canvas.SetLeft(fMoveBox, test1.X1 - fMoveBox.Width / 2);
+            Canvas.SetTop(fMoveBox, test1.Y1 - fMoveBox.Width / 2);
+            lMoveBox.Fill = Brushes.Transparent;
+            lMoveBox.Stroke = Brushes.Red;
+            lMoveBox.StrokeThickness = 1;
+            lMoveBox.Width = 7;
+            lMoveBox.Height = 7;
+            Canvas.SetLeft(lMoveBox, test1.X2 - lMoveBox.Width / 2);
+            Canvas.SetTop(lMoveBox, test1.Y2 - lMoveBox.Width / 2);
+            test1.Cursor = Cursors.SizeAll;
+            vectorShapeChosen = true;
+            fMoveBox.Visibility = Visibility.Visible;
+            lMoveBox.Visibility = Visibility.Visible;
+        }
+
+        private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (vectorShapeChosen && !(e.OriginalSource is System.Windows.Shapes.Line))
+            {
+                vectorShapeChosen = false;
+                fMoveBox.Visibility = Visibility.Hidden;
+                lMoveBox.Visibility = Visibility.Hidden;
+            }
         }
 
         private void SaveImageBtn_Click(object sender, RoutedEventArgs e)
