@@ -25,10 +25,5 @@ namespace PaintTool
             }
            
         }
-
-        //public void SetColor(byte blue, byte green, byte red, byte alpha = 255)
-        //{
-        //    colorData = new byte[] { blue, green, red, alpha };
-        //}        
     }
 }

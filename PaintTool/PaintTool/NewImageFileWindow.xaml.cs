@@ -41,6 +41,8 @@ namespace PaintTool
                 parentWindow.PaintField.Visibility = Visibility.Visible;
                 parentWindow.SetGridSize(Convert.ToInt32(ImageWidth.Text), Convert.ToInt32(ImageHeight.Text));
                 NewImage.Instance = new WriteableBitmap((int)parentWindow.PaintGrid.Width, (int)parentWindow.PaintGrid.Height, 96, 96, PixelFormats.Bgra32, null);
+                MainWindow.PWidth = Convert.ToInt32(ImageWidth.Text);
+                MainWindow.PHeight = Convert.ToInt32(ImageHeight.Text);
 
                 parentWindow.PaintField.Source = NewImage.Instance;
                 parentWindow.newCanvas.Visibility = Visibility.Collapsed;

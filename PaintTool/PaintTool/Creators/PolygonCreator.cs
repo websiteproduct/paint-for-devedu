@@ -26,7 +26,7 @@ namespace PaintTool.Creators
                 else
                     radius = Math.Abs(CenterPolygon.Y - end.Y);
 
-
+                if (end.Y == 0) end.Y = 1;
                 double z = Math.Atan(end.X / end.Y) * 180 / Math.PI;
                 int i = 0;
                 double angle = 360 / numberOfSide;

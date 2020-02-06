@@ -462,7 +462,7 @@
                                 <Border Background="LightGray" Width="20" Height="20" Margin="0,0,0,5">
                                     <Rectangle Width="18" Height="18" Fill="White" x:Name="ColorSecondaryRect" />
                                 </Border>
-                                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontWeight="Medium" Text="Color 1" TextWrapping="Wrap" />
+                                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontWeight="Medium" Text="Color 2" TextWrapping="Wrap" />
                             </StackPanel>
                         </RadioButton>
                     </Border>
@@ -539,8 +539,8 @@
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
                         </Grid.RowDefinitions>
-                        <RadioButton Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">Fill Shape</RadioButton>
-                        <RadioButton Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">No Shape</RadioButton>
+                        <RadioButton x:Name ="Fill" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,7,0,0">Fill Shape</RadioButton>
+                        <RadioButton x:Name ="NoFill" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">No Shape</RadioButton>
                     </Grid>
                 </Grid>
             </Border>
