@@ -89,6 +89,7 @@ namespace PaintTool
             ColorPrimary.IsChecked = true;
             newCanvas.Children.Add(fMoveBox);
             newCanvas.Children.Add(lMoveBox);
+            
 
             if ((bool)ColorPrimary.IsChecked)
             {
@@ -554,18 +555,19 @@ namespace PaintTool
         private void VectorLineMouseUp(object sender, MouseButtonEventArgs e)
         {
             exampleVectorLine = (System.Windows.Shapes.Line)sender;
+            int moveBoxSize = 7;
             fMoveBox.Fill = Brushes.Transparent;
-            fMoveBox.Stroke = Brushes.Red;
+            fMoveBox.Stroke = Brushes.Black;
             fMoveBox.StrokeThickness = 1;
-            fMoveBox.Width = 7;
-            fMoveBox.Height = 7;
+            fMoveBox.Width = moveBoxSize;
+            fMoveBox.Height = moveBoxSize;
             Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
             Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
             lMoveBox.Fill = Brushes.Transparent;
-            lMoveBox.Stroke = Brushes.Red;
+            lMoveBox.Stroke = Brushes.Black;
             lMoveBox.StrokeThickness = 1;
-            lMoveBox.Width = 7;
-            lMoveBox.Height = 7;
+            lMoveBox.Width = moveBoxSize;
+            lMoveBox.Height = moveBoxSize;
             Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
             Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
             exampleVectorLine.Cursor = Cursors.SizeAll;
