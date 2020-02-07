@@ -12,7 +12,7 @@ namespace PaintToolTests
         // ¬¿ƒ–¿“
         [TestCase("point1", "point2", "pointList1")]
         [TestCase("point3", "point4", "pointList2")]
-        [TestCase("pointStartSquer1", "pointFinishSquer1", "pointListSquer1")]
+        [TestCase("pointStartSquere1", "pointFinishSquere1", "pointListSquere1")]
         public void CreateSquereTest(string pStartName, string pFinishName, string expectedPointsListName)
         {
             RectCreator rect = new RectCreator(true);
@@ -30,7 +30,7 @@ namespace PaintToolTests
         [TestCase("point7", "point8", "pointList4")]
         [TestCase("point9", "point10", "pointList5")]
         [TestCase("point11", "point12", "pointList6")]
-        public void CreateIsoscaleRectangleTest(string pStartName, string pFinishName, string expectedPointsListName)
+        public void CreateRectangleTest(string pStartName, string pFinishName, string expectedPointsListName)
         {
             RectCreator rect = new RectCreator(false);
             Point pStart = GetPointByName(pStartName);
@@ -45,9 +45,7 @@ namespace PaintToolTests
         //–¿¬ÕŒ¡≈ƒ–≈ÕÕ€… “–≈”√ŒÀ‹Õ» 
         [TestCase("pointStartIsoscaleTriangle1", "pointFinishIsoscaleTriangle1", "pointListIsoscaleTriangle1")]
         [TestCase("pointStartIsoscaleTriangle2", "pointFinishIsoscaleTriangle2", "pointListIsoscaleTriangle2")]
-        //[TestCase("point9", "point10", "pointList5")]
-        //[TestCase("point11", "point12", "pointList6")]
-        public void CreateIsoscaleTriangleTest(string pStartName, string pFinishName, string expectedPointsListName)
+        public void CreateIsoscelesTriangleTest(string pStartName, string pFinishName, string expectedPointsListName)
         {
             TriangleCreator tr = new TriangleCreator(false);
             Point pStart = GetPointByName(pStartName);
@@ -59,13 +57,8 @@ namespace PaintToolTests
             CollectionAssert.AreEqual(expected, actual);
         }
 
-        //œ–ﬂÃŒ”√ŒÀ‹Õ€… “–≈”√ŒÀ‹Õ» 
-        [TestCase("pointStartRectangularTriangle1", "pointFinishRectangularTriangle1", "pointListRectangularTriangle1")]
-        [TestCase("pointStartRectangularTriangle3", "pointFinishRectangularTriangle4", "pointListRectangularTriangle2")]
-        [TestCase("pointStartRectangularTriangle5", "pointFinishRectangularTriangle6", "pointListRectangularTriangle3")]
-        [TestCase("pointStartRectangularTriangle7", "pointFinishRectangularTriangle8", "pointListRectangularTriangle4")]
-        [TestCase("pointStartRectangularTriangle9", "pointFinishRectangularTriangle10", "pointListRectangularTriangle5")]
-        [TestCase("pointStartRectangularTriangle11", "pointFinishRectangularTriangle12", "pointListRectangularTriangle6")]
+        //–¿¬ÕŒ—“Œ–ŒÕÕ»… “–≈”√ŒÀ‹Õ» 
+        [TestCase("pointStartEquilateralTriangle1", "pointFinishEquilateralTriangle1", "pointListEquilateralTriangle1")]
         public void CreateRectangularTriangleTest(string pStartName, string pFinishName, string expectedPointsListName)
         {
             TriangleCreator tr = new TriangleCreator(true);
@@ -80,10 +73,10 @@ namespace PaintToolTests
 
 
         // ÃÕŒ√Œ”√ŒÀ‹Õ» 
-        [TestCase("pointStartPolugon1", "pointFinishPolygon1", 3, "pointListPolygon1")]
-        [TestCase("pointStartPolugon2", "pointFinishPolygon2", 5, "pointListPolygon2")]
-        [TestCase("pointStartPolugon3", "pointFinishPolygon3", 8, "pointListPolygon3")]
-        public void CreatePolygonTriangleTest(string pStartName, string pFinishName, int sides, string expectedPointsListName)
+        [TestCase("pointStartPolygon1", "pointFinishPolygon1", 3, "pointListPolygon1")]
+        [TestCase("pointStartPolygon2", "pointFinishPolygon2", 5, "pointListPolygon2")]
+        [TestCase("pointStartPolygon3", "pointFinishPolygon3", 8, "pointListPolygon3")]
+        public void CreatePolygonTest(string pStartName, string pFinishName, int sides, string expectedPointsListName)
         {
             PolygonCreator polygon = new PolygonCreator(sides);
             Point pStart = GetPointByName(pStartName);
@@ -110,7 +103,7 @@ namespace PaintToolTests
         }
 
         //›ÀÀ»œ—
-        [TestCase("pointStartEllipce1", "pointFinishEllipce1", "pointListEllipce1")]
+        [TestCase("pointStartEllipse1", "pointFinishEllipse1", "pointListEllipse1")]
         public void CreateEllipseTest(string pStartName, string pFinishName, string expectedPointsListName)
         {
             CircleCreator rect = new CircleCreator(false);
@@ -122,81 +115,72 @@ namespace PaintToolTests
 
             CollectionAssert.AreEqual(expected, actual);
         }
+
+
         public Point GetPointByName(string name)
         {
             switch (name)
             {
                 case "point1":
-                    return new Point(1, 4);
+                    return new Point(1, 1);
                 case "point2":
-                    return new Point(4, 50);
+                    return new Point(50, 4);
+
                 case "point3":
-                    return new Point(-450, -100);
+                    return new Point(450, 100);
                 case "point4":
-                    return new Point(-300, 0);
+                    return new Point(300, 0);
+
                 case "point5":
                     return new Point(5, 10);
                 case "point6":
                     return new Point(10, 5);
+
                 case "point7":
                     return new Point(0, 0);
                 case "point8":
                     return new Point(0, 0);
+
                 case "point9":
                     return new Point(0, -5);
                 case "point10":
                     return new Point(-5, 0);
+
                 case "point11":
                     return new Point(800, 0);
                 case "point12":
                     return new Point(0, 800);
-                case "pointStartSquer1":
+
+                case "pointStartSquere1":
                     return new Point(20, 40);
-                case "pointFinishSquer1":
+                case "pointFinishSquere1":
                     return new Point(30, 100);
-                case "pointStartIsoscaleTriangle1":
+
+                case "pointStartIsoscelesTriangle1":
                     return new Point(10, 20);
-                case "pointFinishIsoscaleTriangle1":
+                case "pointFinishIsoscelesTriangle1":
                     return new Point(30, 10);
-                case "pointStartIsoscaleTriangle2":
+
+                case "pointStartIsoscelesTriangle2":
                     return new Point(129, 170);
-                case "pointFinishIsoscaleTriangle2":
+                case "pointFinishIsoscelesTriangle2":
                     return new Point(331, 40);
 
-                case "pointStartRectangularTriangle1":
+                case "pointStartEquilateralTriangle1":
                     return new Point(2, 3);
-                case "pointFinishRectangularTriangle1":
+                case "pointFinishEquilateralTriangle1":
                     return new Point(5, 1);
-                case "pointStartRectangularTriangle3":
-                    return new Point(0, 0);
-                case "pointFinishRectangularTriangle4":
-                    return new Point(-100, 100);
-                case "pointStartRectangularTriangle5":
-                    return new Point(0, 0);
-                case "pointFinishRectangularTriangle6":
-                    return new Point(0, 0);
-                case "pointStartRectangularTriangle7":
-                    return new Point(0, 900);
-                case "pointFinishRectangularTriangle8":
-                    return new Point(-600, 0);
-                case "pointStartRectangularTriangle9":
-                    return new Point(-230, -800);
-                case "pointFinishRectangularTriangle10":
-                    return new Point(-900, -700);
-                case "pointStartRectangularTriangle11":
-                    return new Point(-200, -200);
-                case "pointFinishRectangularTriangle12":
-                    return new Point(-200, -200);
+               
 
-                case "pointStartPolugon1":
+                case "pointStartPolygon1":
                     return new Point(500, 200);
                 case "pointFinishPolygon1":
                     return new Point(300, 100);
-                case "pointStartPolugon2":
+                case "pointStartPolygon2":
                     return new Point(50, 500);
                 case "pointFinishPolygon2":
                     return new Point(400, 400);
-                case "pointStartPolugon3":
+                case "pointStartPolygon3":
                     return new Point(300, 300);
                 case "pointFinishPolygon3":
                     return new Point(400, 400);
@@ -207,9 +191,9 @@ namespace PaintToolTests
                 case "pointFinishCircle1":
                     return new Point(3, 4);
 
-                case "pointStartEllipce1":
+                case "pointStartEllipse1":
                     return new Point(8, 3);
-                case "pointFinishEllipce1":
+                case "pointFinishEllipse1":
                     return new Point(10, 6);
 
                 default:
@@ -224,17 +208,17 @@ namespace PaintToolTests
             {
                 case "pointList1":
                     return new List<Point>() {
-                        new Point(1,4),
-                        new Point(4,4),
-                        new Point(4,7),
-                        new Point(1,7),
+                        new Point(1,1),
+                        new Point(50,1),
+                        new Point(50,50),
+                        new Point(1,50),
                     };
                 case "pointList2":
                     return new List<Point>() {
-                        new Point(-450,-100),
-                        new Point(-300,-100),
-                        new Point(-300,50),
-                        new Point(-450,50),
+                        new Point(450,100),
+                        new Point(300,100),
+                        new Point(300,-50),
+                        new Point(450,-50),
                     };
                 case "pointList3":
                     return new List<Point>() {
@@ -264,14 +248,14 @@ namespace PaintToolTests
                         new Point(0,800),
                         new Point(0,0),
                     };
-                case "pointListSquer1":
+                case "pointListSquere1":
                     return new List<Point>() {
                         new Point(20,40),
                         new Point(30,40),
                         new Point(30,50),
                         new Point(20,50),
                     };
-                case "pointListIsoscaleTriangle1":
+                case "pointListIsoscelesTriangle1":
                     return new List<Point>() {
                         new Point(10,20),
                         new Point(30,10),
@@ -280,7 +264,7 @@ namespace PaintToolTests
                         new Point(10,10),
                         new Point(30,10),
                     };
-                case "pointListIsoscaleTriangle2":
+                case "pointListIsoscelesTriangle2":
                     return new List<Point>() {
                         new Point(129,170),
                         new Point(331,40),
@@ -291,59 +275,12 @@ namespace PaintToolTests
                     };
 
 
-                case "pointListRectangularTriangle1":
+                case "pointListEquilateralTriangle1":
                     return new List<Point>() {
                         new Point(2,3),
-                        new Point(5,1),
-                        new Point(2,3),
-                        new Point(-1,1),
-                        new Point(-1,1),
-                        new Point(5,1),
-                    };
-                case "pointListRectangularTriangle2":
-                    return new List<Point>() {
-                        new Point(0,0),
-                        new Point(-100,100),
-                        new Point(0,0),
-                        new Point(100,100),
-                        new Point(100,100),
-                        new Point(-100,100),
-                    };
-                case "pointListRectangularTriangle3":
-                    return new List<Point>() {
-                        new Point(0,0),
-                        new Point(0,0),
-                        new Point(0,0),
-                        new Point(0,0),
-                        new Point(0,0),
-                        new Point(0,0),
-                    };
-                case "pointListRectangularTriangle4":
-                    return new List<Point>() {
-                        new Point(0,900),
-                        new Point(-600,0),
-                        new Point(0,900),
-                        new Point(600,0),
-                        new Point(600,0),
-                        new Point(-600,0),
-                    };
-                case "pointListRectangularTriangle5":
-                    return new List<Point>() {
-                        new Point(-230,-800),
-                        new Point(-900,-700),
-                        new Point(-230,-800),
-                        new Point(440,-700),
-                        new Point(440,-700),
-                        new Point(-900,-700),
-                    };
-                case "pointListRectangularTriangle6":
-                    return new List<Point>() {
-                        new Point(-200,-200),
-                        new Point(-200,-200),
-                        new Point(-200,-200),
-                        new Point(-200,-200),
-                        new Point(-200,-200),
-                        new Point(-200,-200),
+                        new Point(3,1),
+                        new Point(5,3),
+                    
                     };
                 case "pointListPolygon1":
                     return new List<Point>() {
@@ -411,7 +348,7 @@ namespace PaintToolTests
 
                     };
 
-                case "pointListEllipce1":
+                case "pointListEllipse1":
                     return new List<Point>() {
                         new Point(8,0),
                         new Point(9,0),
