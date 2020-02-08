@@ -547,7 +547,7 @@
             <Grid x:Name="PaintGrid" VerticalAlignment="Top" Height="480" Margin="6,90,0,0" HorizontalAlignment="Left" Width="640" Grid.ColumnSpan="2">
                 <Image Grid.Row="0" Grid.Column="0" x:Name="PaintField" MouseLeftButtonDown="PaintField_MouseLeftButtonDown" MouseMove="PaintField_MouseMove" MouseLeftButtonUp="PaintField_MouseLeftButtonUp" Cursor="Cross" Margin="0,0,0,0">
                 </Image>
-                <Canvas Grid.Row="0" Grid.Column="0" x:Name="newCanvas" Background="White"  Cursor="" Margin="0,0,0,0" MouseLeftButtonDown="CanvasMouseDown" MouseMove="CanvasMouseMove">
+                <Canvas Grid.Row="0" Grid.Column="0" x:Name="newCanvas" Background="White"  Cursor="" Margin="0,0,0,0" MouseLeftButtonDown="CanvasMouseDown" MouseMove="CanvasMouseMove" MouseLeftButtonUp="newCanvas_MouseLeftButtonUp" MouseRightButtonDown="newCanvas_MouseRightButtonDown" MouseRightButtonUp="newCanvas_MouseRightButtonUp">
                     <Line X1="50" X2="150" Y1="50" Y2="100" StrokeThickness="3" Cursor="Arrow" Stroke="Black" MouseLeftButtonDown="VectorLineMouseDown" MouseLeftButtonUp="VectorLineMouseUp" />
                 </Canvas>
             </Grid>

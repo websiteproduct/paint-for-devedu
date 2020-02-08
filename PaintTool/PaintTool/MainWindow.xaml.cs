@@ -21,6 +21,7 @@ using PaintTool.Actions;
 using PaintTool.tools;
 using PaintTool.FillStrategy;
 using PaintTool.Surface;
+using Point = System.Windows.Point;
 
 namespace PaintTool
 {
@@ -522,23 +523,112 @@ namespace PaintTool
 
         }
 
-        System.Drawing.Point startVectorPoint;
-        bool vectorShapeChosen = false; 
+        System.Windows.Point startVectorPoint;
+        System.Windows.Point endVectorPoint;
+        bool vectorShapeChosen = false;
+        Nullable<Point> startDrag;
 
         private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
-            if (vectorShapeChosen && e.LeftButton == MouseButtonState.Pressed)
+            endVectorPoint.X = (int)e.GetPosition(newCanvas).X;
+            endVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                exampleVectorLine.X1 += (int)e.GetPosition(newCanvas).X - startVectorPoint.X;
-                exampleVectorLine.X2 += (int)e.GetPosition(newCanvas).X - startVectorPoint.X;
-                exampleVectorLine.Y1 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
-                exampleVectorLine.Y2 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
-                startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
-                startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
-                Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
-                Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
-                Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
-                Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
+                //var line = newCanvas.Children; /*+= e.GetPosition(newCanvas).X - startVectorPoint.X;*/
+
+                //exampleVectorLine.X2 += (int)e.GetPosition(newCanvas).X - endVectorPoint.X;
+                //exampleVectorLine.Y1 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
+                //exampleVectorLine.Y2 += (int)e.GetPosition(newCanvas).Y - endVectorPoint.Y;
+                //startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
+                //startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
+                //Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
+                //Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
+                //Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
+                //Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
+
+                //if(startDrag != null && e.RightButton == MouseButtonState.Pressed)
+                //{
+                //    var element = (UIElement)sender;
+                //    var p2 = e.GetPosition(newCanvas);
+                //    Canvas.SetLeft(element, p2.X - startDrag.Value.X);
+                //    Canvas.SetTop(element, p2.Y - startDrag.Value.Y);
+                //}
+                    
+
+                if ((bool)Shapes.IsChecked)
+                {
+                    ShapeListSelection();
+                    VectorShapeCreator currentCreator = null;
+
+                    switch (currentShape)
+                    {
+                        case ShapeEnum.Circle:
+                            currentCreator = new VectorCircleCreator();
+                            break;
+                        case ShapeEnum.Line:
+                            currentCreator = new VectorLineCreator();
+                            break;
+                        case ShapeEnum.Rect:
+                            currentCreator = new VectorRectangleCreator();
+                            break;
+                        case ShapeEnum.Triangle:
+                            currentCreator = new VectorTriangleCreator();
+                            break;
+                        case ShapeEnum.Polygone:
+                            currentCreator = new VectorPolygonCreator();
+                            break;
+                        default:
+                            currentCreator = new VectorLineCreator();
+                            break;
+                    }
+
+                    VectorShapeCreator newLine = currentCreator;
+                    var res = newLine.NewVectorShape(startVectorPoint, endVectorPoint);
+                    newCanvas.Children.Add(res);
+
+                }
+
+                //if ((bool)BrushToggleBtn.IsChecked)
+                //{
+                //    Brush newBrush = new Brush();
+                //    newBrush.DrawingBrush(prev, position, currentStrategy);
+                //    prev = position;
+                //}
+                //if ((bool)EraserToggleBtn.IsChecked)
+                //{
+                //    PaintColor.ColorData = new byte[] { 255, 255, 255, 255 };
+                //    Brush newBrush = new Brush();
+                //    newBrush.DrawingBrush(prev, position, currentStrategy);
+                //    prev = position;
+                //}
+
+            }
+
+            if ((bool)Shapes.IsChecked && ShapeList.SelectedItem == BrokenLineShape)
+            {
+                if (drawingBrokenLine && e.LeftButton == MouseButtonState.Pressed)
+                {
+                    Shape createdShape = new LineCreator().CreateShape(tempBrokenLine, position);
+                    createdShape.ds = new DrawByLine();
+                    createdShape.fs = new NoFillStrategy();
+                    SurfaceStrategy.thicknessStrategy = currentStrategy;
+                    createdShape.Draw();
+                    PaintField.Source = NewImage.Instance;
+                    NewImage.Instance = NewImage.GetInstanceCopy();
+                }
+
+                if (drawingBrokenLine == false)
+                {
+                    startBrokenLine = tempBrokenLine = position;
+                }
+
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    drawingBrokenLine = true;
+                }
+
+
+
             }
         }
 
@@ -546,44 +636,82 @@ namespace PaintTool
         {
             //System.Windows.Shapes.Line startVectorPoint = (System.Windows.Shapes.Line)newCanvas.Children[0];
             //startVectorPoint.Stroke = Brushes.Blue;
-            System.Windows.Shapes.Line test = (System.Windows.Shapes.Line)sender;
-            startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
-            startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
+            //System.Windows.Shapes.Line test = (System.Windows.Shapes.Line)sender;
+            //startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
+            //startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
+            
             //Trace.WriteLine($"X: {(int)e.GetPosition(newCanvas).X}, Y: {(int)e.GetPosition(newCanvas).Y}");
         }
 
         private void VectorLineMouseUp(object sender, MouseButtonEventArgs e)
         {
-            exampleVectorLine = (System.Windows.Shapes.Line)sender;
-            int moveBoxSize = 7;
-            fMoveBox.Fill = Brushes.Transparent;
-            fMoveBox.Stroke = Brushes.Black;
-            fMoveBox.StrokeThickness = 1;
-            fMoveBox.Width = moveBoxSize;
-            fMoveBox.Height = moveBoxSize;
-            Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
-            Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
-            lMoveBox.Fill = Brushes.Transparent;
-            lMoveBox.Stroke = Brushes.Black;
-            lMoveBox.StrokeThickness = 1;
-            lMoveBox.Width = moveBoxSize;
-            lMoveBox.Height = moveBoxSize;
-            Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
-            Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
-            exampleVectorLine.Cursor = Cursors.SizeAll;
-            vectorShapeChosen = true;
-            fMoveBox.Visibility = Visibility.Visible;
-            lMoveBox.Visibility = Visibility.Visible;
+            //exampleVectorLine = (System.Windows.Shapes.Line)sender;
+            //int moveBoxSize = 7;
+
+            //fMoveBox.Fill = Brushes.Transparent;
+            //fMoveBox.Stroke = Brushes.Black;
+            //fMoveBox.StrokeThickness = 1;
+            //fMoveBox.Width = moveBoxSize;
+            //fMoveBox.Height = moveBoxSize;
+
+            //Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
+            //Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
+
+            //lMoveBox.Fill = Brushes.Transparent;
+            //lMoveBox.Stroke = Brushes.Black;
+            //lMoveBox.StrokeThickness = 1;
+            //lMoveBox.Width = moveBoxSize;
+            //lMoveBox.Height = moveBoxSize;
+
+            //Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
+            //Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
+
+            //exampleVectorLine.Cursor = Cursors.SizeAll;
+            //vectorShapeChosen = true;
+            //fMoveBox.Visibility = Visibility.Visible;
+            //lMoveBox.Visibility = Visibility.Visible;
         }
 
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (vectorShapeChosen && !(e.OriginalSource is System.Windows.Shapes.Line))
-            {
-                vectorShapeChosen = false;
-                fMoveBox.Visibility = Visibility.Hidden;
-                lMoveBox.Visibility = Visibility.Hidden;
-            }
+            startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
+            startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
+            //if (vectorShapeChosen && !(e.OriginalSource is System.Windows.Shapes.Line))
+            //{
+            //    vectorShapeChosen = false;
+            //    fMoveBox.Visibility = Visibility.Hidden;
+            //    lMoveBox.Visibility = Visibility.Hidden;
+            //}
+        }
+
+        private void newCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            //endVectorPoint.X = (int)e.GetPosition(newCanvas).X;
+            //endVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
+            
+            //VectorShapeCreator newLine = new VectorRectangleCreator();
+            //var res = newLine.NewVectorShape(startVectorPoint, endVectorPoint);
+            //newCanvas.Children.Add(res);
+        }
+
+        private void newCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var element = (UIElement)sender;
+            startDrag = e.GetPosition(element);
+            element.CaptureMouse();
+            //if (vectorShapeChosen && !(e.OriginalSource is System.Windows.Shapes.Line))
+            //{
+            //    vectorShapeChosen = false;
+            //    fMoveBox.Visibility = Visibility.Hidden;
+            //    lMoveBox.Visibility = Visibility.Hidden;
+            //}
+        }
+
+        private void newCanvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var element = (UIElement)sender;
+            startDrag = null;
+            element.ReleaseMouseCapture();
         }
 
         private void SaveImageBtn_Click(object sender, RoutedEventArgs e)
