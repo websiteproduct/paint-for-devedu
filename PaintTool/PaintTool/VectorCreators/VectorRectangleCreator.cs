@@ -12,7 +12,7 @@ namespace PaintTool.Creators
         {
             Rectangle rect = new System.Windows.Shapes.Rectangle();
             rect.Stroke = System.Windows.Media.Brushes.Black;
-            rect.Fill = System.Windows.Media.Brushes.SkyBlue;
+            rect.StrokeThickness = 3;
             rect.HorizontalAlignment = HorizontalAlignment.Right;
             rect.VerticalAlignment = VerticalAlignment.Center;
             rect.Height = Math.Abs(end.Y - start.Y);

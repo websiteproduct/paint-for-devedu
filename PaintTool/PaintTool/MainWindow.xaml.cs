@@ -22,6 +22,8 @@ using PaintTool.tools;
 using PaintTool.FillStrategy;
 using PaintTool.Surface;
 using Point = System.Windows.Point;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace PaintTool
 {
@@ -519,14 +521,13 @@ namespace PaintTool
                 string filename = dlg.FileName;
                 LoadDrawing(filename);
             }
-
-
         }
 
         System.Windows.Point startVectorPoint;
         System.Windows.Point endVectorPoint;
         bool vectorShapeChosen = false;
         Nullable<Point> startDrag;
+        VectorShapeCreator currentCreator = null;
 
         private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
@@ -546,20 +547,19 @@ namespace PaintTool
                 //Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
                 //Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
 
-                //if(startDrag != null && e.RightButton == MouseButtonState.Pressed)
-                //{
-                //    var element = (UIElement)sender;
-                //    var p2 = e.GetPosition(newCanvas);
-                //    Canvas.SetLeft(element, p2.X - startDrag.Value.X);
-                //    Canvas.SetTop(element, p2.Y - startDrag.Value.Y);
-                //}
-                    
+                if (startDrag != null && e.RightButton == MouseButtonState.Pressed)
+                {
+                    var element = (UIElement)sender;
+                    var p2 = e.GetPosition(newCanvas);
+                    Canvas.SetLeft(element, p2.X - startDrag.Value.X);
+                    Canvas.SetTop(element, p2.Y - startDrag.Value.Y);
+                }
+
 
                 if ((bool)Shapes.IsChecked)
                 {
                     ShapeListSelection();
-                    VectorShapeCreator currentCreator = null;
-
+                    
                     switch (currentShape)
                     {
                         case ShapeEnum.Circle:
@@ -582,9 +582,10 @@ namespace PaintTool
                             break;
                     }
 
-                    VectorShapeCreator newLine = currentCreator;
-                    var res = newLine.NewVectorShape(startVectorPoint, endVectorPoint);
+                    VectorShapeCreator newShape = currentCreator;
+                    var res = newShape.NewVectorShape(startVectorPoint, endVectorPoint);
                     newCanvas.Children.Add(res);
+                    newCanvas.Children.RemoveAt(newCanvas.Children.Count- 2);
 
                 }
 
@@ -645,44 +646,73 @@ namespace PaintTool
 
         private void VectorLineMouseUp(object sender, MouseButtonEventArgs e)
         {
-            //exampleVectorLine = (System.Windows.Shapes.Line)sender;
-            //int moveBoxSize = 7;
+            exampleVectorLine = (System.Windows.Shapes.Line)sender;
+            int moveBoxSize = 7;
 
-            //fMoveBox.Fill = Brushes.Transparent;
-            //fMoveBox.Stroke = Brushes.Black;
-            //fMoveBox.StrokeThickness = 1;
-            //fMoveBox.Width = moveBoxSize;
-            //fMoveBox.Height = moveBoxSize;
+            fMoveBox.Fill = Brushes.Transparent;
+            fMoveBox.Stroke = Brushes.Black;
+            fMoveBox.StrokeThickness = 1;
+            fMoveBox.Width = moveBoxSize;
+            fMoveBox.Height = moveBoxSize;
 
-            //Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
-            //Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
+            Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
+            Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
 
-            //lMoveBox.Fill = Brushes.Transparent;
-            //lMoveBox.Stroke = Brushes.Black;
-            //lMoveBox.StrokeThickness = 1;
-            //lMoveBox.Width = moveBoxSize;
-            //lMoveBox.Height = moveBoxSize;
+            lMoveBox.Fill = Brushes.Transparent;
+            lMoveBox.Stroke = Brushes.Black;
+            lMoveBox.StrokeThickness = 1;
+            lMoveBox.Width = moveBoxSize;
+            lMoveBox.Height = moveBoxSize;
 
-            //Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
-            //Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
+            Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
+            Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
 
-            //exampleVectorLine.Cursor = Cursors.SizeAll;
-            //vectorShapeChosen = true;
-            //fMoveBox.Visibility = Visibility.Visible;
-            //lMoveBox.Visibility = Visibility.Visible;
+            exampleVectorLine.Cursor = Cursors.SizeAll;
+            vectorShapeChosen = true;
+            fMoveBox.Visibility = Visibility.Visible;
+            lMoveBox.Visibility = Visibility.Visible;
         }
 
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
             startVectorPoint.X = (int)e.GetPosition(newCanvas).X;
             startVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
-            //if (vectorShapeChosen && !(e.OriginalSource is System.Windows.Shapes.Line))
-            //{
-            //    vectorShapeChosen = false;
-            //    fMoveBox.Visibility = Visibility.Hidden;
-            //    lMoveBox.Visibility = Visibility.Hidden;
-            //}
-        }
+
+            if ((bool)Shapes.IsChecked)
+            {
+                ShapeListSelection();
+                switch (currentShape)
+                {
+                    case ShapeEnum.Circle:
+                        currentCreator = new VectorCircleCreator();
+                        break;
+                    case ShapeEnum.Line:
+                        currentCreator = new VectorLineCreator();
+                        break;
+                    case ShapeEnum.Rect:
+                        currentCreator = new VectorRectangleCreator();
+                        break;
+                    case ShapeEnum.Triangle:
+                        currentCreator = new VectorTriangleCreator();
+                        break;
+                    case ShapeEnum.Polygone:
+                        currentCreator = new VectorPolygonCreator();
+                        break;
+                    default:
+                        currentCreator = new VectorLineCreator();
+                        break;
+                }
+                VectorShapeCreator newShape = currentCreator;
+                var res = newShape.NewVectorShape(startVectorPoint, endVectorPoint);
+                newCanvas.Children.Add(res);
+            }
+                //if (vectorShapeChosen && !(e.OriginalSource is System.Windows.Shapes.Line))
+                //{
+                //    vectorShapeChosen = false;
+                //    fMoveBox.Visibility = Visibility.Hidden;
+                //    lMoveBox.Visibility = Visibility.Hidden;
+                //}
+            }
 
         private void newCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -773,10 +803,104 @@ namespace PaintTool
 
         }
 
-        #endregion
-        #region Методы Undo, Redo    
+        [Serializable()]
+        public class Segment
+        {
+            public double X1, Y1, X2, Y2;
+            public Segment()
+            {
+            }
+            public Segment(double x1, double y1, double x2, double y2)
+            {
+                X1 = x1;
+                Y1 = y1;
+                X2 = x2;
+                Y2 = y2;
+            }
+        }
+        public void SaveCanvas(object sender, RoutedEventArgs e)
+        {
+            // Get the name of the file where we should save the segments.
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.DefaultExt = ".xml";
+            dlg.Filter = "XML (*.xml)|*.xml|All Files (*.*)|*.*";
+            Nullable<bool> result = dlg.ShowDialog();
+            if (result.Value != true) return;
 
-        private void RedoButton_Click(object sender, RoutedEventArgs e)
+            // Make a list of segments.
+            List<Segment> segments = new List<Segment>();
+            foreach (object obj in newCanvas.Children)
+            {
+                if (obj is System.Windows.Shapes.Line)
+                {
+                    System.Windows.Shapes.Line line = (System.Windows.Shapes.Line)obj;
+                    segments.Add(new Segment(line.X1, line.Y1, line.X2, line.Y2));
+                }
+                //else if (obj is System.Windows.Shapes.Rectangle)
+                //{
+                //    System.Windows.Shapes.Rectangle line = (System.Windows.Shapes.Rectangle)obj;
+                //    segments.Add(new Segment(line, line.Y1, line.X2, line.Y2));
+                //}
+            }
+
+            // Make the XmlSerializer.
+            XmlSerializer serializer =
+                new XmlSerializer(typeof(List<Segment>));
+            using (FileStream stream = File.Create(dlg.FileName))
+            {
+                serializer.Serialize(stream, segments);
+            }
+        }
+
+        private void ClearCanvas()
+        {
+            // Remove existing segments.
+            for (int i = newCanvas.Children.Count - 1; i >= 0; i--)
+            {
+                if (newCanvas.Children[i] is System.Windows.Shapes.Line)
+                    newCanvas.Children.RemoveAt(i);
+            }
+        }
+
+        private void OpenCanvas(object sender, RoutedEventArgs e)
+        {
+            // Get the name of the file where we should save the segments.
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.DefaultExt = ".xml";
+            dlg.Filter = "XML (*.xml)|*.xml|All Files (*.*)|*.*";
+            Nullable<bool> result = dlg.ShowDialog();
+            if (result.Value != true) return;
+
+            // Remove existing segments.
+            ClearCanvas();
+
+            // Make the XmlSerializer.
+            XmlSerializer serializer =
+                new XmlSerializer(typeof(List<Segment>));
+            using (FileStream stream =
+                File.Open(dlg.FileName, FileMode.Open))
+            {
+                List<Segment> segments =
+                    (List<Segment>)serializer.Deserialize(stream);
+
+                // Add the loaded segments.
+                foreach (Segment segment in segments)
+                {
+                    System.Windows.Shapes.Line new_line = new System.Windows.Shapes.Line();
+                    new_line.X1 = segment.X1;
+                    new_line.Y1 = segment.Y1;
+                    new_line.X2 = segment.X2;
+                    new_line.Y2 = segment.Y2;
+                    new_line.Stroke = Brushes.Black;
+                    newCanvas.Children.Add(new_line);
+                }
+            }
+        }
+
+            #endregion
+            #region Методы Undo, Redo    
+
+            private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
             newRedo.RedoMethod();
             NewImage.Instance = newRedo.ImageFromRedoStack;

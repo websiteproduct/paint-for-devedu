@@ -67,6 +67,8 @@
                     <MenuItem Header="New file" />
                     <MenuItem Header="Open file" />
                     <MenuItem Header="Save As" />
+                    <MenuItem Header="Save As Canvas" Click="SaveCanvas"/>
+                    <MenuItem Header="Open As Canvas" Click="OpenCanvas"/>
                     <MenuItem Header="Exit" Click="ExitContextBtn_Click" />
                 </MenuItem>
                 <MenuItem Header="Edit">
