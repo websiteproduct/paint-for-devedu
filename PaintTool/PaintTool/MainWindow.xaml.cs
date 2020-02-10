@@ -805,15 +805,19 @@ namespace PaintTool
         public class Segment
         {
             public double X1, Y1, X2, Y2;
+            public double thicknessOfLine;
+            public System.Windows.Media.Brush colorOfLine;
             public Segment()
             {
             }
-            public Segment(double x1, double y1, double x2, double y2)
+            public Segment(double x1, double y1, double x2, double y2, double thickness, System.Windows.Media.Brush color)
             {
                 X1 = x1;
                 Y1 = y1;
                 X2 = x2;
                 Y2 = y2;
+                colorOfLine = color;
+                thicknessOfLine = thickness;
             }
 
         }
@@ -833,13 +837,8 @@ namespace PaintTool
                 if (obj is System.Windows.Shapes.Line)
                 {
                     System.Windows.Shapes.Line line = (System.Windows.Shapes.Line)obj;
-                    segments.Add(new Segment(line.X1, line.Y1, line.X2, line.Y2));
+                    segments.Add(new Segment(line.X1, line.Y1, line.X2, line.Y2, line.StrokeThickness, line.Stroke));
                 }
-                //else if (obj is System.Windows.Shapes.Rectangle)
-                //{
-                //    System.Windows.Shapes.Rectangle line = (System.Windows.Shapes.Rectangle)obj;
-                //    segments.Add(new Segment(line, line.Y1, line.X2, line.Y2));
-                //}
             }
 
             // Make the XmlSerializer.
@@ -861,17 +860,14 @@ namespace PaintTool
 
         private void OpenCanvas(object sender, RoutedEventArgs e)
         {
-            // Get the name of the file where we should save the segments.
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.DefaultExt = ".xml";
             dlg.Filter = "XML (*.xml)|*.xml|All Files (*.*)|*.*";
             Nullable<bool> result = dlg.ShowDialog();
             if (result.Value != true) return;
 
-            // Remove existing segments.
             ClearCanvas();
 
-            // Make the XmlSerializer.
             XmlSerializer serializer =
                 new XmlSerializer(typeof(List<Segment>));
             using (FileStream stream =
@@ -880,7 +876,6 @@ namespace PaintTool
                 List<Segment> segments =
                     (List<Segment>)serializer.Deserialize(stream);
 
-                // Add the loaded segments.
                 foreach (Segment segment in segments)
                 {
                     System.Windows.Shapes.Line new_line = new System.Windows.Shapes.Line();
@@ -888,7 +883,10 @@ namespace PaintTool
                     new_line.Y1 = segment.Y1;
                     new_line.X2 = segment.X2;
                     new_line.Y2 = segment.Y2;
+                    new_line.StrokeThickness = segment.thicknessOfLine;
+                    //new_line.Stroke = segment.colorOfLine;
                     new_line.Stroke = Brushes.Black;
+
                     newCanvas.Children.Add(new_line);
                 }
             }
