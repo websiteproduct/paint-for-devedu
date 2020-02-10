@@ -9,17 +9,19 @@ namespace PaintTool.Creators
 {
     public class VectorCircleCreator : VectorShapeCreator
     {
-        public System.Windows.UIElement NewVectorShape(Point start, Point end)
+        public System.Windows.UIElement NewVectorShape(Point start, Point end, double thickness, System.Windows.Media.Brush color)
         {
             Ellipse elipse = new Ellipse();
+            double marginX, marginY;
 
-            elipse.Stroke = System.Windows.Media.Brushes.Black;
-            elipse.StrokeThickness = 3;
-            elipse.HorizontalAlignment = HorizontalAlignment.Left;
-            elipse.VerticalAlignment = VerticalAlignment.Center;
-            elipse.Margin = new System.Windows.Thickness(start.X, start.Y, 0, 0);
+            elipse.Stroke = color;
+            elipse.StrokeThickness = thickness;
+            //elipse.HorizontalAlignment = HorizontalAlignment.Left;
+            //elipse.VerticalAlignment = VerticalAlignment.Center;
             elipse.Height = Math.Abs(end.Y - start.Y);
             elipse.Width = Math.Abs(end.X - start.X);
+  
+            elipse.Margin = new System.Windows.Thickness(start.X, start.Y, 0, 0);
 
             return elipse;
         }

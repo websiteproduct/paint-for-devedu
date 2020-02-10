@@ -7,6 +7,6 @@ namespace PaintTool.Creators
 {
     public interface VectorShapeCreator
     {
-        public System.Windows.UIElement NewVectorShape (Point start, Point end);
+        public System.Windows.UIElement NewVectorShape (Point start, Point end, double thickness, System.Windows.Media.Brush color);
     }
 }

@@ -448,6 +448,10 @@ namespace PaintTool
                 newImage.PaintBitmap((int)PaintGrid.Width, (int)PaintGrid.Height, 255, 255, 255, 255);
                 NewImage.Instance = NewImage.Instance;
             }
+            else
+            {
+                ClearCanvas();
+            }
         }
 
         private void ExitContextBtn_Click(object sender, RoutedEventArgs e)
@@ -535,8 +539,7 @@ namespace PaintTool
             endVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                //var line = newCanvas.Children; /*+= e.GetPosition(newCanvas).X - startVectorPoint.X;*/
-
+                 //var line = newCanvas.Children; /*+= e.GetPosition(newCanvas).X - startVectorPoint.X;*/
                 //exampleVectorLine.X2 += (int)e.GetPosition(newCanvas).X - endVectorPoint.X;
                 //exampleVectorLine.Y1 += (int)e.GetPosition(newCanvas).Y - startVectorPoint.Y;
                 //exampleVectorLine.Y2 += (int)e.GetPosition(newCanvas).Y - endVectorPoint.Y;
@@ -546,14 +549,6 @@ namespace PaintTool
                 //Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
                 //Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
                 //Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
-
-                if (startDrag != null && e.RightButton == MouseButtonState.Pressed)
-                {
-                    var element = (UIElement)sender;
-                    var p2 = e.GetPosition(newCanvas);
-                    Canvas.SetLeft(element, p2.X - startDrag.Value.X);
-                    Canvas.SetTop(element, p2.Y - startDrag.Value.Y);
-                }
 
 
                 if ((bool)Shapes.IsChecked)
@@ -572,10 +567,10 @@ namespace PaintTool
                             currentCreator = new VectorRectangleCreator();
                             break;
                         case ShapeEnum.Triangle:
-                            currentCreator = new VectorTriangleCreator();
+                            currentCreator = new VectorTriangleCreator(isShiftPressed);
                             break;
                         case ShapeEnum.Polygone:
-                            currentCreator = new VectorPolygonCreator();
+                            currentCreator = new VectorPolygonCreator(polygonNumberOfSide);
                             break;
                         default:
                             currentCreator = new VectorLineCreator();
@@ -583,25 +578,35 @@ namespace PaintTool
                     }
 
                     VectorShapeCreator newShape = currentCreator;
-                    var res = newShape.NewVectorShape(startVectorPoint, endVectorPoint);
+                    var res = newShape.NewVectorShape(startVectorPoint, endVectorPoint, SizeSlider.Value, ColorPrimaryRect.Fill);
                     newCanvas.Children.Add(res);
-                    newCanvas.Children.RemoveAt(newCanvas.Children.Count- 2);
+                    newCanvas.Children.RemoveAt(newCanvas.Children.Count - 2);
 
                 }
 
-                //if ((bool)BrushToggleBtn.IsChecked)
-                //{
-                //    Brush newBrush = new Brush();
-                //    newBrush.DrawingBrush(prev, position, currentStrategy);
-                //    prev = position;
-                //}
-                //if ((bool)EraserToggleBtn.IsChecked)
-                //{
-                //    PaintColor.ColorData = new byte[] { 255, 255, 255, 255 };
-                //    Brush newBrush = new Brush();
-                //    newBrush.DrawingBrush(prev, position, currentStrategy);
-                //    prev = position;
-                //}
+                if ((bool)BrushToggleBtn.IsChecked)
+                {
+                    VectorShapeCreator newShape = new VectorLineCreator();
+                    var res = newShape.NewVectorShape(startVectorPoint, endVectorPoint, SizeSlider.Value, ColorPrimaryRect.Fill);
+                    startVectorPoint = endVectorPoint;
+                    newCanvas.Children.Add(res);
+                }
+                if ((bool)EraserToggleBtn.IsChecked)
+                {
+                    VectorShapeCreator newShape = new VectorLineCreator();
+                    var res = newShape.NewVectorShape(startVectorPoint, endVectorPoint, SizeSlider.Value, System.Windows.Media.Brushes.White);
+                    startVectorPoint = endVectorPoint;
+                    newCanvas.Children.Add(res);
+                }
+
+            }
+            if (startDrag != null && e.RightButton == MouseButtonState.Pressed)
+            {
+                var element = (UIElement)sender;
+                var p2 = e.GetPosition(newCanvas);
+
+                Canvas.SetLeft(element, p2.X - startDrag.Value.X);
+                Canvas.SetTop(element, p2.Y - startDrag.Value.Y);
 
             }
 
@@ -627,9 +632,6 @@ namespace PaintTool
                 {
                     drawingBrokenLine = true;
                 }
-
-
-
             }
         }
 
@@ -646,32 +648,33 @@ namespace PaintTool
 
         private void VectorLineMouseUp(object sender, MouseButtonEventArgs e)
         {
-            exampleVectorLine = (System.Windows.Shapes.Line)sender;
-            int moveBoxSize = 7;
+            //exampleVectorLine = (System.Windows.Shapes.Line)sender;
+            //int moveBoxSize = 7;
 
-            fMoveBox.Fill = Brushes.Transparent;
-            fMoveBox.Stroke = Brushes.Black;
-            fMoveBox.StrokeThickness = 1;
-            fMoveBox.Width = moveBoxSize;
-            fMoveBox.Height = moveBoxSize;
+            //fMoveBox.Fill = Brushes.Transparent;
+            //fMoveBox.Stroke = Brushes.Black;
+            //fMoveBox.StrokeThickness = 1;
+            //fMoveBox.Width = moveBoxSize;
+            //fMoveBox.Height = moveBoxSize;
 
-            Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
-            Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
+            //Canvas.SetLeft(fMoveBox, exampleVectorLine.X1 - fMoveBox.Width / 2);
+            //Canvas.SetTop(fMoveBox, exampleVectorLine.Y1 - fMoveBox.Width / 2);
 
-            lMoveBox.Fill = Brushes.Transparent;
-            lMoveBox.Stroke = Brushes.Black;
-            lMoveBox.StrokeThickness = 1;
-            lMoveBox.Width = moveBoxSize;
-            lMoveBox.Height = moveBoxSize;
+            //lMoveBox.Fill = Brushes.Transparent;
+            //lMoveBox.Stroke = Brushes.Black;
+            //lMoveBox.StrokeThickness = 1;
+            //lMoveBox.Width = moveBoxSize;
+            //lMoveBox.Height = moveBoxSize;
 
-            Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
-            Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
+            //Canvas.SetLeft(lMoveBox, exampleVectorLine.X2 - lMoveBox.Width / 2);
+            //Canvas.SetTop(lMoveBox, exampleVectorLine.Y2 - lMoveBox.Width / 2);
 
-            exampleVectorLine.Cursor = Cursors.SizeAll;
-            vectorShapeChosen = true;
-            fMoveBox.Visibility = Visibility.Visible;
-            lMoveBox.Visibility = Visibility.Visible;
+            //exampleVectorLine.Cursor = Cursors.SizeAll;
+            //vectorShapeChosen = true;
+            //fMoveBox.Visibility = Visibility.Visible;
+            //lMoveBox.Visibility = Visibility.Visible;
         }
+
 
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -693,17 +696,17 @@ namespace PaintTool
                         currentCreator = new VectorRectangleCreator();
                         break;
                     case ShapeEnum.Triangle:
-                        currentCreator = new VectorTriangleCreator();
+                        currentCreator = new VectorTriangleCreator(isShiftPressed);
                         break;
                     case ShapeEnum.Polygone:
-                        currentCreator = new VectorPolygonCreator();
+                        currentCreator = new VectorPolygonCreator(polygonNumberOfSide);
                         break;
                     default:
                         currentCreator = new VectorLineCreator();
                         break;
                 }
                 VectorShapeCreator newShape = currentCreator;
-                var res = newShape.NewVectorShape(startVectorPoint, endVectorPoint);
+                var res = newShape.NewVectorShape(startVectorPoint, endVectorPoint, SizeSlider.Value, ColorPrimaryRect.Fill);
                 newCanvas.Children.Add(res);
             }
                 //if (vectorShapeChosen && !(e.OriginalSource is System.Windows.Shapes.Line))
@@ -712,16 +715,11 @@ namespace PaintTool
                 //    fMoveBox.Visibility = Visibility.Hidden;
                 //    lMoveBox.Visibility = Visibility.Hidden;
                 //}
-            }
+        }
 
         private void newCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            //endVectorPoint.X = (int)e.GetPosition(newCanvas).X;
-            //endVectorPoint.Y = (int)e.GetPosition(newCanvas).Y;
-            
-            //VectorShapeCreator newLine = new VectorRectangleCreator();
-            //var res = newLine.NewVectorShape(startVectorPoint, endVectorPoint);
-            //newCanvas.Children.Add(res);
+
         }
 
         private void newCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -817,6 +815,7 @@ namespace PaintTool
                 X2 = x2;
                 Y2 = y2;
             }
+
         }
         public void SaveCanvas(object sender, RoutedEventArgs e)
         {
@@ -854,11 +853,9 @@ namespace PaintTool
 
         private void ClearCanvas()
         {
-            // Remove existing segments.
             for (int i = newCanvas.Children.Count - 1; i >= 0; i--)
             {
-                if (newCanvas.Children[i] is System.Windows.Shapes.Line)
-                    newCanvas.Children.RemoveAt(i);
+                newCanvas.Children.RemoveAt(i);
             }
         }
 
